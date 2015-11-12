@@ -28,3 +28,10 @@ pumukit_moodle:
 
 * `role` defines the role code the professor should be added with in a video. For example: actor.
 * `password` defines the secret password between Pumukit and Moodle. It's the same password Moodle uses to install PuMoodle.
+
+3.- Init Moodle tags:
+
+```
+$ cd /path/to/pumukit2/
+$ php app/console moodle:init:tags --force
+```
