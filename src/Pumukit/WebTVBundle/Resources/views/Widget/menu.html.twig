@@ -3,14 +3,14 @@
     <!-- Principal -->
 
     <a href="{{ path('pumukit_webtv_index_index')}}" {{menu_selected=="pumukit_webtv_index_index"?'class="selected"':''}}>
-      <span class="glyphicon glyphicon-education"></span>
+      <span class="glyphicon glyphicon-home"></span>
         {{ home_title |trans }}
     </a>
 
     <!-- Announces -->
 
     <a href="{{ path('pumukit_webtv_announces_latestuploads') }}" class="{{menu_selected == 'pumukit_webtv_announces_latestuploads'? 'selected' : ''}}">
-      <span class="glyphicon glyphicon-calendar"></span>
+      <span class="glyphicon glyphicon-time"></span>
         {{ announces_title |trans }}
     </a>
 
@@ -34,13 +34,13 @@
 
     <!-- Mediateca -->
     <a href="{{ path('pumukit_webtv_medialibrary_index') }}" class="{{menu_selected=="pumukit_webtv_medialibrary_index"?'selected':''}}">
-      <span class="glyphicon glyphicon-th-list"></span>
+      <span class="glyphicon glyphicon-list"></span>
         {{ mediateca_title |trans }}
     </a>
 
     <!-- Videos by category -->
     <a href="{{ path('pumukit_webtv_categories_index') }}" class="{{menu_selected=="pumukit_webtv_categories_index"?'selected':''}}">
-      <span class="glyphicon glyphicon-book"></span>
+      <span class="glyphicon glyphicon-education"></span>
         {{ categories_title |trans }}
     </a>
 
