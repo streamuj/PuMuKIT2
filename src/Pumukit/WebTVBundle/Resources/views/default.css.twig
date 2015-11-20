@@ -13,7 +13,7 @@
 {% set breadcrumbs_separator = breadcrumbs_separator | default('»') %}
 {% set content_max_width = content_max_width | default("1400px") %}
 {% set menu_stats = menu_stats | default(true) %}
-{% set menu_padding = menu_padding | default("7px 7px 7px 13px") %}
+{% set menu_padding = menu_padding | default("12px 12px 12px 20px") %}
 {% set page_background = page_background | default("#ddd") %}
 
 {# DEFAULT ASPECT RATIO: 12:9#}
@@ -660,7 +660,7 @@ a:hover .cover {
 }
 .widget.slidebar a {
     display: block;
-    font-size: 1.15em;
+    font-size: 1.25em;
     padding: {{ menu_padding }};
     color: {{ menu_font_color }};
 }
@@ -668,7 +668,7 @@ a:hover .cover {
     background: {{ menu_selected_background }};
     color: {{ menu_selected_font_color }};
     margin-left: -50px;
-    padding-left: 63px;
+    padding-left: 70px;
     z-index:10;
     transition: background 0.3s ease;
 }
