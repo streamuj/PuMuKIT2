@@ -29,6 +29,7 @@
 {% set content_background = content_background | default(default_content_background) %}
 {% set header_max_width = header_max_width | default(content_max_width) %}
 {% set header_background = header_background | default(default_content_background) %}
+{% set header_background_mobile = header_background_mobile | default(default_contrast_background) %}
 {% set label_background = label_background | default('#8A8A8A') %}
 {% set label_font = label_font | default('#fff') %}
 {% set menu_background = menu_background | default(default_light_background) %}
@@ -234,12 +235,47 @@ p.disabled {
     font-size: 1.2em;
     text-align: inherit;
 }
+
+/*=====   HEADER   ======*/
+.header {
+    background: {{ header_background }};
+}
 .header-content{
     margin: 0 auto;
     max-width: {{ header_max_width }};
     min-height: 80px;
     padding: 15px 0px;
 }
+.header.sticky {
+    position: fixed;
+    top: 0;
+    transition: top 0.2s ease-in-out;
+    width: 100%;
+    z-index:6;
+}
+.header.sticky.nav-up {
+    top: -60px;
+}
+.header.sticky.nav-up {
+    top: 0;
+}
+.mobile_header {
+    background: {{ header_background_mobile }};
+    color: #fff;
+}
+.navbar-header button.menu-button .icon-bar {
+    background-color: #fff
+}
+.mobile_header button.language-button {
+    background: #5472D2;
+    color: #fff;
+}
+.mobile_header button.search-button {
+    padding: 5px 7px;
+}
+/*=====   END HEADER   ======*/
+
+
 .info.serial {
     padding-left: 20px;
 }
@@ -259,7 +295,7 @@ p.disabled {
     word-wrap: break-word;
     overflow: hidden;
     -webkit-line-clamp: 2;
-    display: -webkit-box;   
+    display: -webkit-box;
     -webkit-box-orient: vertical;
     text-overflow: ellipsis;
 }
@@ -299,9 +335,7 @@ p.disabled {
     background: {{ menu_background }};
     border: 0;
 }
-.mobile_header {
-    background: {{ header_background }};
-}
+
 /**/
 body.opencast-layout .main-content {
     max-width: 100%;
@@ -543,22 +577,7 @@ a:hover .cover {
     line-height: 1;
     padding-top: 10px;
 }
-.header {
-    background: {{ header_background }};
-}
-.header.sticky {
-    position: fixed;
-    top: 0;
-    transition: top 0.2s ease-in-out;
-    width: 100%;
-    z-index:6;
-}
-.header.sticky.nav-up {
-    top: -60px;
-}
-.header.sticky.nav-up {
-    top: 0;
-}
+
 .img_category img{
     width: 100%;
 }
@@ -608,7 +627,7 @@ a:hover .cover {
 }
 .powered_by a{
     color: white;
-    text-decoration: none; 
+    text-decoration: none;
 }
 .powered_by div {
     max-width: {{content_max_width }};
