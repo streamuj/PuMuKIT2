@@ -3,18 +3,21 @@
     <!-- Principal -->
 
     <a href="{{ path('pumukit_webtv_index_index')}}" {{menu_selected=="pumukit_webtv_index_index"?'class="selected"':''}}>
+      <span class="glyphicon glyphicon-education"></span>
         {{ home_title |trans }}
     </a>
 
     <!-- Announces -->
 
     <a href="{{ path('pumukit_webtv_announces_latestuploads') }}" class="{{menu_selected == 'pumukit_webtv_announces_latestuploads'? 'selected' : ''}}">
+      <span class="glyphicon glyphicon-calendar"></span>
         {{ announces_title |trans }}
     </a>
 
     <!-- Search -->
 
     <a href="{{ path('pumukit_webtv_search_multimediaobjects')}}" class="{{menu_selected=="pumukit_webtv_search_multimediaobjects"?'selected':''}}">
+      <span class="glyphicon glyphicon-search"></span>
         {{ search_title |trans}}
     </a>
 
@@ -23,6 +26,7 @@
     {% for live in live_channels %}
 
       <a href="{{ path('pumukit_live_id', {'id': live.id})}}">
+        <span class="glyphicon glyphicon-film"></span>
         {{ live.name | default('No title') | trans }}
       </a>
 
@@ -30,11 +34,13 @@
 
     <!-- Mediateca -->
     <a href="{{ path('pumukit_webtv_medialibrary_index') }}" class="{{menu_selected=="pumukit_webtv_medialibrary_index"?'selected':''}}">
+      <span class="glyphicon glyphicon-th-list"></span>
         {{ mediateca_title |trans }}
     </a>
 
     <!-- Videos by category -->
     <a href="{{ path('pumukit_webtv_categories_index') }}" class="{{menu_selected=="pumukit_webtv_categories_index"?'selected':''}}">
+      <span class="glyphicon glyphicon-book"></span>
         {{ categories_title |trans }}
     </a>
 
