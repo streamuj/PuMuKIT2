@@ -11,9 +11,9 @@
 {% set default_content_link_selected_font = default_content_link_selected_font | default("#444") %}
 
 {% set breadcrumbs_separator = breadcrumbs_separator | default('»') %}
-{% set content_max_width = content_max_width | default("1200px") %}
+{% set content_max_width = content_max_width | default("1400px") %}
 {% set menu_stats = menu_stats | default(true) %}
-{% set menu_padding = menu_padding | default("10px 10px 10px 30px") %}
+{% set menu_padding = menu_padding | default("7px 7px 7px 13px") %}
 {% set page_background = page_background | default("#ddd") %}
 
 {# DEFAULT ASPECT RATIO: 12:9#}
@@ -330,6 +330,11 @@ p.disabled {
     overflow: hidden;
     background: {{ content_background }};
     min-height: 600px;
+}
+@media screen and (min-device-width: 1200px) {
+  .main-content {
+      padding-left: 40px;
+  }
 }
 .menu {
     background: {{ menu_background }};
@@ -655,19 +660,21 @@ a:hover .cover {
 }
 .widget.slidebar a {
     display: block;
-    font-size: 1.3em;
+    font-size: 1.15em;
     padding: {{ menu_padding }};
     color: {{ menu_font_color }};
 }
 .widget.slidebar a:hover, .widget.slidebar a.selected {
     background: {{ menu_selected_background }};
     color: {{ menu_selected_font_color }};
-    margin-left: -65px;
-    padding-left: 95px;
+    margin-left: -50px;
+    padding-left: 63px;
     z-index:10;
     transition: background 0.3s ease;
 }
-
+.widget.slidebar .glyphicon {
+    padding-right: 8px;
+}
 @media (max-width: 1199px) {
     .widget.slidebar {
         text-align: center;
