@@ -5,7 +5,6 @@ namespace Pumukit\NewAdminBundle\Form\Type;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Pumukit\SchemaBundle\Document\User;
 use Symfony\Component\Translation\TranslatorInterface;
 
 class UserType extends AbstractType
@@ -13,7 +12,7 @@ class UserType extends AbstractType
     private $translator;
     private $locale;
 
-    public function __construct(TranslatorInterface $translator, $locale='en')
+    public function __construct(TranslatorInterface $translator, $locale = 'en')
     {
         $this->translator = $translator;
         $this->locale = $locale;
@@ -28,14 +27,14 @@ class UserType extends AbstractType
             ->add('username', 'text',
                   array(
                         'attr' => array(
-                                        'pattern' => "^[a-zA-Z0-9_]{4,16}$",
+                                        'pattern' => '^[a-zA-Z0-9_]{4,16}$',
                                         'oninvalid' => "setCustomValidity('The username can not have blank spaces neither special characters')",
-                                        'oninput' => "setCustomValidity('')"),
-                        'label' => $this->translator->trans('Username', array(), null, $this->locale)))
+                                        'oninput' => "setCustomValidity('')", ),
+                        'label' => $this->translator->trans('Username', array(), null, $this->locale), ))
             ->add('plain_password', 'password',
                   array(
                         'required' => false,
-                        'label' => $this->translator->trans('Password', array(), null, $this->locale)))
+                        'label' => $this->translator->trans('Password', array(), null, $this->locale), ))
           /* TODO check password
             ->add('plain_password', 'repeated', array(
             'type' => 'password',
@@ -52,10 +51,10 @@ class UserType extends AbstractType
                   array(
                         'choices' => array(
                                            'ROLE_SUPER_ADMIN' => $this->translator->trans('Administrator', array(), null, $this->locale),
-                                           'ROLE_ADMIN' => $this->translator->trans('Publisher', array(), null, $this->locale)),
+                                           'ROLE_ADMIN' => $this->translator->trans('Publisher', array(), null, $this->locale), ),
                         'multiple' => true,
                         'expanded' => true,
-                        'label' => $this->translator->trans('Type', array(), null, $this->locale)));
+                        'label' => $this->translator->trans('Type', array(), null, $this->locale), ));
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)

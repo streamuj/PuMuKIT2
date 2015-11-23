@@ -3,14 +3,13 @@
 namespace Pumukit\NewAdminBundle\Controller;
 
 use Sylius\Bundle\ResourceBundle\Controller\ResourceController;
-use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class AdminController extends ResourceController
 {
     /**
-     * Overwrite to update the criteria with MongoRegex, and save it in the session
+     * Overwrite to update the criteria with MongoRegex, and save it in the session.
      */
     public function indexAction(Request $request)
     {
@@ -34,7 +33,7 @@ class AdminController extends ResourceController
     /**
      * Create Action
      * Overwrite to return list and not index
-     * and show toast message
+     * and show toast message.
      *
      * @param Request $request
      *
@@ -56,7 +55,7 @@ class AdminController extends ResourceController
             }
 
             if (null === $resource) {
-              return $this->redirect($this->generateUrl('pumukitnewadmin_'.$resourceName.'_list'));
+                return $this->redirect($this->generateUrl('pumukitnewadmin_'.$resourceName.'_list'));
             }
 
             return $this->redirect($this->generateUrl('pumukitnewadmin_'.$resourceName.'_list'));
@@ -66,17 +65,17 @@ class AdminController extends ResourceController
             return $this->handleView($this->view($form));
         }
 
-        return $this->render("PumukitNewAdminBundle:".ucfirst($resourceName).":create.html.twig",
+        return $this->render('PumukitNewAdminBundle:'.ucfirst($resourceName).':create.html.twig',
                              array(
                                    $resourceName => $resource,
-                                   'form' => $form->createView()
+                                   'form' => $form->createView(),
                                    ));
     }
 
     /**
      * Update Action
      * Overwrite to return list and not index
-     * and show toast message
+     * and show toast message.
      *
      * @param Request $request
      *
@@ -88,7 +87,7 @@ class AdminController extends ResourceController
         $resourceName = $config->getResourceName();
 
         $resource = $this->findOr404($request);
-        $form     = $this->getForm($resource);
+        $form = $this->getForm($resource);
 
         if (in_array($request->getMethod(), array('POST', 'PUT', 'PATCH')) && $form->submit($request, !$request->isMethod('PATCH'))->isValid()) {
             $this->domainManager->update($resource);
@@ -104,15 +103,15 @@ class AdminController extends ResourceController
             return $this->handleView($this->view($form));
         }
 
-        return $this->render("PumukitNewAdminBundle:".ucfirst($resourceName).":update.html.twig",
+        return $this->render('PumukitNewAdminBundle:'.ucfirst($resourceName).':update.html.twig',
                              array(
                                    $resourceName => $resource,
-                                   'form' => $form->createView()
+                                   'form' => $form->createView(),
                                    ));
     }
 
     /**
-     * Clone the given resource
+     * Clone the given resource.
      */
     public function copyAction(Request $request)
     {
@@ -153,7 +152,7 @@ class AdminController extends ResourceController
     }
 
     /**
-     * Delete action
+     * Delete action.
      */
     public function deleteAction(Request $request)
     {
@@ -163,7 +162,7 @@ class AdminController extends ResourceController
         $resourceName = $config->getResourceName();
 
         $this->get('pumukitschema.factory')->deleteResource($resource);
-        if ($resourceId === $this->get('session')->get('admin/'.$resourceName.'/id')){
+        if ($resourceId === $this->get('session')->get('admin/'.$resourceName.'/id')) {
             $this->get('session')->remove('admin/'.$resourceName.'/id');
         }
 
@@ -171,7 +170,7 @@ class AdminController extends ResourceController
     }
 
     /**
-     * List action
+     * List action.
      */
     public function listAction(Request $request)
     {
@@ -209,7 +208,7 @@ class AdminController extends ResourceController
     {
         $ids = $this->getRequest()->get('ids');
 
-        if ('string' === gettype($ids)){
+        if ('string' === gettype($ids)) {
             $ids = json_decode($ids, true);
         }
 
@@ -219,12 +218,12 @@ class AdminController extends ResourceController
         $factory = $this->get('pumukitschema.factory');
         foreach ($ids as $id) {
             $resource = $this->find($id);
-            try{
+            try {
                 $factory->deleteResource($resource);
             } catch (\Exception $e) {
                 return new Response($e->getMessage(), Response::HTTP_BAD_REQUEST);
             }
-            if ($id === $this->get('session')->get('admin/'.$resourceName.'/id')){
+            if ($id === $this->get('session')->get('admin/'.$resourceName.'/id')) {
                 $this->get('session')->remove('admin/'.$resourceName.'/id');
             }
         }
@@ -243,7 +242,7 @@ class AdminController extends ResourceController
     }
 
     /**
-     * Gets the criteria values
+     * Gets the criteria values.
      */
     public function getCriteria($config)
     {
@@ -268,14 +267,14 @@ class AdminController extends ResourceController
     }
 
     /**
-     * Gets the list of resources according to a criteria
+     * Gets the list of resources according to a criteria.
      */
     public function getResources(Request $request, $config, $criteria)
     {
         $sorting = $config->getSorting();
         $repository = $this->getRepository();
         $session = $this->get('session');
-        $session_namespace = 'admin/' . $config->getResourceName();
+        $session_namespace = 'admin/'.$config->getResourceName();
 
         if ($config->isPaginated()) {
             $resources = $this
@@ -304,7 +303,8 @@ class AdminController extends ResourceController
     }
 
     /**
-     * Overwrite to get form with translations
+     * Overwrite to get form with translations.
+     *
      * @param object|null $resource
      *
      * @return FormInterface
@@ -312,8 +312,8 @@ class AdminController extends ResourceController
     public function getForm($resource = null)
     {
         $formName = $this->config->getFormType();
-        $prefix = "pumukitnewadmin_";
-        $formType = "Pumukit\\NewAdminBundle\\Form\\Type\\".ucfirst(substr($formName, strlen($prefix)))."Type";
+        $prefix = 'pumukitnewadmin_';
+        $formType = 'Pumukit\\NewAdminBundle\\Form\\Type\\'.ucfirst(substr($formName, strlen($prefix))).'Type';
 
         $translator = $this->get('translator');
         $locale = $this->getRequest()->getLocale();

@@ -12,31 +12,29 @@ use Pumukit\SchemaBundle\Document\Series;
 class SeriesPicController extends Controller
 {
     /**
-     *
      * @Template("PumukitNewAdminBundle:Pic:create.html.twig")
      */
     public function createAction(Series $series, Request $request)
     {
         return array(
                      'resource' => $series,
-                     'resource_name' => 'series'
+                     'resource_name' => 'series',
                      );
     }
 
     /**
-     *
      * @Template("PumukitNewAdminBundle:Pic:list.html.twig")
      */
     public function listAction(Series $series)
     {
-      return array(
+        return array(
                    'resource' => $series,
                    'resource_name' => 'series',
                    );
     }
 
     /**
-     * Assign a picture from an url or from an existing one to the series
+     * Assign a picture from an url or from an existing one to the series.
      *
      * @Template("PumukitNewAdminBundle:Pic:list.html.twig")
      */
@@ -45,7 +43,7 @@ class SeriesPicController extends Controller
         $isBanner = false;
         if (($url = $request->get('url')) || ($url = $request->get('picUrl'))) {
             $picService = $this->get('pumukitschema.seriespic');
-            $isBanner =  $request->query->get('banner', false);
+            $isBanner = $request->query->get('banner', false);
             $bannerTargetUrl = $request->get('url_bannerTargetUrl', null);
             $series = $picService->addPicUrl($series, $url, $isBanner, $bannerTargetUrl);
         }
@@ -61,29 +59,28 @@ class SeriesPicController extends Controller
     }
 
     /**
-     *
      * @Template("PumukitNewAdminBundle:Pic:upload.html.twig")
      */
     public function uploadAction(Series $series, Request $request)
     {
         $isBanner = false;
-        try{
-            if (empty($_FILES) && empty($_POST)){
+        try {
+            if (empty($_FILES) && empty($_POST)) {
                 throw new \Exception('PHP ERROR: File exceeds post_max_size ('.ini_get('post_max_size').')');
             }
-            if ($request->files->has("file")) {
+            if ($request->files->has('file')) {
                 $picService = $this->get('pumukitschema.seriespic');
-                $isBanner =  $request->query->get('banner', false);
+                $isBanner = $request->query->get('banner', false);
                 $bannerTargetUrl = $request->get('file_bannerTargetUrl', null);
-                $media = $picService->addPicFile($series, $request->files->get("file"), $isBanner, $bannerTargetUrl);
+                $media = $picService->addPicFile($series, $request->files->get('file'), $isBanner, $bannerTargetUrl);
             }
-        }catch (\Exception $e){
+        } catch (\Exception $e) {
             return array(
                          'resource' => $series,
                          'resource_name' => 'series',
                          'uploaded' => 'failed',
                          'message' => $e->getMessage(),
-                         'isBanner' => $isBanner
+                         'isBanner' => $isBanner,
                          );
         }
 
@@ -92,12 +89,12 @@ class SeriesPicController extends Controller
                      'resource_name' => 'series',
                      'uploaded' => 'success',
                      'message' => 'New Pic added.',
-                     'isBanner' => $isBanner
+                     'isBanner' => $isBanner,
                      );
     }
 
     /**
-     * Delete pic
+     * Delete pic.
      */
     public function deleteAction(Request $request)
     {
@@ -116,7 +113,7 @@ class SeriesPicController extends Controller
     }
 
     /**
-     * Up pic
+     * Up pic.
      */
     public function upAction(Request $request)
     {
@@ -139,7 +136,7 @@ class SeriesPicController extends Controller
     }
 
     /**
-     * Down pic
+     * Down pic.
      */
     public function downAction(Request $request)
     {
@@ -186,28 +183,28 @@ class SeriesPicController extends Controller
                      'resource_name' => 'series',
                      'pics' => $pics,
                      'page' => $page,
-                     'total' => $total
+                     'total' => $total,
                      );
     }
 
     /**
-     *
      * @Template("PumukitNewAdminBundle:Pic:banner.html.twig")
      */
     public function bannerAction(Series $series, Request $request)
     {
         return array(
                      'resource' => $series,
-                     'resource_name' => 'series'
+                     'resource_name' => 'series',
                      );
     }
 
     /**
-     * Get paginated pics
+     * Get paginated pics.
      *
      * @param array $urlPics
-     * @param int $limit
-     * @param int $page
+     * @param int   $limit
+     * @param int   $page
+     *
      * @return Pagerfanta
      */
     private function getPaginatedPics($urlPics, $limit, $page)

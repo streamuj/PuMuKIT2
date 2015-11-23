@@ -13,7 +13,7 @@ class MultimediaObjectPubType extends AbstractType
     private $translator;
     private $locale;
 
-    public function __construct(TranslatorInterface $translator, $locale='en')
+    public function __construct(TranslatorInterface $translator, $locale = 'en')
     {
         $this->translator = $translator;
         $this->locale = $locale;
@@ -26,10 +26,10 @@ class MultimediaObjectPubType extends AbstractType
                   array('choices' => array(
                                            MultimediaObject::STATUS_PUBLISHED => 'Published',
                                            MultimediaObject::STATUS_BLOQ => 'Blocked',
-                                           MultimediaObject::STATUS_HIDE => 'Hidden'
+                                           MultimediaObject::STATUS_HIDE => 'Hidden',
                                            ),
                         'disabled' => $options['not_admin'],
-                        'label' => $this->translator->trans('Status', array(), null, $this->locale) ))
+                        'label' => $this->translator->trans('Status', array(), null, $this->locale), ))
             ->add('broadcast', null, array('label' => $this->translator->trans('Broadcast', array(), null, $this->locale)));
     }
 

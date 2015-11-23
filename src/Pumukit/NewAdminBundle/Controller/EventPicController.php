@@ -16,12 +16,12 @@ class EventPicController extends Controller
     {
         return array(
                      'resource' => $event,
-                     'resource_name' => 'event'
+                     'resource_name' => 'event',
                      );
     }
 
     /**
-     * Assign a picture from an url
+     * Assign a picture from an url.
      */
     public function updateAction(Event $event, Request $request)
     {
@@ -38,31 +38,31 @@ class EventPicController extends Controller
      */
     public function uploadAction(Event $event, Request $request)
     {
-        try{
-            if (empty($_FILES) && empty($_POST)){
+        try {
+            if (empty($_FILES) && empty($_POST)) {
                 throw new \Exception('PHP ERROR: File exceeds post_max_size ('.ini_get('post_max_size').')');
             }
-            if ($request->files->has("file")) {
+            if ($request->files->has('file')) {
                 $picService = $this->get('pumukitlive.eventpic');
-                $media = $picService->addPicFile($event, $request->files->get("file"));
+                $media = $picService->addPicFile($event, $request->files->get('file'));
             }
-        }catch (\Exception $e){
+        } catch (\Exception $e) {
             return array(
                          'event' => $event,
                          'uploaded' => 'failed',
-                         'message' => $e->getMessage()
+                         'message' => $e->getMessage(),
                          );
         }
 
         return array(
                      'event' => $event,
                      'uploaded' => 'success',
-                     'message' => 'New Pic added.'
+                     'message' => 'New Pic added.',
                      );
     }
 
     /**
-     * Delete pic
+     * Delete pic.
      */
     public function deleteAction(Event $event, Request $request)
     {

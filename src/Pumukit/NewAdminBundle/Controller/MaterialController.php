@@ -50,7 +50,7 @@ class MaterialController extends Controller
             return $this->redirect($this->generateUrl('pumukitnewadmin_material_list', array('id' => $multimediaObject->getId())));
         }
 
-        return $this->render('PumukitNewAdminBundle:Material:update.html.twig', 
+        return $this->render('PumukitNewAdminBundle:Material:update.html.twig',
                              array(
                                    'material' => $material,
                                    'form' => $form->createView(),
@@ -67,8 +67,8 @@ class MaterialController extends Controller
         $formData = $request->get('pumukitnewadmin_material', array());
 
         $materialService = $this->get('pumukitschema.material');
-        try{
-            if (empty($_FILES) && empty($_POST)){
+        try {
+            if (empty($_FILES) && empty($_POST)) {
                 throw new \Exception('PHP ERROR: File exceeds post_max_size ('.ini_get('post_max_size').')');
             }
             if (($request->files->has('file')) && (!$request->get('url', null))) {
@@ -76,18 +76,18 @@ class MaterialController extends Controller
             } elseif ($request->get('url', null)) {
                 $multimediaObject = $materialService->addMaterialUrl($multimediaObject, $request->get('url'), $formData);
             }
-        }catch (\Exception $e){
+        } catch (\Exception $e) {
             return array(
                          'mm' => $multimediaObject,
                          'uploaded' => 'failed',
-                         'message' => $e->getMessage()
+                         'message' => $e->getMessage(),
                          );
         }
 
         return array(
                      'mm' => $multimediaObject,
                      'uploaded' => 'success',
-                     'message' => 'New Material added.'
+                     'message' => 'New Material added.',
                      );
     }
 
@@ -134,7 +134,7 @@ class MaterialController extends Controller
     {
         return array(
                      'mmId' => $multimediaObject->getId(),
-                     'materials' => $multimediaObject->getMaterials()
+                     'materials' => $multimediaObject->getMaterials(),
                      );
     }
 }

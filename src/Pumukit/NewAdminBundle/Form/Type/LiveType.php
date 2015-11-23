@@ -15,7 +15,7 @@ class LiveType extends AbstractType
     private $translator;
     private $locale;
 
-    public function __construct(TranslatorInterface $translator, $locale='en')
+    public function __construct(TranslatorInterface $translator, $locale = 'en')
     {
         $this->translator = $translator;
         $this->locale = $locale;
@@ -29,7 +29,7 @@ class LiveType extends AbstractType
             ->add('i18n_description', 'textareai18n',
                   array(
                         'required' => false,
-                        'label' => $this->translator->trans('Description', array(), null, $this->locale)))
+                        'label' => $this->translator->trans('Description', array(), null, $this->locale), ))
             ->add('url', 'url',
                   array('label' => $this->translator->trans('URL', array(), null, $this->locale)))
             ->add('source_name', 'text',
@@ -37,23 +37,23 @@ class LiveType extends AbstractType
             ->add('broadcasting', 'choice',
                   array(
                         'choices' => array('0' => 'On hold', '1' => 'Live Broadcasting'),
-                        'label' => $this->translator->trans('Status', array(), null, $this->locale)))
+                        'label' => $this->translator->trans('Status', array(), null, $this->locale), ))
             ->add('live_type', 'choice',
                   array(
                         'choices' => array(Live::LIVE_TYPE_FMS => 'FMS', Live::LIVE_TYPE_WMS => 'WMS'),
-                        'label' => $this->translator->trans('Tecnology', array(), null, $this->locale)))
+                        'label' => $this->translator->trans('Tecnology', array(), null, $this->locale), ))
             ->add('resolution', new LiveresolutionType(),
                   array(
                         'label' => $this->translator->trans('Resolution', array(), null, $this->locale),
-                        'required' => false))
+                        'required' => false, ))
             ->add('qualities', new LivequalitiesType(),
                   array(
                         'label' => $this->translator->trans('Qualities', array(), null, $this->locale),
-                        'required' => false))
+                        'required' => false, ))
             ->add('ip_source', 'text',
                   array(
                         'required' => false,
-                        'label' => $this->translator->trans('IP source', array(), null, $this->locale)))
+                        'label' => $this->translator->trans('IP source', array(), null, $this->locale), ))
             ->add('index_play', 'checkbox', array('required' => false));
     }
 

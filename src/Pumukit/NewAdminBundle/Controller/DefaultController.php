@@ -14,6 +14,6 @@ class DefaultController extends Controller
      */
     public function indexAction()
     {
-      return $this->redirectToRoute('pumukitnewadmin_series_index');
+        return $this->redirectToRoute('pumukitnewadmin_series_index');
     }
 }

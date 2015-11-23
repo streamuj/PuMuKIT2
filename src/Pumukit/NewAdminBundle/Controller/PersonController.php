@@ -2,7 +2,6 @@
 
 namespace Pumukit\NewAdminBundle\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -16,7 +15,7 @@ use Pumukit\NewAdminBundle\Form\Type\PersonType;
 class PersonController extends AdminController
 {
     /**
-     * Index
+     * Index.
      *
      * @Template("PumukitNewAdminBundle:Person:index.html.twig")
      */
@@ -29,7 +28,7 @@ class PersonController extends AdminController
 
         $personService = $this->get('pumukitschema.person');
         $countMmPeople = array();
-        foreach($resources as $person){
+        foreach ($resources as $person) {
             $countMmPeople[$person->getId()] = $personService->countMultimediaObjectsWithPerson($person);
         }
 
@@ -40,7 +39,7 @@ class PersonController extends AdminController
     }
 
     /**
-     * Create new person
+     * Create new person.
      *
      * @Template("PumukitNewAdminBundle:Person:create.html.twig")
      */
@@ -68,18 +67,20 @@ class PersonController extends AdminController
                 foreach ($errors as $error) {
                     $textStatus .= $error->getPropertyPath().' value '.$error->getInvalidValue().': '.$error->getMessage().'. ';
                 }
+
                 return new Response($textStatus, 409);
             }
         }
 
         return array(
                      'person' => $person,
-                     'form' => $form->createView()
+                     'form' => $form->createView(),
                      );
     }
 
     /**
-     * Update person
+     * Update person.
+     *
      * @Template("PumukitNewAdminBundle:Person:update.html.twig")
      */
     public function updateAction(Request $request)
@@ -106,18 +107,19 @@ class PersonController extends AdminController
                 foreach ($errors as $error) {
                     $textStatus .= $error->getPropertyPath().' value '.$error->getInvalidValue().': '.$error->getMessage().'. ';
                 }
+
                 return new Response($textStatus, 409);
             }
         }
 
         return array(
                      'person' => $person,
-                     'form' => $form->createView()
+                     'form' => $form->createView(),
                      );
     }
 
     /**
-     * Show person
+     * Show person.
      *
      * @Template("PumukitNewAdminBundle:Person:show.html.twig")
      */
@@ -130,12 +132,12 @@ class PersonController extends AdminController
 
         return array(
                      'person' => $person,
-                     'series' => $series
+                     'series' => $series,
                      );
     }
 
     /**
-     * List people
+     * List people.
      *
      * @Template("PumukitNewAdminBundle:Person:list.html.twig")
      */
@@ -144,7 +146,7 @@ class PersonController extends AdminController
         $config = $this->getConfiguration();
 
         $sorting = $request->get('sorting');
-        if (null !== $sorting){
+        if (null !== $sorting) {
             $this->get('session')->set('admin/person/type', $sorting[key($sorting)]);
             $this->get('session')->set('admin/person/sort', key($sorting));
         }
@@ -154,18 +156,18 @@ class PersonController extends AdminController
 
         $personService = $this->get('pumukitschema.person');
         $countMmPeople = array();
-        foreach($resources as $person){
+        foreach ($resources as $person) {
             $countMmPeople[$person->getId()] = $personService->countMultimediaObjectsWithPerson($person);
         }
 
         return array(
                      'people' => $resources,
-                     'countMmPeople' => $countMmPeople
+                     'countMmPeople' => $countMmPeople,
                      );
     }
 
     /**  
-     * Create new person with role from Multimedia Object
+     * Create new person with role from Multimedia Object.
      *
      * @ParamConverter("multimediaObject", class="PumukitSchemaBundle:MultimediaObject", options={"id" = "mmId"})
      * @ParamConverter("role", class="PumukitSchemaBundle:Role", options={"id" = "roleId"})
@@ -175,7 +177,7 @@ class PersonController extends AdminController
     {
         $config = $this->getConfiguration();
         $pluralName = $config->getPluralResourceName();
-        
+
         $criteria = $this->getCriteria($config, $request->getLocale());
         $resources = $this->getResources($request, $config, $criteria);
 
@@ -187,12 +189,12 @@ class PersonController extends AdminController
                      'mm' => $multimediaObject,
                      'role' => $role,
                      'template' => $template,
-                     'ldap_enabled' => $ldapEnabled
+                     'ldap_enabled' => $ldapEnabled,
                      );
     }
 
     /**
-     * Create relation
+     * Create relation.
      *
      * @ParamConverter("multimediaObject", class="PumukitSchemaBundle:MultimediaObject", options={"id" = "mmId"})
      * @ParamConverter("role", class="PumukitSchemaBundle:Role", options={"id" = "roleId"})
@@ -224,14 +226,16 @@ class PersonController extends AdminController
                 foreach ($errors as $error) {
                     $textStatus .= $error->getPropertyPath().' value '.$error->getInvalidValue().': '.$error->getMessage().'. ';
                 }
+
                 return new Response($textStatus, 409);
             }
+
             return $this->render('PumukitNewAdminBundle:Person:listrelation.html.twig',
                                  array(
                                        'people' => $multimediaObject->getPeopleByRole($role, true),
                                        'role' => $role,
                                        'mm' => $multimediaObject,
-                                       'template' => $template
+                                       'template' => $template,
                                        ));
         }
 
@@ -247,7 +251,7 @@ class PersonController extends AdminController
     }
 
     /**
-     * Update relation
+     * Update relation.
      *
      * @Template("PumukitNewAdminBundle:Person:updaterelation.html.twig")
      * @ParamConverter("multimediaObject", class="PumukitSchemaBundle:MultimediaObject", options={"id" = "mmId"})
@@ -278,7 +282,7 @@ class PersonController extends AdminController
                                            'people' => $multimediaObject->getPeopleByRole($role, true),
                                            'role' => $role,
                                            'mm' => $multimediaObject,
-                                           'template' => $template
+                                           'template' => $template,
                                            ));
             } else {
                 $errors = $this->get('validator')->validate($person);
@@ -286,6 +290,7 @@ class PersonController extends AdminController
                 foreach ($errors as $error) {
                     $textStatus .= $error->getPropertyPath().' value '.$error->getInvalidValue().': '.$error->getMessage().'. ';
                 }
+
                 return new Response($textStatus, 409);
             }
         }
@@ -297,47 +302,46 @@ class PersonController extends AdminController
                      'role' => $role,
                      'mm' => $multimediaObject,
                      'template' => $template,
-                     'form' => $form->createView()
+                     'form' => $form->createView(),
                      );
     }
 
     /**
-     * Link person to multimedia object with role
+     * Link person to multimedia object with role.
      *
      * @ParamConverter("multimediaObject", class="PumukitSchemaBundle:MultimediaObject", options={"id" = "mmId"})
      * @ParamConverter("role", class="PumukitSchemaBundle:Role", options={"id" = "roleId"})
-     *
      */
     public function linkAction(MultimediaObject $multimediaObject, Role $role, Request $request)
     {
         $personService = $this->get('pumukitschema.person');
         $person = $personService->findPersonById($request->get('id'));
-        try{
+        try {
             $multimediaObject = $personService->createRelationPerson($person, $role, $multimediaObject);
             // TODO Snackbars and toasts
             //$message = sprintf($this->getContext()->getI18N()->__("Persona asociada correctamente a la plantilla con el rol \"%s\"."), $this->role->getName());
             //$msg_alert = array('info', $message);
-        }catch(\Excepction $e){
+        } catch (\Excepction $e) {
             //$message = sprintf($this->getContext()->getI18N()->__("Persona ya asociada a la plantilla con el rol \"%s\"."), $this->role->getName());
             //$this->msg_alert = array('error', $message);          
         }
 
         $template = '';
-        if (MultimediaObject::STATUS_PROTOTYPE === $multimediaObject->getStatus()){
+        if (MultimediaObject::STATUS_PROTOTYPE === $multimediaObject->getStatus()) {
             $template = '_template';
         }
-        
-        return $this->render('PumukitNewAdminBundle:Person:listrelation.html.twig', 
+
+        return $this->render('PumukitNewAdminBundle:Person:listrelation.html.twig',
                              array(
                                    'people' => $multimediaObject->getPeopleByRole($role, true),
                                    'role' => $role,
                                    'mm' => $multimediaObject,
-                                   'template' => $template
+                                   'template' => $template,
                                    ));
     }
 
     /**
-     * Auto complete
+     * Auto complete.
      */
     public function autoCompleteAction(Request $request)
     {
@@ -346,21 +350,20 @@ class PersonController extends AdminController
         $people = $personService->autoCompletePeopleByName($name);
 
         $out = [];
-        foreach($people as $p){
+        foreach ($people as $p) {
             $out[] = array(
-                           "id"=> $p->getId(),
-                           "label"=> $p->getName(),
-                           "desc" => $p->getPost()." ". $p->getFirm(),
-                           "value" => $p->getName()
+                           'id' => $p->getId(),
+                           'label' => $p->getName(),
+                           'desc' => $p->getPost().' '.$p->getFirm(),
+                           'value' => $p->getName(),
                            );
-
         }
 
         return new JsonResponse($out);
     }
 
     /**
-     * Up person in MultimediaObject
+     * Up person in MultimediaObject.
      *
      * @ParamConverter("multimediaObject", class="PumukitSchemaBundle:MultimediaObject", options={"id" = "mmId"})
      * @ParamConverter("role", class="PumukitSchemaBundle:Role", options={"id" = "roleId"})
@@ -372,21 +375,21 @@ class PersonController extends AdminController
         $multimediaObject = $personService->upPersonWithRole($person, $role, $multimediaObject);
 
         $template = '';
-        if (MultimediaObject::STATUS_PROTOTYPE === $multimediaObject->getStatus()){
+        if (MultimediaObject::STATUS_PROTOTYPE === $multimediaObject->getStatus()) {
             $template = '_template';
         }
-        
-        return $this->render('PumukitNewAdminBundle:Person:listrelation.html.twig', 
+
+        return $this->render('PumukitNewAdminBundle:Person:listrelation.html.twig',
                              array(
                                    'people' => $multimediaObject->getPeopleByRole($role, true),
                                    'role' => $role,
                                    'mm' => $multimediaObject,
-                                   'template' => $template
-                                   ));        
+                                   'template' => $template,
+                                   ));
     }
 
     /**
-     * Down person in MultimediaObject
+     * Down person in MultimediaObject.
      *
      * @ParamConverter("multimediaObject", class="PumukitSchemaBundle:MultimediaObject", options={"id" = "mmId"})
      * @ParamConverter("role", class="PumukitSchemaBundle:Role", options={"id" = "roleId"})
@@ -398,21 +401,21 @@ class PersonController extends AdminController
         $multimediaObject = $personService->downPersonWithRole($person, $role, $multimediaObject);
 
         $template = '';
-        if (MultimediaObject::STATUS_PROTOTYPE === $multimediaObject->getStatus()){
+        if (MultimediaObject::STATUS_PROTOTYPE === $multimediaObject->getStatus()) {
             $template = '_template';
         }
-        
-        return $this->render('PumukitNewAdminBundle:Person:listrelation.html.twig', 
+
+        return $this->render('PumukitNewAdminBundle:Person:listrelation.html.twig',
                              array(
                                    'people' => $multimediaObject->getPeopleByRole($role, true),
                                    'role' => $role,
                                    'mm' => $multimediaObject,
-                                   'template' => $template
+                                   'template' => $template,
                                    ));
-    }    
+    }
 
     /**
-     * Delete relation: EmbeddedPerson in Multimedia Object
+     * Delete relation: EmbeddedPerson in Multimedia Object.
      *
      * @ParamConverter("multimediaObject", class="PumukitSchemaBundle:MultimediaObject", options={"id" = "mmId"})
      * @ParamConverter("role", class="PumukitSchemaBundle:Role", options={"id" = "roleId"})
@@ -425,20 +428,20 @@ class PersonController extends AdminController
         $multimediaObject = $personService->deleteRelation($person, $role, $multimediaObject);
 
         $template = '';
-        if (MultimediaObject::STATUS_PROTOTYPE === $multimediaObject->getStatus()){
+        if (MultimediaObject::STATUS_PROTOTYPE === $multimediaObject->getStatus()) {
             $template = '_template';
         }
-        
+
         return array(
                      'people' => $multimediaObject->getPeopleByRole($role, true),
                      'role' => $role,
                      'mm' => $multimediaObject,
-                     'template' => $template
+                     'template' => $template,
                      );
     }
 
     /**
-     * Delete Person
+     * Delete Person.
      *
      * @Template("PumukitNewAdminBundle:Person:list.html")
      */
@@ -446,21 +449,21 @@ class PersonController extends AdminController
     {
         $personService = $this->get('pumukitschema.person');
         $person = $personService->findPersonById($request->get('id'));
-        try{
-            if (0 === $personService->countMultimediaObjectsWithPerson($person)){
+        try {
+            if (0 === $personService->countMultimediaObjectsWithPerson($person)) {
                 $personService->deletePerson($person);
             }
-        }catch (\Exception $e){
-            $this->get('session')->getFlashBag()->add('error', $e->getMessage());          
+        } catch (\Exception $e) {
+            $this->get('session')->getFlashBag()->add('error', $e->getMessage());
         }
 
         return $this->redirect($this->generateUrl('pumukitnewadmin_person_list'));
     }
 
     /**
-     * Gets the criteria values
+     * Gets the criteria values.
      */
-    public function getCriteria($config, $locale="en")
+    public function getCriteria($config, $locale = 'en')
     {
         $criteria = $config->getCriteria();
 
@@ -470,68 +473,66 @@ class PersonController extends AdminController
             $this->get('session')->set('admin/person/criteria', $criteria);
         }
         $criteria = $this->get('session')->get('admin/person/criteria', array());
-        
+
         $new_criteria = array();
 
-        if (array_key_exists('name', $criteria) && array_key_exists('letter', $criteria)){
-            if (('' !== $criteria['name']) && ('' !== $criteria['letter'])){
-                $more = strtoupper($criteria['name'][0]) == strtoupper($criteria['letter']) ? "|^" . $criteria['name'] . ".*" : "";
+        if (array_key_exists('name', $criteria) && array_key_exists('letter', $criteria)) {
+            if (('' !== $criteria['name']) && ('' !== $criteria['letter'])) {
+                $more = strtoupper($criteria['name'][0]) == strtoupper($criteria['letter']) ? '|^'.$criteria['name'].'.*' : '';
                 $new_criteria['name'] = new \MongoRegex('/^'.$criteria['letter'].'.*'.$criteria['name'].'.*'.$more.'/i');
-            }elseif('' !== $criteria['name']){
+            } elseif ('' !== $criteria['name']) {
                 $new_criteria['name'] = new \MongoRegex('/'.$criteria['name'].'/i');
-            }elseif('' !== $criteria['letter']){
+            } elseif ('' !== $criteria['letter']) {
                 $new_criteria['name'] = new \MongoRegex('/^'.$criteria['letter'].'/i');
             }
-        }elseif(array_key_exists('name', $criteria)){
-            if ('' !== $criteria['name']){
+        } elseif (array_key_exists('name', $criteria)) {
+            if ('' !== $criteria['name']) {
                 $new_criteria['name'] = new \MongoRegex('/'.$criteria['name'].'/i');
             }
-
-        }elseif(array_key_exists('letter', $criteria)){
-            if ('' !== $criteria['letter']){
+        } elseif (array_key_exists('letter', $criteria)) {
+            if ('' !== $criteria['letter']) {
                 $new_criteria['name'] = new \MongoRegex('/^'.$criteria['letter'].'/i');
             }
         }
 
-        if (array_key_exists('post', $criteria)){
-            if ('' !== $criteria['post']){
-                $new_criteria['post.' . $locale] = new \MongoRegex('/'.$criteria['post'].'/i');
+        if (array_key_exists('post', $criteria)) {
+            if ('' !== $criteria['post']) {
+                $new_criteria['post.'.$locale] = new \MongoRegex('/'.$criteria['post'].'/i');
             }
         }
 
         return $new_criteria;
     }
-    
+
     /**
-     * Gets the list of resources according to a criteria
+     * Gets the list of resources according to a criteria.
      */
     public function getResources(Request $request, $config, $criteria)
     {
         $sorting = $config->getSorting();
         $repository = $this->getRepository();
-        
+
         if ($config->isPaginated()) {
             $resources = $this
               ->resourceResolver
               ->getResource($repository, 'createPaginator', array($criteria, $sorting))
               ;
-            
+
             if ($request->get('page', null)) {
                 $this->get('session')->set('admin/person/page', $request->get('page', 1));
             }
-            
+
             $resources
               ->setMaxPerPage($config->getPaginationMaxPerPage())
               ->setNormalizeOutOfRangePages(true)
               ->setCurrentPage($this->get('session')->get('admin/person/page', 1));
-              ;
         } else {
             $resources = $this
               ->resourceResolver
               ->getResource($repository, 'findBy', array($criteria, $sorting, $config->getLimit()))
               ;
         }
-        
+
         return $resources;
     }
 }

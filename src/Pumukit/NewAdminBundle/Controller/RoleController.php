@@ -10,7 +10,8 @@ use Pumukit\NewAdminBundle\Form\Type\RoleType;
 class RoleController extends SortableAdminController
 {
     /**
-     * Update role
+     * Update role.
+     *
      * @Template("PumukitNewAdminBundle:Role:update.html.twig")
      */
     public function updateAction(Request $request)
@@ -37,18 +38,19 @@ class RoleController extends SortableAdminController
                 foreach ($errors as $error) {
                     $textStatus .= $error->getPropertyPath().' value '.$error->getInvalidValue().': '.$error->getMessage().'. ';
                 }
+
                 return new Response($textStatus, 409);
             }
         }
 
         return array(
                      'role' => $role,
-                     'form' => $form->createView()
+                     'form' => $form->createView(),
                      );
     }
 
     /**
-     * Gets the list of resources according to a criteria
+     * Gets the list of resources according to a criteria.
      */
     public function getResources(Request $request, $config, $criteria)
     {
@@ -56,7 +58,7 @@ class RoleController extends SortableAdminController
         $sorting['rank'] = 'asc';
         $repository = $this->getRepository();
         $session = $this->get('session');
-        $session_namespace = 'admin/' . $config->getResourceName();
+        $session_namespace = 'admin/'.$config->getResourceName();
 
         if ($config->isPaginated()) {
             $resources = $this

@@ -13,7 +13,6 @@ use Pumukit\NewAdminBundle\Form\Type\TagType;
 class TagController extends Controller
 {
     /**
-     *
      * @Template
      */
     public function indexAction(Request $request)
@@ -21,7 +20,7 @@ class TagController extends Controller
         $dm = $this->get('doctrine_mongodb')->getManager();
         $repo = $dm->getRepository('PumukitSchemaBundle:Tag');
 
-        $root_name = "ROOT";
+        $root_name = 'ROOT';
         $root = $repo->findOneByCod($root_name);
 
         if (null !== $root) {
@@ -54,10 +53,10 @@ class TagController extends Controller
             $dm->remove($tag);
             $dm->flush();
 
-            return new JsonResponse(array("status" => "Deleted"), 200);
+            return new JsonResponse(array('status' => 'Deleted'), 200);
         }
 
-        return new JsonResponse(array("status" => "Tag with children (".$num.")"), 404);
+        return new JsonResponse(array('status' => 'Tag with children ('.$num.')'), 404);
     }
 
     /**
@@ -75,7 +74,7 @@ class TagController extends Controller
             try {
                 $tag = $this->get('pumukitschema.tag')->updateTag($tag);
             } catch (\Exception $e) {
-                return new JsonResponse(array("status" => $e->getMessage()), 409);
+                return new JsonResponse(array('status' => $e->getMessage()), 409);
             }
 
             return $this->redirect($this->generateUrl('pumukitnewadmin_tag_list'));
@@ -106,7 +105,7 @@ class TagController extends Controller
                 $dm->persist($tag);
                 $dm->flush();
             } catch (\Exception $e) {
-                return new JsonResponse(array("status" => $e->getMessage()), 409);
+                return new JsonResponse(array('status' => $e->getMessage()), 409);
             }
 
             return $this->redirect($this->generateUrl('pumukitnewadmin_tag_list'));
@@ -116,7 +115,8 @@ class TagController extends Controller
     }
 
     /**
-     * List action
+     * List action.
+     *
      * @Template
      */
     public function listAction(Request $request)
@@ -124,7 +124,7 @@ class TagController extends Controller
         $dm = $this->get('doctrine_mongodb')->getManager();
         $repo = $dm->getRepository('PumukitSchemaBundle:Tag');
 
-        $root_name = "ROOT";
+        $root_name = 'ROOT';
         $root = $repo->findOneByCod($root_name);
 
         if (null !== $root) {
@@ -135,7 +135,7 @@ class TagController extends Controller
 
         return array(
                      'root' => $root,
-                     'children' => $children
+                     'children' => $children,
                      );
     }
 
@@ -146,7 +146,7 @@ class TagController extends Controller
 
         $ids = $this->getRequest()->get('ids');
 
-        if ('string' === gettype($ids)){
+        if ('string' === gettype($ids)) {
             $ids = json_decode($ids, true);
         }
 
@@ -156,20 +156,20 @@ class TagController extends Controller
             $tag = $repo->find($id);
             if (0 == count($tag->getChildren())) {
                 $tags[] = $tag;
-            }else{
+            } else {
                 $tagsWithChildren[] = $tag;
             }
         }
 
-        if (0 !== count($tagsWithChildren)){
+        if (0 !== count($tagsWithChildren)) {
             $message = '';
-            foreach($tagsWithChildren as $tag){
-                $message .= "Tag '".$tag->getCod()."' with children (".count($tag->getChildren())."). ";
+            foreach ($tagsWithChildren as $tag) {
+                $message .= "Tag '".$tag->getCod()."' with children (".count($tag->getChildren()).'). ';
             }
 
-            return new JsonResponse(array("status" => $message), 404);
-        }else{
-            foreach ($tags as $tag){
+            return new JsonResponse(array('status' => $message), 404);
+        } else {
+            foreach ($tags as $tag) {
                 $dm->remove($tag);
             }
             $dm->flush();
@@ -179,8 +179,7 @@ class TagController extends Controller
 
         return $this->redirect($this->generateUrl('pumukitnewadmin_tag_list'));
     }
-    
-    
+
     /**
      * Search action
      * returns the tags matching with the search_text parameter.
@@ -188,7 +187,7 @@ class TagController extends Controller
     /*public function searchAction(Request $request)
     {
         $search_text=$request->get('search_text');
-		$dm = $this->get('doctrine_mongodb')->getManager();
+        $dm = $this->get('doctrine_mongodb')->getManager();
         $repo = $dm->getRepository('PumukitSchemaBundle:Tag');
 
         $children = $repo->findByName($search_text);
@@ -199,62 +198,64 @@ class TagController extends Controller
     }*/
     public function searchAction(Request $request)
     {
-		$dm = $this->get('doctrine_mongodb')->getManager();
+        $dm = $this->get('doctrine_mongodb')->getManager();
         $repo = $dm->getRepository('PumukitSchemaBundle:Tag');
-		$search_text=$request->get('search_text');
-		$lang= $request->getLocale();
-		
-		$mmId = $request->get('mmId');
-		$parent = $repo->findOneById($request->get('parent'));
-		$parent_path = str_replace( "|", "\|", $parent->getPath());
-        $root_name = "ROOT";
+        $search_text = $request->get('search_text');
+        $lang = $request->getLocale();
+
+        $mmId = $request->get('mmId');
+        $parent = $repo->findOneById($request->get('parent'));
+        $parent_path = str_replace('|', "\|", $parent->getPath());
+        $root_name = 'ROOT';
         $root = $repo->findOneByCod($root_name);
 
         if (null !== $root) {
-			$qb = $dm->createQueryBuilder('PumukitSchemaBundle:Tag');
-			$children = $qb->addOr($qb->expr()->field("title.".$lang)->equals(new \MongoRegex('/.*'.$search_text.'.*/i')))
-						->addOr($qb->expr()->field("cod")->equals(new \MongoRegex('/.*'.$search_text.'.*/i')))
-						->addAnd($qb->expr()->field("path")->equals( new \MongoRegex('/'.$parent_path.'(.+[\|]+)+/') ))
-						//->limit(20)
-						->getQuery()
-						->execute();
-
+            $qb = $dm->createQueryBuilder('PumukitSchemaBundle:Tag');
+            $children = $qb->addOr($qb->expr()->field('title.'.$lang)->equals(new \MongoRegex('/.*'.$search_text.'.*/i')))
+                        ->addOr($qb->expr()->field('cod')->equals(new \MongoRegex('/.*'.$search_text.'.*/i')))
+                        ->addAnd($qb->expr()->field('path')->equals(new \MongoRegex('/'.$parent_path.'(.+[\|]+)+/')))
+                        //->limit(20)
+                        ->getQuery()
+                        ->execute();
         } else {
             $children = array();
         }
         //Añadimos los padres al resultado.
         $result = $children->toArray();
-		foreach($children->toArray() as $tag){
-			$result= $this->getAllParents($tag,$result,$parent->getId());
-		}
-		//Ordenamos los resultados
-		usort($result, function ($x, $y) {
-			return strcasecmp($x->getCod(), $y->getCod());
-		}
-		);
-		
+        foreach ($children->toArray() as $tag) {
+            $result = $this->getAllParents($tag, $result, $parent->getId());
+        }
+        //Ordenamos los resultados
+        usort($result, function ($x, $y) {
+            return strcasecmp($x->getCod(), $y->getCod());
+        }
+        );
+
         return $this->render(
-			'PumukitNewAdminBundle:MultimediaObject:listtagsajax.html.twig',
-			array('root' => $root, 'nodes' => $result, 'mmId' => $mmId, 'block_tag' => $parent->getId(), 'parent' => $parent ,'search_text' => $search_text )
+            'PumukitNewAdminBundle:MultimediaObject:listtagsajax.html.twig',
+            array('root' => $root, 'nodes' => $result, 'mmId' => $mmId, 'block_tag' => $parent->getId(), 'parent' => $parent, 'search_text' => $search_text)
         );
     }
-   private function getAllParents($element, $tags = array(), $top_parent) {
-		if($element->getParent()!=null) {
-			$parentMissing = true;
-			foreach($tags as $tag) {
-				if($element->getParent() == $tag ) {
-					$parentMissing=false; 
-					break; }
-			}
-			
-			if($parentMissing) {
-				$parent= $element->getParent();//"retrieveByPKWithI18n");
-				if($parent->getId()!=$top_parent){
-					$tags[] = $parent;
-					$tags = $this->getAllParents($parent, $tags, $top_parent);
-				}
-			}
-		}
-		return $tags;
-	}
+    private function getAllParents($element, $tags = array(), $top_parent)
+    {
+        if ($element->getParent() != null) {
+            $parentMissing = true;
+            foreach ($tags as $tag) {
+                if ($element->getParent() == $tag) {
+                    $parentMissing = false;
+                    break;
+                }
+            }
+
+            if ($parentMissing) {
+                $parent = $element->getParent();//"retrieveByPKWithI18n");
+                if ($parent->getId() != $top_parent) {
+                    $tags[] = $parent;
+                    $tags = $this->getAllParents($parent, $tags, $top_parent);
+                }
+            }
+        }
+
+        return $tags;
+    }
 }

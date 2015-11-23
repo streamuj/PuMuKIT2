@@ -16,8 +16,8 @@ class InboxController extends Controller
      */
     public function dirAction(Request $request)
     {
-        $dir = $request->query->get("dir", "");
-        $type = $request->query->get("type", "file");
+        $dir = $request->query->get('dir', '');
+        $type = $request->query->get('type', 'file');
         $baseDir = realpath($this->container->getParameter('pumukit2.inbox'));
 
         /*
@@ -30,7 +30,7 @@ class InboxController extends Controller
 
         $res = array();
 
-        if ("file" == $type) {
+        if ('file' == $type) {
             $finder->depth('< 1')->followLinks()->in($dir);
             $finder->sortByName();
             foreach ($finder as $f) {
@@ -38,20 +38,20 @@ class InboxController extends Controller
                                'relativepath' => $f->getRelativePathname(),
                                'is_file' => $f->isFile(),
                                'hash' => hash('md5', $f->getRealpath()),
-                               'content' => false);
+                               'content' => false, );
             }
-        }else{
+        } else {
             $finder->depth('< 1')->directories()->followLinks()->in($dir);
             $finder->sortByName();
             foreach ($finder as $f) {
-                if (0 !== (count(glob("$f/*")))){
+                if (0 !== (count(glob("$f/*")))) {
                     $contentFinder = new Finder();
                     $contentFinder->files()->in($f->getRealpath());
                     $res[] = array('path' => $f->getRealpath(),
                                    'relativepath' => $f->getRelativePathname(),
                                    'is_file' => $f->isFile(),
                                    'hash' => hash('md5', $f->getRealpath()),
-                                   'content' => $contentFinder->count());
+                                   'content' => $contentFinder->count(), );
                 }
             }
         }
@@ -62,12 +62,12 @@ class InboxController extends Controller
     /**
      * @Template
      */
-    public function formAction($onlyDir=false)
+    public function formAction($onlyDir = false)
     {
         if (!$this->container->hasParameter('pumukit2.inbox')) {
             return $this->render('@PumukitNewAdmin/Inbox/form_noconf.html.twig');
         }
-        
+
         $dir = realpath($this->container->getParameter('pumukit2.inbox'));
 
         if (!file_exists($dir)) {

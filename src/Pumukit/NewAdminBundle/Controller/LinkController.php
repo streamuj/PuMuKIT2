@@ -29,6 +29,7 @@ class LinkController extends Controller
             } catch (\Exception $e) {
                 $this->get('session')->getFlashBag()->add('error', $e->getMessage());
             }
+
             return $this->render('PumukitNewAdminBundle:Link:list.html.twig',
                  array(
                        'links' => $multimediaObject->getLinks(),

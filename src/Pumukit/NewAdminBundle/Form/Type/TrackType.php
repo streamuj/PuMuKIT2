@@ -1,4 +1,5 @@
 <?php
+
 namespace Pumukit\NewAdminBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
@@ -11,7 +12,7 @@ class TrackType extends AbstractType
     private $translator;
     private $locale;
 
-    public function __construct(TranslatorInterface $translator, $locale='en')
+    public function __construct(TranslatorInterface $translator, $locale = 'en')
     {
         $this->translator = $translator;
         $this->locale = $locale;
@@ -23,22 +24,22 @@ class TrackType extends AbstractType
             ->add('i18n_description', 'texti18n',
                   array(
                         'required' => false,
-                        'label' => $this->translator->trans('Description', array(), null, $this->locale)))
+                        'label' => $this->translator->trans('Description', array(), null, $this->locale), ))
           ->add('language', 'customlanguage',
                 array(
                       'required' => true,
-                      'label' => $this->translator->trans('Language', array(), null, $this->locale)));
+                      'label' => $this->translator->trans('Language', array(), null, $this->locale), ));
     }
-    
+
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
                                      'data_class' => 'Pumukit\SchemaBundle\Document\Track',
                                      ));
     }
-    
+
     public function getName()
     {
-      return 'pumukitnewadmin_track';
+        return 'pumukitnewadmin_track';
     }
 }

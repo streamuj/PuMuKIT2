@@ -14,19 +14,17 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 class MultimediaObjectPicController extends Controller
 {
     /**
-     *
      * @Template("PumukitNewAdminBundle:Pic:create.html.twig")
      */
     public function createAction(MultimediaObject $multimediaObject, Request $request)
     {
         return array(
                      'resource' => $multimediaObject,
-                     'resource_name' => 'mms'
+                     'resource_name' => 'mms',
                      );
     }
 
     /**
-     *
      * @Template("PumukitNewAdminBundle:Pic:list.html.twig")
      */
     public function listAction(MultimediaObject $multimediaObject)
@@ -38,7 +36,7 @@ class MultimediaObjectPicController extends Controller
     }
 
     /**
-     * Assign a picture from an url or from an existing one to the multimedia object
+     * Assign a picture from an url or from an existing one to the multimedia object.
      *
      * @ParamConverter("multimediaObject", class="PumukitSchemaBundle:MultimediaObject")
      * @Template("PumukitNewAdminBundle:Pic:list.html.twig")
@@ -49,48 +47,48 @@ class MultimediaObjectPicController extends Controller
             $picService = $this->get('pumukitschema.mmspic');
             $multimediaObject = $picService->addPicUrl($multimediaObject, $url);
         }
-        
+
         return array(
                      'resource' => $multimediaObject,
                      'resource_name' => 'mms',
                      );
     }
-    
+
     /**
      * @ParamConverter("multimediaObject", class="PumukitSchemaBundle:MultimediaObject")
      * @Template("PumukitNewAdminBundle:Pic:upload.html.twig")
      */
     public function uploadAction(MultimediaObject $multimediaObject, Request $request)
     {
-        try{
-            if (empty($_FILES) && empty($_POST)){
+        try {
+            if (empty($_FILES) && empty($_POST)) {
                 throw new \Exception('PHP ERROR: File exceeds post_max_size ('.ini_get('post_max_size').')');
             }
-            if ($request->files->has("file")) {
+            if ($request->files->has('file')) {
                 $picService = $this->get('pumukitschema.mmspic');
-                $media = $picService->addPicFile($multimediaObject, $request->files->get("file"));
+                $media = $picService->addPicFile($multimediaObject, $request->files->get('file'));
             }
-        }catch (\Exception $e){
+        } catch (\Exception $e) {
             return array(
                          'resource' => $multimediaObject,
                          'resource_name' => 'mms',
                          'uploaded' => 'failed',
                          'message' => $e->getMessage(),
-                         'isBanner' => false
+                         'isBanner' => false,
                          );
         }
-        
+
         return array(
                      'resource' => $multimediaObject,
                      'resource_name' => 'mms',
                      'uploaded' => 'success',
                      'message' => 'New Pic added.',
-                     'isBanner' => false
+                     'isBanner' => false,
                      );
     }
-  
+
     /**
-     * Delete pic
+     * Delete pic.
      */
     public function deleteAction(Request $request)
     {
@@ -109,7 +107,7 @@ class MultimediaObjectPicController extends Controller
     }
 
     /**
-     * Up pic
+     * Up pic.
      */
     public function upAction(Request $request)
     {
@@ -132,7 +130,7 @@ class MultimediaObjectPicController extends Controller
     }
 
     /**
-     * Down pic
+     * Down pic.
      */
     public function downAction(Request $request)
     {
@@ -181,16 +179,17 @@ class MultimediaObjectPicController extends Controller
                      'resource_name' => 'mms',
                      'pics' => $pics,
                      'page' => $page,
-                     'total' => $total
+                     'total' => $total,
                      );
     }
 
     /**
-     * Get paginated pics
+     * Get paginated pics.
      *
      * @param array $urlPics
-     * @param int $limit
-     * @param int $page
+     * @param int   $limit
+     * @param int   $page
+     *
      * @return Pagerfanta
      */
     private function getPaginatedPics($urlPics, $limit, $page)

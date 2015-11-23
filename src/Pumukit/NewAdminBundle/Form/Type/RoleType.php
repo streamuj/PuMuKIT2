@@ -5,7 +5,6 @@ namespace Pumukit\NewAdminBundle\Form\Type;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Pumukit\SchemaBundle\Document\Role;
 use Symfony\Component\Translation\TranslatorInterface;
 
 class RoleType extends AbstractType
@@ -13,7 +12,7 @@ class RoleType extends AbstractType
     private $translator;
     private $locale;
 
-    public function __construct(TranslatorInterface $translator, $locale='en')
+    public function __construct(TranslatorInterface $translator, $locale = 'en')
     {
         $this->translator = $translator;
         $this->locale = $locale;
@@ -32,7 +31,7 @@ class RoleType extends AbstractType
             ->add('i18n_text', 'textareai18n',
                   array(
                         'required' => false,
-                        'label' => $this->translator->trans('Text', array(), null, $this->locale)));
+                        'label' => $this->translator->trans('Text', array(), null, $this->locale), ));
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)

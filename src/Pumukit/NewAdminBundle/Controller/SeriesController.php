@@ -10,13 +10,13 @@ use Pumukit\SchemaBundle\Document\MultimediaObject;
 use Pumukit\NewAdminBundle\Form\Type\SeriesType;
 use Pumukit\NewAdminBundle\Form\Type\MultimediaObjectTemplateMetaType;
 use Pagerfanta\Adapter\ArrayAdapter;
-use Pagerfanta\Adapter\DoctrineODMMongoDBAdapter;
 use Pagerfanta\Pagerfanta;
 
 class SeriesController extends AdminController
 {
     /**
-     * Overwrite to search criteria with date
+     * Overwrite to search criteria with date.
+     *
      * @Template
      */
     public function indexAction(Request $request)
@@ -26,13 +26,13 @@ class SeriesController extends AdminController
         $resources = $this->getResources($request, $config, $criteria);
 
         $update_session = true;
-        foreach($resources as $series) {
-            if($series->getId() == $this->get('session')->get('admin/series/id')){
+        foreach ($resources as $series) {
+            if ($series->getId() == $this->get('session')->get('admin/series/id')) {
                 $update_session = false;
             }
         }
 
-        if($update_session){
+        if ($update_session) {
             $this->get('session')->remove('admin/series/id');
         }
 
@@ -40,7 +40,8 @@ class SeriesController extends AdminController
     }
 
     /**
-     * List action
+     * List action.
+     *
      * @Template
      */
     public function listAction(Request $request)
@@ -54,7 +55,7 @@ class SeriesController extends AdminController
     }
 
     /**
-     * Create new resource
+     * Create new resource.
      */
     public function createAction(Request $request)
     {
@@ -106,7 +107,7 @@ class SeriesController extends AdminController
         $personService = $this->get('pumukitschema.person');
 
         $roles = $personService->getRoles();
-        if (null === $roles){
+        if (null === $roles) {
             throw new \Exception('Not found any role.');
         }
 
@@ -122,14 +123,14 @@ class SeriesController extends AdminController
 
         return $this->render('PumukitNewAdminBundle:Series:update.html.twig',
                              array(
-                                   'series'        => $resource,
-                                   'form'          => $form->createView(),
-                                   'mmtemplate'    => $mmtemplate,
-                                   'form_meta'     => $formMeta->createView(),
-                                   'roles'         => $roles,
+                                   'series' => $resource,
+                                   'form' => $form->createView(),
+                                   'mmtemplate' => $mmtemplate,
+                                   'form_meta' => $formMeta->createView(),
+                                   'roles' => $roles,
                                    'pub_decisions' => $pubDecisionsTags,
-                                   'parent_tags'   => $parentTags,
-                                   'template'      => '_template'
+                                   'parent_tags' => $parentTags,
+                                   'template' => '_template',
                                    )
                              );
     }
@@ -148,14 +149,14 @@ class SeriesController extends AdminController
         $seriesId = $series->getId();
 
         $seriesSessionId = $this->get('session')->get('admin/mms/id');
-        if ($seriesId === $seriesSessionId){
+        if ($seriesId === $seriesSessionId) {
             $this->get('session')->remove('admin/series/id');
         }
 
         $mmSessionId = $this->get('session')->get('admin/mms/id');
-        if ($mmSessionId){
+        if ($mmSessionId) {
             $mm = $factoryService->findMultimediaObjectById($mmSessionId);
-            if ($seriesId === $mm->getSeries()->getId()){
+            if ($seriesId === $mm->getSeries()->getId()) {
                 $this->get('session')->remove('admin/mms/id');
             }
         }
@@ -174,19 +175,20 @@ class SeriesController extends AdminController
     }
 
     /**
-     * Generate Magic Url action
+     * Generate Magic Url action.
      */
     public function generateMagicUrlAction(Request $request)
     {
         $resource = $this->findOr404($request);
         $mmobjService = $this->get('pumukitschema.series');
         $response = $mmobjService->resetMagicUrl($resource);
-        return new Response($response);        
+
+        return new Response($response);
     }
 
     /**
      * Batch delete action
-     * Overwrite to delete multimedia objects inside series
+     * Overwrite to delete multimedia objects inside series.
      */
     public function batchDeleteAction(Request $request)
     {
@@ -194,7 +196,7 @@ class SeriesController extends AdminController
 
         $ids = $this->getRequest()->get('ids');
 
-        if ('string' === gettype($ids)){
+        if ('string' === gettype($ids)) {
             $ids = json_decode($ids, true);
         }
 
@@ -203,14 +205,14 @@ class SeriesController extends AdminController
             $seriesId = $series->getId();
 
             $seriesSessionId = $this->get('session')->get('admin/mms/id');
-            if ($seriesId === $seriesSessionId){
+            if ($seriesId === $seriesSessionId) {
                 $this->get('session')->remove('admin/series/id');
             }
 
             $mmSessionId = $this->get('session')->get('admin/mms/id');
-            if ($mmSessionId){
+            if ($mmSessionId) {
                 $mm = $factoryService->findMultimediaObjectById($mmSessionId);
-                if ($seriesId === $mm->getSeries()->getId()){
+                if ($seriesId === $mm->getSeries()->getId()) {
                     $this->get('session')->remove('admin/mms/id');
                 }
             }
@@ -226,22 +228,22 @@ class SeriesController extends AdminController
     }
 
     /**
-     * Batch invert announce selected
+     * Batch invert announce selected.
      */
     public function invertAnnounceAction(Request $request)
     {
         $ids = $this->getRequest()->get('ids');
 
-        if ('string' === gettype($ids)){
+        if ('string' === gettype($ids)) {
             $ids = json_decode($ids, true);
         }
 
         $dm = $this->get('doctrine_mongodb.odm.document_manager');
-        foreach ($ids as $id){
+        foreach ($ids as $id) {
             $resource = $this->find($id);
-            if ($resource->getAnnounce()){
+            if ($resource->getAnnounce()) {
                 $resource->setAnnounce(false);
-            }else{
+            } else {
                 $resource->setAnnounce(true);
             }
             $dm->persist($resource);
@@ -252,7 +254,8 @@ class SeriesController extends AdminController
     }
 
     /**
-     * Change publication form
+     * Change publication form.
+     *
      * @Template("PumukitNewAdminBundle:Series:changepub.html.twig")
      */
     public function changePubAction(Request $request)
@@ -262,7 +265,7 @@ class SeriesController extends AdminController
         $mmStatus = array(
                         'published' => MultimediaObject::STATUS_PUBLISHED,
                         'blocked' => MultimediaObject::STATUS_BLOQ,
-                        'hidden' => MultimediaObject::STATUS_HIDE
+                        'hidden' => MultimediaObject::STATUS_HIDE,
                         );
 
         $pubChannels = $this->get('pumukitschema.factory')->getTagsByCod('PUBCHANNELS', true);
@@ -270,18 +273,18 @@ class SeriesController extends AdminController
         return array(
                      'series' => $series,
                      'mm_status' => $mmStatus,
-                     'pub_channels' => $pubChannels
+                     'pub_channels' => $pubChannels,
                      );
     }
 
     /**
-     * Update publication form
+     * Update publication form.
      */
     public function updatePubAction(Request $request)
     {
-        if ('POST' === $request->getMethod()){
+        if ('POST' === $request->getMethod()) {
             $values = $request->get('values');
-            if ('string' === gettype($values)){
+            if ('string' === gettype($values)) {
                 $values = json_decode($values, true);
             }
 
@@ -292,7 +295,7 @@ class SeriesController extends AdminController
     }
 
     /**
-     * Gets the criteria values
+     * Gets the criteria values.
      */
     public function getCriteria($config)
     {
@@ -310,27 +313,25 @@ class SeriesController extends AdminController
         return $new_criteria;
     }
 
-
     private function getSorting(Request $request)
     {
-      $session = $this->get('session');    
+        $session = $this->get('session');
 
-      if ($sorting = $request->get('sorting')){
-          $session->set('admin/series/type', current($sorting));
-          $session->set('admin/series/sort', key($sorting));
-      } 
+        if ($sorting = $request->get('sorting')) {
+            $session->set('admin/series/type', current($sorting));
+            $session->set('admin/series/sort', key($sorting));
+        }
 
-      $value = $session->get('admin/series/type', 'desc');
-      $key = $session->get('admin/series/sort', 'public_date');
+        $value = $session->get('admin/series/type', 'desc');
+        $key = $session->get('admin/series/sort', 'public_date');
 
-      return  array($key => $value);
+        return  array($key => $value);
     }
 
-
     /**
-     * Gets the list of resources according to a criteria
+     * Gets the list of resources according to a criteria.
      */
-    public function getResources(Request $request, $config, $criteria, $selectedSeriesId=null)
+    public function getResources(Request $request, $config, $criteria, $selectedSeriesId = null)
     {
         $sorting = $this->getSorting($request);
         $repository = $this->getRepository();
@@ -338,14 +339,14 @@ class SeriesController extends AdminController
         $session_namespace = 'admin/series';
 
         if ($config->isPaginated()) {
-            if (array_key_exists('multimedia_objects', $sorting)){
+            if (array_key_exists('multimedia_objects', $sorting)) {
                 $resources = $this
                     ->resourceResolver
                     ->getResource($repository, 'findBy', array($criteria));
                 $resources = $this->reorderResources($resources);
                 $adapter = new ArrayAdapter($resources);
                 $resources = new Pagerfanta($adapter);
-            }else{
+            } else {
                 $resources = $this
                     ->resourceResolver
                     ->getResource($repository, 'createPaginator', array($criteria, $sorting));
@@ -358,18 +359,20 @@ class SeriesController extends AdminController
             if ($request->get('paginate', null)) {
                 $session->set($session_namespace.'/paginate', $request->get('paginate', 10));
             }
-  
+
             if ($selectedSeriesId) {
                 $newSeries = $this->get('doctrine_mongodb.odm.document_manager')->getRepository('PumukitSchemaBundle:Series')->find($selectedSeriesId);
                 $adapter = $resources->getAdapter();
                 $returnedSeries = $adapter->getSlice(0, $adapter->getNbResults());
                 $position = 1;
                 foreach ($returnedSeries as $series) {
-                    if ($selectedSeriesId == $series->getId()) break;
+                    if ($selectedSeriesId == $series->getId()) {
+                        break;
+                    }
                     ++$position;
                 }
                 $maxPerPage = $session->get($session_namespace.'/paginate', 10);
-                $page = intval(ceil($position/$maxPerPage));
+                $page = intval(ceil($position / $maxPerPage));
             } else {
                 $page = $session->get($session_namespace.'/page', 1);
             }
@@ -387,7 +390,7 @@ class SeriesController extends AdminController
     }
 
     /**
-     * Modify Multimedia Objects status
+     * Modify Multimedia Objects status.
      */
     private function modifyMultimediaObjectsStatus($values)
     {
@@ -396,15 +399,15 @@ class SeriesController extends AdminController
         $repoTags = $dm->getRepository('PumukitSchemaBundle:Tag');
         $tagService = $this->get('pumukitschema.tag');
 
-        foreach ($values as $id => $value){
+        foreach ($values as $id => $value) {
             $mm = $repo->find($id);
-            if ($mm){
-                foreach($value['channels'] as $channelId => $mustContainsTag){
-                    $mustContainsTag = ("true" == $mustContainsTag);
+            if ($mm) {
+                foreach ($value['channels'] as $channelId => $mustContainsTag) {
+                    $mustContainsTag = ('true' == $mustContainsTag);
                     $tag = $repoTags->find($channelId);
                     if ($mustContainsTag && (!($mm->containsTag($tag)))) {
                         $tagAdded = $tagService->addTagToMultimediaObject($mm, $tag->getId());
-                    }elseif ((!($mustContainsTag)) && $mm->containsTag($tag)) {
+                    } elseif ((!($mustContainsTag)) && $mm->containsTag($tag)) {
                         $tagAdded = $tagService->removeTagFromMultimediaObject($mm, $tag->getId());
                     }
                 }
@@ -417,25 +420,26 @@ class SeriesController extends AdminController
 
     /**
      * Used in AdminController to
-     * reorder series when sort is multimedia_objects
+     * reorder series when sort is multimedia_objects.
      *
      * @param ArrayCollection $resources
-     * @param string $type 'asc'|'desc'
+     * @param string          $type      'asc'|'desc'
+     *
      * @return array $series
      */
     private function reorderResources($resources)
     {
         $series = array();
-        foreach($resources as $resource){
+        foreach ($resources as $resource) {
             if (empty($series)) {
                 $series[] = $resource;
-            }else{
+            } else {
                 $aux = $series;
-                foreach($aux as $index => $oneseries){
-                    if ($this->compareSeries($resource, $oneseries)){
+                foreach ($aux as $index => $oneseries) {
+                    if ($this->compareSeries($resource, $oneseries)) {
                         array_splice($series, $index, 0, array($resource));
                         break;
-                    }elseif ($index == (count($aux) - 1)){
+                    } elseif ($index == (count($aux) - 1)) {
                         $series[] = $resource;
                     }
                 }
@@ -448,11 +452,12 @@ class SeriesController extends AdminController
     /**
      * Compare Series
      * Compare the number of multimedia objects
-     * according to type (greater or lower than)
+     * according to type (greater or lower than).
      *
      * @param Series $series1
      * @param Series $series2
-     * @return boolean
+     *
+     * @return bool
      */
     private function compareSeries($series1, $series2)
     {
@@ -463,9 +468,9 @@ class SeriesController extends AdminController
         $numberMultimediaObjectsInSeries1 = $mmRepo->countInSeries($series1);
         $numberMultimediaObjectsInSeries2 = $mmRepo->countInSeries($series2);
 
-        if ('asc' === $type){
+        if ('asc' === $type) {
             return ($numberMultimediaObjectsInSeries1 < $numberMultimediaObjectsInSeries2);
-        }elseif('desc' === $type){
+        } elseif ('desc' === $type) {
             return ($numberMultimediaObjectsInSeries1 > $numberMultimediaObjectsInSeries2);
         }
 
@@ -473,7 +478,7 @@ class SeriesController extends AdminController
     }
 
     /**
-     * Helper for the menu search form
+     * Helper for the menu search form.
      */
     public function searchAction(Request $req)
     {
@@ -482,5 +487,4 @@ class SeriesController extends AdminController
 
         return $this->redirect($this->generateUrl('pumukitnewadmin_series_index'));
     }
-     
 }

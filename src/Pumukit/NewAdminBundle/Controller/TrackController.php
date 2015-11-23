@@ -52,33 +52,32 @@ class TrackController extends Controller
 
         $trackService = $this->get('pumukitschema.track');
 
-        try{
-            if (empty($_FILES) && empty($_POST)){
+        try {
+            if (empty($_FILES) && empty($_POST)) {
                 throw new \Exception('PHP ERROR: File exceeds post_max_size ('.ini_get('post_max_size').')');
             }
-            if (($request->files->has('resource')) && ("file" == $request->get('file_type'))) {
+            if (($request->files->has('resource')) && ('file' == $request->get('file_type'))) {
                 $multimediaObject = $trackService->createTrackFromLocalHardDrive($multimediaObject, $request->files->get('resource'), $profile, $priority, $language, $description);
-            } elseif (($request->get('file', null)) && ("inbox" == $request->get('file_type'))) {
+            } elseif (($request->get('file', null)) && ('inbox' == $request->get('file_type'))) {
                 $multimediaObject = $trackService->createTrackFromInboxOnServer($multimediaObject, $request->get('file'), $profile, $priority, $language, $description);
             }
-        }catch (\Exception $e){
+        } catch (\Exception $e) {
             return array(
                          'mm' => $multimediaObject,
                          'uploaded' => 'failed',
-                         'message' => preg_replace( "/\r|\n/", "", $e->getMessage())
+                         'message' => preg_replace("/\r|\n/", '', $e->getMessage()),
                          );
         }
 
         return array(
                      'mm' => $multimediaObject,
                      'uploaded' => 'success',
-                     'message' => 'New Track added.'
+                     'message' => 'New Track added.',
                      );
     }
 
     /**
      * @ParamConverter("multimediaObject", class="PumukitSchemaBundle:MultimediaObject", options={"id" = "mmId"})
-     *
      */
     public function updateAction(MultimediaObject $multimediaObject, Request $request)
     {
@@ -101,10 +100,10 @@ class TrackController extends Controller
 
         return $this->render('PumukitNewAdminBundle:Track:update.html.twig',
                              array(
-                                   'track'    => $track,
-                                   'form'     => $form->createView(),
-                                   'mmId'     => $multimediaObject->getId(),
-                                   'profiles' => $profiles
+                                   'track' => $track,
+                                   'form' => $form->createView(),
+                                   'mmId' => $multimediaObject->getId(),
+                                   'profiles' => $profiles,
                                    ));
     }
 
@@ -115,10 +114,10 @@ class TrackController extends Controller
     public function infoAction(MultimediaObject $multimediaObject, Request $request)
     {
         $track = $multimediaObject->getTrackById($request->get('id'));
-        
+
         return array(
                      'track' => $track,
-                     'mm' => $multimediaObject
+                     'mm' => $multimediaObject,
                      );
     }
 
@@ -184,12 +183,12 @@ class TrackController extends Controller
                      'jobs' => $jobs,
                      'not_master_profiles' => $notMasterProfiles,
                      'oc' => '',
-                     'reload_links' => $request->query->get('reload_links', false)
+                     'reload_links' => $request->query->get('reload_links', false),
                      );
     }
 
     /**
-     * TODO See: Pumukit\EncoderBundle\Controller\InfoController::retryJobAction
+     * TODO See: Pumukit\EncoderBundle\Controller\InfoController::retryJobAction.
      *
      * @ParamConverter("multimediaObject", class="PumukitSchemaBundle:MultimediaObject", options={"id" = "mmId"})
      * @ParamConverter("job", class="PumukitEncoderBundle:Job", options={"id" = "jobId"})
@@ -203,7 +202,7 @@ class TrackController extends Controller
     }
 
     /**
-     * TODO See: Pumukit\EncoderBundle\Controller\InfoController::infoJobAction 
+     * TODO See: Pumukit\EncoderBundle\Controller\InfoController::infoJobAction.
      *
      * @ParamConverter("multimediaObject", class="PumukitSchemaBundle:MultimediaObject", options={"id" = "mmId"})
      * @ParamConverter("job", class="PumukitEncoderBundle:Job", options={"id" = "jobId"})
@@ -212,11 +211,12 @@ class TrackController extends Controller
     public function infoJobAction(MultimediaObject $multimediaObject, Job $job, Request $request)
     {
         $command = $this->get('pumukitencoder.job')->renderBat($job);
-        return array('multimediaObject'=> $multimediaObject, 'job' => $job, 'command' => $command);
+
+        return array('multimediaObject' => $multimediaObject, 'job' => $job, 'command' => $command);
     }
 
     /**
-     * TODO See: Pumukit\EncoderBundle\Controller\InfoController::deleteJobAction
+     * TODO See: Pumukit\EncoderBundle\Controller\InfoController::deleteJobAction.
      *
      * @ParamConverter("multimediaObject", class="PumukitSchemaBundle:MultimediaObject", options={"id" = "mmId"})
      */
@@ -230,17 +230,16 @@ class TrackController extends Controller
     }
 
     /**
-     * TODO See: Pumukit\EncoderBundle\Controller\InfoController::updateJobPriorityAction
-     *
+     * TODO See: Pumukit\EncoderBundle\Controller\InfoController::updateJobPriorityAction.
      */
     public function updateJobPriorityAction(Request $request)
     {
         $priority = $request->get('priority');
         $jobId = $request->get('jobId');
         $this->get('pumukitencoder.job')->updateJobPriority($jobId, $priority);
-        
-        return new JsonResponse(array("jobId" => $jobId, "priority" => $priority));
-    }    
+
+        return new JsonResponse(array('jobId' => $jobId, 'priority' => $priority));
+    }
 
     /**
      * @ParamConverter("multimediaObject", class="PumukitSchemaBundle:MultimediaObject", options={"id" = "mmId"})
@@ -270,8 +269,8 @@ class TrackController extends Controller
         }
 
         return array(
-                     'resource'      => $multimediaObject,
-                     'resource_name' => 'mms'
+                     'resource' => $multimediaObject,
+                     'resource_name' => 'mms',
                      );
     }
 
@@ -310,7 +309,7 @@ class TrackController extends Controller
     }
 
     /**
-     * Get data in array or default values
+     * Get data in array or default values.
      */
     private function getArrayData($formData)
     {

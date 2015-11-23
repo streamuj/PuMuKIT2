@@ -12,10 +12,11 @@ class EventController extends AdminController
     /**
      * @var array
      */
-    static $daysInMonth = array(31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31);
+    public static $daysInMonth = array(31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31);
 
     /**
-     * Overwrite to get the calendar
+     * Overwrite to get the calendar.
+     *
      * @Template
      */
     public function indexAction(Request $request)
@@ -26,13 +27,13 @@ class EventController extends AdminController
         list($events, $month, $year, $calendar) = $this->getResources($request, $config, $criteria);
 
         $update_session = true;
-        foreach($events as $event) {
-            if($event->getId() == $this->get('session')->get('admin/event/id')){
+        foreach ($events as $event) {
+            if ($event->getId() == $this->get('session')->get('admin/event/id')) {
                 $update_session = false;
             }
         }
- 
-        if($update_session){
+
+        if ($update_session) {
             $this->get('session')->remove('admin/event/id');
         }
 
@@ -47,7 +48,7 @@ class EventController extends AdminController
     /**
      * Create Action
      * Overwrite to return json response
-     * and update page
+     * and update page.
      *
      * @param Request $request
      *
@@ -79,15 +80,16 @@ class EventController extends AdminController
             return $this->handleView($this->view($form));
         }
 
-        return $this->render("PumukitNewAdminBundle:Event:create.html.twig",
+        return $this->render('PumukitNewAdminBundle:Event:create.html.twig',
                              array(
                                    'event' => $resource,
-                                   'form' => $form->createView()
+                                   'form' => $form->createView(),
                                    ));
     }
 
     /**
-     * List action
+     * List action.
+     *
      * @Template
      */
     public function listAction(Request $request)
@@ -108,25 +110,25 @@ class EventController extends AdminController
     }
 
     /**
-     * Update session with active tab
+     * Update session with active tab.
      */
     public function updateSessionAction(Request $request)
     {
         $activeTab = $request->get('activeTab', null);
 
-        if ($activeTab){
+        if ($activeTab) {
             $this->get('session')->set('admin/event/tab', $activeTab);
             $tabValue = 'Active tab: '.$activeTab;
-        }else{
+        } else {
             $this->get('session')->remove('admin/event/tab');
             $tabValue = 'Active tab: listTab';
         }
 
-        return new JsonResponse(array('tabValue'=> $tabValue));
+        return new JsonResponse(array('tabValue' => $tabValue));
     }
 
     /**
-     * Get calendar
+     * Get calendar.
      */
     private function getCalendar($config, $request)
     {
@@ -143,17 +145,17 @@ class EventController extends AdminController
         $m = $this->get('session')->get('admin/event/month');
         $y = $this->get('session')->get('admin/event/year');
 
-        if ($request->query->get('month') == "next") {
-            $changed_date = mktime(0, 0, 0, $m+1, 1, $y);
-            $this->get('session')->set('admin/event/year', date("Y", $changed_date));
-            $this->get('session')->set('admin/event/month', date("m", $changed_date));
-        } elseif ($request->query->get('month') == "previous") {
-            $changed_date = mktime(0, 0, 0, $m-1, 1, $y);
-            $this->get('session')->set('admin/event/year', date("Y", $changed_date));
-            $this->get('session')->set('admin/event/month', date("m", $changed_date));
-        } elseif ($request->query->get('month') == "today") {
-            $this->get('session')->set('admin/event/year', date("Y"));
-            $this->get('session')->set('admin/event/month', date("m"));
+        if ($request->query->get('month') == 'next') {
+            $changed_date = mktime(0, 0, 0, $m + 1, 1, $y);
+            $this->get('session')->set('admin/event/year', date('Y', $changed_date));
+            $this->get('session')->set('admin/event/month', date('m', $changed_date));
+        } elseif ($request->query->get('month') == 'previous') {
+            $changed_date = mktime(0, 0, 0, $m - 1, 1, $y);
+            $this->get('session')->set('admin/event/year', date('Y', $changed_date));
+            $this->get('session')->set('admin/event/month', date('m', $changed_date));
+        } elseif ($request->query->get('month') == 'today') {
+            $this->get('session')->set('admin/event/year', date('Y'));
+            $this->get('session')->set('admin/event/month', date('m'));
         }
 
         $m = $this->get('session')->get('admin/event/month', date('m'));
@@ -165,7 +167,7 @@ class EventController extends AdminController
     }
 
     /**
-     * Get days in month
+     * Get days in month.
      */
     private static function getDaysInMonth($month, $year)
     {
@@ -176,9 +178,9 @@ class EventController extends AdminController
         $d = self::$daysInMonth[$month - 1];
 
         if ($month == 2) {
-            if ($year%4 == 0) {
-                if ($year%100 == 0) {
-                    if ($year%400 == 0) {
+            if ($year % 4 == 0) {
+                if ($year % 100 == 0) {
+                    if ($year % 400 == 0) {
                         $d = 29;
                     }
                 } else {
@@ -191,7 +193,7 @@ class EventController extends AdminController
     }
 
     /**
-     * Generate array
+     * Generate array.
      */
     private static function generateArray($month, $year)
     {
@@ -200,14 +202,14 @@ class EventController extends AdminController
         $dweek = date('N', mktime(0, 0, 0, $month, 1, $year)) - 1;
         foreach (range(1, self::getDaysInMonth($month, $year)) as $i) {
             $aux[intval($dweek / 7)][($dweek % 7)] = $i;
-            $dweek++;
+            ++$dweek;
         }
 
         return $aux;
     }
 
     /**
-     * Gets the criteria values
+     * Gets the criteria values.
      */
     public function getCriteria($config)
     {
@@ -227,14 +229,19 @@ class EventController extends AdminController
             if (('' !== $value) && ('date' !== $property)) {
                 $new_criteria[$property] = new \MongoRegex('/'.$value.'/i');
             } elseif (('' !== $value) && ('date' == $property)) {
-                if ('' !== $value['from']) $date_from = new \DateTime($value['from']);
-                if ('' !== $value['to']) $date_to = new \DateTime($value['to']);
-                if (('' !== $value['from']) && ('' !== $value['to']))
+                if ('' !== $value['from']) {
+                    $date_from = new \DateTime($value['from']);
+                }
+                if ('' !== $value['to']) {
+                    $date_to = new \DateTime($value['to']);
+                }
+                if (('' !== $value['from']) && ('' !== $value['to'])) {
                     $new_criteria[$property] = array('$gte' => $date_from, '$lt' => $date_to);
-                elseif ('' !== $value['from'])
+                } elseif ('' !== $value['from']) {
                     $new_criteria[$property] = array('$gte' => $date_from);
-                elseif ('' !== $value['to'])
+                } elseif ('' !== $value['to']) {
                     $new_criteria[$property] = array('$lt' => $date_to);
+                }
             }
         }
 
@@ -242,7 +249,7 @@ class EventController extends AdminController
     }
 
     /**
-     * Gets the list of resources according to a criteria
+     * Gets the list of resources according to a criteria.
      */
     public function getResources(Request $request, $config, $criteria)
     {
@@ -257,7 +264,6 @@ class EventController extends AdminController
         $m = '';
         $y = '';
         $calendar = array();
-
 
         if ($config->isPaginated()) {
             $resources = $this
@@ -277,7 +283,7 @@ class EventController extends AdminController
                 ->setMaxPerPage($config->getPaginationMaxPerPage())
                 ->setNormalizeOutOfRangePages(true);
 
-            if ($newEventId && (($resources->getNbResults()/$resources->getMaxPerPage()) > $page)) {
+            if ($newEventId && (($resources->getNbResults() / $resources->getMaxPerPage()) > $page)) {
                 $page = $resources->getNbPages();
                 $session->set($session_namespace.'/page', $page);
             }

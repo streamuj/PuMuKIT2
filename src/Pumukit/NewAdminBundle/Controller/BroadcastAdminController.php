@@ -8,7 +8,7 @@ use Symfony\Component\HttpFoundation\Request;
 class BroadcastAdminController extends AdminController
 {
     /**
-     * Change the default broadcast type
+     * Change the default broadcast type.
      */
     public function defaultAction(Request $request)
     {

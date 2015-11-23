@@ -12,7 +12,7 @@ class MaterialType extends AbstractType
     private $translator;
     private $locale;
 
-    public function __construct(TranslatorInterface $translator, $locale='en')
+    public function __construct(TranslatorInterface $translator, $locale = 'en')
     {
         $this->translator = $translator;
         $this->locale = $locale;
@@ -26,7 +26,7 @@ class MaterialType extends AbstractType
           ->add('language', 'customlanguage',
                 array(
                       'required' => true,
-                      'label' => $this->translator->trans('Language', array(), null, $this->locale)))
+                      'label' => $this->translator->trans('Language', array(), null, $this->locale), ))
           ->add('mime_type', 'choice', array(
                 'choices' => array(
                                    'xxx' => 'xxx - ',
@@ -42,9 +42,9 @@ class MaterialType extends AbstractType
                                    'gz' => 'gz - Compress file',
                                    'doc' => 'doc - Word file',
                                    'srt' => 'srt - Text-captions srt',
-                                   'vtt' => 'vtt - Video Text Tracks'
+                                   'vtt' => 'vtt - Video Text Tracks',
                                    ),
-                'label' => $this->translator->trans('Type')))
+                'label' => $this->translator->trans('Type'), ))
       ;
     }
 

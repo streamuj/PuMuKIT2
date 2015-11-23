@@ -10,7 +10,7 @@ class LiveController extends AdminController
     /**
      * Create Action
      * Overwrite to return json response
-     * and update page
+     * and update page.
      *
      * @param Request $request
      *
@@ -42,15 +42,15 @@ class LiveController extends AdminController
             return $this->handleView($this->view($form));
         }
 
-        return $this->render("PumukitNewAdminBundle:Live:create.html.twig",
+        return $this->render('PumukitNewAdminBundle:Live:create.html.twig',
                              array(
                                    'live' => $resource,
-                                   'form' => $form->createView()
+                                   'form' => $form->createView(),
                                    ));
     }
 
     /**
-     * Gets the list of resources according to a criteria
+     * Gets the list of resources according to a criteria.
      */
     public function getResources(Request $request, $config, $criteria)
     {
@@ -79,7 +79,7 @@ class LiveController extends AdminController
                 ->setMaxPerPage($session->get($session_namespace.'/paginate', 10))
               ->setNormalizeOutOfRangePages(true);
 
-            if ($newLiveId && (($resources->getNbResults()/$resources->getMaxPerPage()) > $page)) {
+            if ($newLiveId && (($resources->getNbResults() / $resources->getMaxPerPage()) > $page)) {
                 $page = $resources->getNbPages();
                 $session->set($session_namespace.'/page', $page);
             }

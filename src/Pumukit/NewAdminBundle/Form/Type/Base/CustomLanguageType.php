@@ -13,9 +13,9 @@ class CustomLanguageType extends AbstractType
       'lse' => 'Spanish Sign Language',
       'ssp' => 'Spanish Sign Language',
       'lsi' => 'International Sign Language',
-      'sgn' => 'International Sign Language'
+      'sgn' => 'International Sign Language',
     );
-    
+
     private $translator;
     private $customLanguages;
 
@@ -24,7 +24,6 @@ class CustomLanguageType extends AbstractType
         $this->translator = $translator;
         $this->customLanguages = $customLanguages;
     }
-
 
     /**
      * {@inheritdoc}
@@ -43,10 +42,10 @@ class CustomLanguageType extends AbstractType
 
         if ($customLanguages) {
             $choices = array();
-            foreach($customLanguages as $aux) {
+            foreach ($customLanguages as $aux) {
                 $code = strtolower($aux);
-                $choices[$code] = isset($languageNames[$code]) ? 
-                  $languageNames[$code] : 
+                $choices[$code] = isset($languageNames[$code]) ?
+                  $languageNames[$code] :
                   (isset(self::$addonLanguages[$code]) ? $translator->trans(self::$addonLanguages[$code]) : $code);
             }
         } else {
