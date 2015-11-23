@@ -179,4 +179,82 @@ class TagController extends Controller
 
         return $this->redirect($this->generateUrl('pumukitnewadmin_tag_list'));
     }
+    
+    
+    /**
+     * Search action
+     * returns the tags matching with the search_text parameter.
+     */
+    /*public function searchAction(Request $request)
+    {
+        $search_text=$request->get('search_text');
+		$dm = $this->get('doctrine_mongodb')->getManager();
+        $repo = $dm->getRepository('PumukitSchemaBundle:Tag');
+
+        $children = $repo->findByName($search_text);
+
+        return array(
+                     'children' => $children
+                     );
+    }*/
+    public function searchAction(Request $request)
+    {
+		$dm = $this->get('doctrine_mongodb')->getManager();
+        $repo = $dm->getRepository('PumukitSchemaBundle:Tag');
+		$search_text=$request->get('search_text');
+		$lang= $request->getLocale();
+		
+		$mmId = $request->get('mmId');
+		$parent = $repo->findOneById($request->get('parent'));
+		$parent_path = str_replace( "|", "\|", $parent->getPath());
+        $root_name = "ROOT";
+        $root = $repo->findOneByCod($root_name);
+
+        if (null !== $root) {
+			$qb = $dm->createQueryBuilder('PumukitSchemaBundle:Tag');
+			$children = $qb->addOr($qb->expr()->field("title.".$lang)->equals(new \MongoRegex('/.*'.$search_text.'.*/i')))
+						->addOr($qb->expr()->field("cod")->equals(new \MongoRegex('/.*'.$search_text.'.*/i')))
+						->addAnd($qb->expr()->field("path")->equals( new \MongoRegex('/'.$parent_path.'(.+[\|]+)+/') ))
+						//->limit(20)
+						->getQuery()
+						->execute();
+
+        } else {
+            $children = array();
+        }
+        //Añadimos los padres al resultado.
+        $result = $children->toArray();
+		foreach($children->toArray() as $tag){
+			$result= $this->getAllParents($tag,$result,$parent->getId());
+		}
+		//Ordenamos los resultados
+		usort($result, function ($x, $y) {
+			return strcasecmp($x->getCod(), $y->getCod());
+		}
+		);
+		
+        return $this->render(
+			'PumukitNewAdminBundle:MultimediaObject:listtagsajax.html.twig',
+			array('root' => $root, 'nodes' => $result, 'mmId' => $mmId, 'block_tag' => $parent->getId(), 'parent' => $parent ,'search_text' => $search_text )
+        );
+    }
+   private function getAllParents($element, $tags = array(), $top_parent) {
+		if($element->getParent()!=null) {
+			$parentMissing = true;
+			foreach($tags as $tag) {
+				if($element->getParent() == $tag ) {
+					$parentMissing=false; 
+					break; }
+			}
+			
+			if($parentMissing) {
+				$parent= $element->getParent();//"retrieveByPKWithI18n");
+				if($parent->getId()!=$top_parent){
+					$tags[] = $parent;
+					$tags = $this->getAllParents($parent, $tags, $top_parent);
+				}
+			}
+		}
+		return $tags;
+	}
 }

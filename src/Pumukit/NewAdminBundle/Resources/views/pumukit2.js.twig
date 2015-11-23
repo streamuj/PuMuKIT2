@@ -719,18 +719,30 @@ function select_tree_tag(element)
 function toggle_tree_tag(element, id, mm_id, tag_id, tag_cod) 
 {
   parent = $(element.parentElement);
-  if (parent.hasClass("notload")) {
-    parent.removeClass("notload");
+  var search_text=$("#filter_tags_"+tag_id).val();
+  search_text=search_text.trim();
   
+  if (parent.hasClass("notload") && !parent.hasClass("searchresult")) {
+    parent.removeClass("notload");
     var route = "{{ path('pumukitnewadmin_mms_getchildrentag', {'id': 'PLACEHOLDER_TAG_ID'})|raw }}";
     route = route.replace('PLACEHOLDER_MM_ID', mm_id).replace('PLACEHOLDER_TAG_ID', id);
 
     $.get(route + "?tag_id=" + tag_id + "&mm_id=" + mm_id, function(responseText, textStatus, jqXHR){
         parent.after(responseText);
+        
+    }).done(function() {
+      if(/\S/.test(search_text) && /\w([%\s]*)\w([%\s]*)\w/.test(search_text)){
+			$("#all_tag_"+tag_id+" a span").removeClass("highlighted");//.addClass("tag notresult");
+			$("#all_tag_"+tag_id+" a span:containsNC('"+search_text+"')").addClass("highlighted");//.removeClass("notresult");
+			$("#all_tag_"+tag_id+"_filter a span").removeClass("highlighted");//.addClass("tag notresult");
+			$("#all_tag_"+tag_id+"_filter a span:containsNC('"+search_text+"')").addClass("highlighted");//.removeClass("notresult");
+		}
     });
     parent.addClass("expanded").removeClass("collapsed");
+
   } else {
     if (parent.hasClass("expanded")) {
+		parent.removeClass("searchresult")
       $(".c_" + tag_cod).hide();      
       $(".c_" + tag_cod+".expanded").removeClass("expanded").addClass("collapsed");
       parent.removeClass("expanded").addClass("collapsed");
@@ -740,7 +752,40 @@ function toggle_tree_tag(element, id, mm_id, tag_id, tag_cod)
     }
     
   }
-
+}
+//ALFRO: Calls ajax to get search results
+var filter_wrapper_timeout;
+function search_tags_wrapper(mmId, parentid){
+	if(typeof filter_wrapper_timeout != 'undefined') {
+		clearTimeout(filter_wrapper_timeout);
+	}
+	$("#tag_filter_" + parentid + "_loader").show();
+	filter_wrapper_timeout = setTimeout(search_tags, 300, event.target, mmId, parentid);
+}
+function search_tags(target, mmId, parentid) 
+{
+	var search_text=target.value;
+	search_text = search_text.trim();
+	//$("#tag_filter_" + parentid + "_loader").show();
+	if(/\S/.test(search_text) && /\w([%\s]*)\w([%\s]*)\w/.test(search_text)) {
+		var route = "{{ path('pumukitnewadmin_tag_search') }}";
+		$("#all_tag_"+ parentid ).load( route + "?search_text=" + encodeURIComponent(search_text) + "&mmId=" + mmId + "&parent=" + parentid,
+			function() {
+				$("#all_tag_" + parentid + " .list-group-item.collapsed").removeClass("collapsed").addClass("searchresult expanded");
+				$("#tag_filter_" + parentid + "_loader").hide();
+		});
+	}
+	else {
+		reset_tags(mmId, parentid);
+	}
+}
+function reset_tags(mmId, parentid){
+		var route = "{{ path('pumukitnewadmin_mms_reloadtags') }}";
+		$("#all_tag_"+ parentid ).load( route + "?mmId=" + mmId + "&parentId=" + parentid,
+			function() {
+				$("#tag_filter_" + parentid + "_loader").hide();
+		});
+		$("#all_tag_" + parentid + " a span").removeClass("highlighted");//.addClass("tag notresult");
 }
 
 // TODO
@@ -1635,3 +1680,10 @@ window.change_pics_page = function(route)
 {
     $('#pics_to_add_list').load(route);
 }
+
+//Creates a new "containsNC" function to use in jQuery being case insensitive
+$.extend($.expr[":"], {
+    "containsNC": function(elem, i, match, array) {
+        return (elem.textContent || elem.innerText || "").toLowerCase().indexOf((match[3] || "").toLowerCase()) >= 0;
+    }
+});
