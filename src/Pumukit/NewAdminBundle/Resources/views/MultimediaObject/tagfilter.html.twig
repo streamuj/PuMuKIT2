@@ -1,6 +1,10 @@
-<div class="form-control-wrapper">
-<input type="search" class="tag_filter form-control empty" placeholder="Insert filter..." id="filter_tags_{{ parentId }}" oninput="javascript:search_tags_wrapper('{{ mmId }}','{{ parentId }}')" ></input>
-<input class="btn btn-default btn-raised" type="button" value="reset search" size="20" pattern="" onclick='$("#filter_tags_{{ parentId }}").val("").focus(); reset_tags("{{ mmId }}","{{ parentId }}");'></input>
-<span class="material-input"></span>
-<img hidden id="tag_filter_{{parentId}}_loader" src="{{ asset('bundles/pumukitnewadmin/images/ajax-loader.gif')}}" />
+<div class="input-group col-xs-5">
+  <div class="form-control-wrapper">
+    <input type="search" class="tag_filter form-control empty" placeholder="{% trans %}Insert filter...{% endtrans %}" id="filter_tags_{{ parentId }}" oninput="javascript:search_tags_wrapper('{{ mmId }}','{{ parentId }}')" ></input>
+    <span class="material-input"></span>
+  </div>
+  <span class="input-group-addon">
+    <input class="btn btn-default btn-raised" type="button" value="reset search" size="20" pattern="" onclick='$("#filter_tags_{{ parentId }}").val("").focus(); reset_tags("{{ mmId }}","{{ parentId }}");'></input>
+  </span>
+  <img id="tag_filter_{{parentId}}_loader" src="{{ asset('bundles/pumukitnewadmin/images/admin/load/spinner.gif')}}" style="opacity:0"/>
 </div>

@@ -15,11 +15,12 @@
   {% for parent in parent_tags if parent.getDisplay() %}
     <div class="panel panel-default">
       <div class="panel-heading">{{ parent.title }}</div>
-      {% include 'PumukitNewAdminBundle:MultimediaObject:tagfilter.html.twig' with {'parentId': parent.id, 'mmId': mm.id} %}
       <div class="panel-body" id="tag{{ parent.id }}_mms">
+        <div class="row"><div class="col-xs-12">
+          {% include 'PumukitNewAdminBundle:MultimediaObject:tagfilter.html.twig' with {'parentId': parent.id, 'mmId': mm.id} %}        
+        </div></div>
+        <div class="col-xs-12" style="overflow:hidden;height: 270px">
         
-
-        <div style="overflow:hidden;height: 270px">
           {# Available tags #}
 	  <div style="width:400px; float: left; height: 260px; border: 1px solid #bbb; overflow-x: hidden; overflow-y: scroll" class="tag list-group pmk-tag-tree" id="all_tag_{{ parent.id }}">
 	    {% if (0 != parent.getChildren()|length) %}
