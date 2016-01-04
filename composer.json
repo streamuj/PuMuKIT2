@@ -28,7 +28,8 @@
     "require-dev": {
         "sensio/generator-bundle": "~2.3",
         "phpunit/phpunit": "3.7.*",
-        "fabpot/php-cs-fixer": "@stable"
+        "fabpot/php-cs-fixer": "@stable",
+        "jakub-onderka/php-parallel-lint": "0.9"
     },
     "scripts": {
         "post-root-package-install": [
@@ -49,6 +50,10 @@
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installAssets",
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installRequirementsFile",
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::removeSymfonyStandardFiles"
+        ],
+        "test": [
+            "parallel-lint . --exclude vendor",
+            "phpunit -c app"
         ]
     },
     "config": {
