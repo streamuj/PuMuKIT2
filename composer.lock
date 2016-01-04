@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "6dc2df5adeb10ad0320236642a79d9c8",
-    "content-hash": "4809efeeaa5b7330a8873593d54ae9eb",
+    "hash": "5a6e4c04a7a20e16e2798cfe99217469",
+    "content-hash": "cfac5d6d6931c94cd275feb645e2b287",
     "packages": [
         {
             "name": "behat/transliterator",
@@ -1113,16 +1113,16 @@
         },
         {
             "name": "gedmo/doctrine-extensions",
-            "version": "dev-master",
+            "version": "v2.4.10",
             "source": {
                 "type": "git",
-                "url": "https://github.com/rubenrua/DoctrineExtensions.git",
-                "reference": "daf916f03500d0625875837debee827aed7c093b"
+                "url": "https://github.com/Atlantic18/DoctrineExtensions.git",
+                "reference": "7e7fc55fa3fad79031727fbc7d8e418b641be875"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/rubenrua/DoctrineExtensions/zipball/daf916f03500d0625875837debee827aed7c093b",
-                "reference": "daf916f03500d0625875837debee827aed7c093b",
+                "url": "https://api.github.com/repos/Atlantic18/DoctrineExtensions/zipball/7e7fc55fa3fad79031727fbc7d8e418b641be875",
+                "reference": "7e7fc55fa3fad79031727fbc7d8e418b641be875",
                 "shasum": ""
             },
             "require": {
@@ -1131,11 +1131,12 @@
                 "php": ">=5.3.2"
             },
             "require-dev": {
-                "doctrine/mongodb-odm": ">=1.0.0-BETA11",
-                "doctrine/orm": "~2.4",
+                "doctrine/common": ">=2.5.0",
+                "doctrine/mongodb-odm": ">=1.0.2",
+                "doctrine/orm": ">=2.5.0",
                 "phpunit/phpunit": "~4.4",
                 "phpunit/phpunit-mock-objects": "~2.3",
-                "symfony/yaml": "~2.3"
+                "symfony/yaml": "~2.6"
             },
             "suggest": {
                 "doctrine/mongodb-odm": "to use the extensions with the MongoDB ODM",
@@ -1144,7 +1145,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.3.x-dev"
+                    "dev-master": "2.4.x-dev"
                 }
             },
             "autoload": {
@@ -1152,10 +1153,15 @@
                     "Gedmo\\": "lib/"
                 }
             },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
             "authors": [
+                {
+                    "name": "David Buchmann",
+                    "email": "david@liip.ch"
+                },
                 {
                     "name": "Gediminas Morkevicius",
                     "email": "gediminas.morkevicius@gmail.com"
@@ -1163,17 +1169,13 @@
                 {
                     "name": "Gustavo Falco",
                     "email": "comfortablynumb84@gmail.com"
-                },
-                {
-                    "name": "David Buchmann",
-                    "email": "david@liip.ch"
                 }
             ],
             "description": "Doctrine2 behavioral extensions",
             "homepage": "http://gediminasm.org/",
             "keywords": [
+                "Blameable",
                 "behaviors",
-                "blameable",
                 "doctrine2",
                 "extensions",
                 "gedmo",
@@ -1186,12 +1188,7 @@
                 "tree",
                 "uploadable"
             ],
-            "support": {
-                "email": "gediminas.morkevicius@gmail.com",
-                "wiki": "https://github.com/Atlantic18/DoctrineExtensions/tree/master/doc",
-                "source": "https://github.com/rubenrua/DoctrineExtensions/tree/master"
-            },
-            "time": "2015-02-02 17:37:05"
+            "time": "2015-12-18 20:34:21"
         },
         {
             "name": "incenteev/composer-parameter-handler",
@@ -3873,7 +3870,6 @@
     "stability-flags": {
         "doctrine/mongodb-odm": 20,
         "doctrine/mongodb-odm-bundle": 20,
-        "gedmo/doctrine-extensions": 20,
         "fabpot/php-cs-fixer": 0
     },
     "prefer-stable": false,
