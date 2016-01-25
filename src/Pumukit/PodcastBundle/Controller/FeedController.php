@@ -27,8 +27,9 @@ class FeedController extends Controller
         $mmObjRepo = $this->get('doctrine_mongodb.odm.document_manager')
           ->getRepository('PumukitSchemaBundle:MultimediaObject');
 
-        $qb = $mmObjRepo->createStandardQueryBuilder();
-        $qb->field('tracks.tags')->equals('podcast');
+        $qb = $mmObjRepo->createStandardQueryBuilder()
+          ->field('status')->equals(MultimediaObject::STATUS_PUBLISHED)
+          ->field('tracks.tags')->equals('podcast');
         $series = $qb->distinct('series')
           ->getQuery()
           ->execute();
@@ -106,8 +107,9 @@ class FeedController extends Controller
     {
         $mmObjRepo = $this->get('doctrine_mongodb.odm.document_manager')
           ->getRepository('PumukitSchemaBundle:MultimediaObject');
-        $qb = $mmObjRepo->createStandardQueryBuilder();
-        $qb->field('tracks')->elemMatch(
+        $qb = $mmObjRepo->createStandardQueryBuilder()
+          ->field('status')->equals(MultimediaObject::STATUS_PUBLISHED)
+          ->field('tracks')->elemMatch(
             $qb->expr()->field('only_audio')->equals($isOnlyAudio)
                 ->field('tags')->equals('podcast')
         );
@@ -135,6 +137,7 @@ class FeedController extends Controller
         $mmObjRepo = $this->get('doctrine_mongodb.odm.document_manager')
           ->getRepository('PumukitSchemaBundle:MultimediaObject');
         $qb = $mmObjRepo->createStandardQueryBuilder()
+          ->field('status')->equals(MultimediaObject::STATUS_PUBLISHED)
           ->field('series')->references($series)
           ->field('tracks.tags')->equals('podcast');
 

@@ -54,9 +54,9 @@ class OaiController extends Controller
     $identifier = $request->query->get('identifier');
 
     $mmObjColl = $this->get('doctrine_mongodb')->getRepository('PumukitSchemaBundle:MultimediaObject');
-    $object = $mmObjColl->find(array('id'  => $identifier));
+    $object = $mmObjColl->find(array('status' => MultimediaObject::STATUS_PUBLISHED, 'id'  => $identifier));
 
-    if ($object == null)
+    if (!$object)
       return $this->error('idDoesNotExist', 'The value of the identifier argument is unknown or illegal in this repository');
         
     $request = "<request>" . $this->generateUrl('pumukit_oai_index', array(), true) . "</request>";
@@ -165,9 +165,9 @@ class OaiController extends Controller
     $identifier = $request->query->get('identifier');
 
     $mmObjColl = $this->get('doctrine_mongodb')->getRepository('PumukitSchemaBundle:MultimediaObject');
-    $mmObj = $mmObjColl->find(array('id'  => $identifier));
+    $mmObj = $mmObjColl->find(array('status' => MultimediaObject::STATUS_PUBLISHED, 'id'  => $identifier));
 
-    if ($request->query->has('identifier') && $mmObj == null)
+    if (!$mmObj)
       return $this->error('idDoesNotExist', 'The value of the identifier argument is unknown or illegal in this repository');
 
     $XMLrequestText = "<request>" . $this->generateUrl('pumukit_oai_index', array(), true) . "</request>";
@@ -259,7 +259,9 @@ class OaiController extends Controller
     $repository_multimediaObjects = $this->get('doctrine_mongodb')->getRepository('PumukitSchemaBundle:MultimediaObject');
     $repository_series = $this->get('doctrine_mongodb')->getRepository('PumukitSchemaBundle:Series');
         
-    $queryBuilder_multimediaObjects = $repository_multimediaObjects->createStandardQueryBuilder()->limit(10)->skip(10*($pag-2));
+    $queryBuilder_multimediaObjects = $repository_multimediaObjects->createStandardQueryBuilder()
+      ->field('status')->equals(MultimediaObject::STATUS_PUBLISHED)
+      ->limit(10)->skip(10*($pag-2));
     $queryBuilder_series = $repository_series->createQueryBuilder();
 
     if($request->query->get('from')){
