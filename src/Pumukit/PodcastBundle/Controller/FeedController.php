@@ -108,8 +108,8 @@ class FeedController extends Controller
         $mmObjRepo = $this->get('doctrine_mongodb.odm.document_manager')
           ->getRepository('PumukitSchemaBundle:MultimediaObject');
         $qb = $mmObjRepo->createStandardQueryBuilder()
-          ->field('status')->equals(MultimediaObject::STATUS_PUBLISHED)
-          ->field('tracks')->elemMatch(
+          ->field('status')->equals(MultimediaObject::STATUS_PUBLISHED);
+        $qb->field('tracks')->elemMatch(
             $qb->expr()->field('only_audio')->equals($isOnlyAudio)
                 ->field('tags')->equals('podcast')
         );
