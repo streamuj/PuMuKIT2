@@ -39,6 +39,13 @@ class Builder extends ContainerAware
         if ($authorizationChecker->isGranted(Permission::ACCESS_JOBS)) {
             $menu->addChild('Encoder jobs', array('route' => 'pumukit_encoder_info'))->setExtra('translation_domain', 'NewAdminBundle');
         }
+        //TODO ADD Permission::ACCESS_STATS
+        if ($authorizationChecker->isGranted(Permission::ACCESS_LIVE_EVENTS)) {
+            $stats = $menu->addChild('Statistics')->setExtra('translation_domain', 'NewAdminBundle');
+            $stats->addChild('Series stats', array('route' => 'pumukit_stats_series_index'))->setExtra('translation_domain', 'NewAdminBundle');
+            $stats->addChild('Objects stats', array('route' => 'pumukit_stats_mmobj_index'))->setExtra('translation_domain', 'NewAdminBundle');
+
+        }
         if ($authorizationChecker->isGranted(Permission::ACCESS_PEOPLE) || $authorizationChecker->isGranted(Permission::ACCESS_TAGS) ||
             $authorizationChecker->isGranted(Permission::ACCESS_BROADCASTS) || $authorizationChecker->isGranted(Permission::ACCESS_SERIES_TYPES)) {
             $tables = $menu->addChild('Tables')->setExtra('translation_domain', 'NewAdminBundle');
