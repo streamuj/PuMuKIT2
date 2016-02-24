@@ -54,7 +54,7 @@ angular.module('app').filter('asDuration', function(){
      }
 });
 //authenticationService, socketService, stateService, $http, colors, notify, $q, $filter,$routeParams,$rootScope,$location,$route) {
-angular.module('app').controller("PMKController", function ($rootScope, $http, $location, $routeParams, $q) { 
+angular.module('app').controller("PMKController", function ($http, $q, $filter, $routeParams, $rootScope, $location, $route) { 
     var pmk = this;
 
     var init = true;
