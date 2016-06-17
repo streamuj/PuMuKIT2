@@ -85,3 +85,9 @@ pumukitnewadmin_series_updatepub:
     methods: [POST]
     defaults:
         _controller: pumukitnewadmin.controller.series:updatePubAction
+
+pumukitnewadmin_series_update_series_pub:
+    pattern: /{id}/update/seriespub
+    methods: [POST]
+    defaults:
+        _controller: pumukitnewadmin.controller.series:updateSeriesPubAction

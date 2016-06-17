@@ -34,6 +34,9 @@
   <div role="tabpanel">
     <ul id="seriesTab" class="nav nav-tabs" role="tablist">
       <li class="active">
+        <a href="#editSeriesPub" aria-controls="editSeriesPub" role="tab" data-toggle="tab" class="main-pmk-tab">{% trans %}Series Publication{% endtrans %}</a>
+      </li>
+      <li>
         <a href="#editSeries" aria-controls="editSeries" role="tab" data-toggle="tab" class="main-pmk-tab">{% trans %}Series Metadata{% endtrans %}</a>
       </li>
       {% if mmtemplate %}
@@ -44,7 +47,10 @@
     </ul>
     
     <div class="tab-content">
-      <div id="editSeries" role="tabpanel" class="tab-pane active">
+      <div id="editSeriesPub" role="tabpanel" class="tab-pane active">
+        {% include 'PumukitNewAdminBundle:Series:updateseriespub.html.twig' %}
+      </div>
+      <div id="editSeries" role="tabpanel" class="tab-pane">
         {% include 'PumukitNewAdminBundle:Series:updatemeta.html.twig' %}
       </div>
       {% if mmtemplate %}

@@ -1682,6 +1682,46 @@ $(document).on('click', '#pumukitnewadmin_mmtemplate_updatemeta_cancel', functio
     $('#remember_save_mm_template').hide();
 });
 
+$(document).on('change', 'form#pumukitnewadmin_series_updatepub_form input', function(){
+    $('#remember_save_series_pub').show();
+});
+
+$(document).on('click', '#pumukitnewadmin_series_updatepub_cancel', function(){
+    $('#pumukitnewadmin_series_updatepub_form')[0].reset();
+    $('#remember_save_series_pub').hide();
+});
+
+$(document).on('submit', '#pumukitnewadmin_series_updatepub_form', function(){
+    $('#remember_save_series_pub').hide();
+    var id = $('#series_id').val();
+    var checked_pubs = [];
+    $('input.pub_channel_input_checkbox:checked').each(function(){
+        var $this = $(this);
+        checked_pubs.push($this.attr("id"));
+    });
+    var not_checked_pubs = [];
+    $('input.pub_channel_input_checkbox:not(:checked)').each(function(){
+        var $this = $(this);
+        not_checked_pubs.push($this.attr("id"));
+    });
+    var route = "{{ path('pumukitnewadmin_series_update_series_pub', {'id': '__seriesId__'})|raw }}";
+    $.ajax({
+            url: route.replace('__seriesId__', id),
+            type: 'POST',
+            data: {'checked_pubs': checked_pubs, 'not_checked_pubs': not_checked_pubs},
+            error: function(request, json){var message = '{% trans %}Series saved ERROR{% endtrans %}'; no_success(message);},
+            success: function(response){
+                $('#edit_series').html(response);
+                var preview_route = "{{ path('pumukitnewadmin_series_show', {'id': '__seriesId__'})|raw }}";
+                $('#preview_series').load(preview_route.replace('__seriesId__', id));
+                {# //$('#links_series_{{series.id}}').load('{{ path('pumukitnewadmin_series_links', {'id': series.id}) }}'); #}
+                var message = '{% trans %}Series saved OK{% endtrans %}';
+                success(message);
+            }
+    });
+    return false;
+});
+
 $(document).on('submit', '#pumukitnewadmin_user_form_update', function(event){
     $('#myModal').modal('hide');
 

@@ -143,6 +143,10 @@ class SeriesController extends AdminController implements NewAdminController
         if(!$showSeriesTypeTab)
             $exclude_fields[] = 'pumukitnewadmin_series_series_type';
 
+        $notChangePubChannel = !$this->isGranted(Permission::CHANGE_MMOBJECT_PUBCHANNEL);
+        $pubChannelsTags = $factoryService->getTagsByCod('PUBCHANNELS', true);
+        $pubDecisionsTags = $factoryService->getTagsByCod('PUBDECISIONS', true);
+
         return $this->render('PumukitNewAdminBundle:Series:update.html.twig',
                              array(
                                    'series'                   => $resource,
@@ -156,7 +160,10 @@ class SeriesController extends AdminController implements NewAdminController
                                    'parent_tags'              => $parentTags,
                                    'exclude_fields'           => $exclude_fields,
                                    'show_later_fields'        => $show_later_fields,
-                                   'template'                 => '_template'
+                                   'template'                 => '_template',
+                                   'pub_channels'             => $pubChannelsTags,
+                                   'pub_decisions'            => $pubDecisionsTags,
+                                   'not_change_pub_channel'   => $notChangePubChannel
                                    )
                              );
     }
@@ -321,6 +328,25 @@ class SeriesController extends AdminController implements NewAdminController
         }
 
         return $this->redirect($this->generateUrl('pumukitnewadmin_series_list'));
+    }
+
+    /**
+     * Update Series Publication values
+     *
+     */
+    public function updateSeriesPubAction(Series $series, Request $request)
+    {
+        $checkedPubs = $request->get('checked_pubs');
+        $notCheckedPubs = $request->get('not_checked_pubs');
+
+        // TODO #9608
+
+        $method = $request->getMethod();
+        if (in_array($method, array('POST', 'PUT', 'PATCH'))) {
+
+        }
+
+        return $this->redirect($this->generateUrl('pumukitnewadmin_series_update', array('id' => $series->getId())));
     }
 
     /**
