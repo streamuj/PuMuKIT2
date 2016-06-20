@@ -26,12 +26,6 @@ class SeriesType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('announce', 'checkbox',
-                  array(
-                      'label_attr' => $this->disablePudenew ? array('class' => 'pmk_disabled_checkbox') : array(),
-                      'disabled' => $this->disablePudenew,
-                        'required' => false,
-                        'label' => $this->translator->trans('Last Added (Announced)', array(), null, $this->locale)))
             ->add('i18n_title', 'texti18n',
                   array('label' => $this->translator->trans('Title', array(), null, $this->locale)))
             ->add('i18n_subtitle', 'texti18n',
