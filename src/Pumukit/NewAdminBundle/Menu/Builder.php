@@ -100,4 +100,39 @@ class Builder extends ContainerAware
 
         return $menu;
     }
+    public function nakedMenu(FactoryInterface $factory, array $options)
+    {
+        $menu = $factory->createItem('root');
+        $authorizationChecker = $this->container->get('security.authorization_checker');
+
+        if ($authorizationChecker->isGranted(Permission::ACCESS_MULTIMEDIA_SERIES)) {
+            $mediaManager = $menu->addChild('Media Manager')->setExtra('translation_domain', 'NewAdminBundle');
+            $series = $mediaManager->addChild('Series', array('route' => 'pumukitnewadmin_series_index'))->setExtra('translation_domain', 'NewAdminBundle');
+            $series->addChild('Multimedia', array('route' => 'pumukitnewadmin_mms_index'))->setExtra('translation_domain', 'NewAdminBundle');
+            $series->setDisplayChildren(false);
+        }
+        if ($authorizationChecker->isGranted(Permission::ACCESS_EDIT_PLAYLIST)) {
+            if(!isset($mediaManager))
+                $mediaManager = $menu->addChild('Media Manager')->setExtra('translation_domain', 'NewAdminBundle');
+            $playlists = $mediaManager->addChild('Moodle Playlists', array('route' => 'pumukitnewadmin_playlist_index'))->setExtra('translation_domain', 'NewAdminBundle');
+            $playlists->addChild('Multimedia', array('route' => 'pumukitnewadmin_playlistmms_index'))->setExtra('translation_domain', 'NewAdminBundle');
+            $playlists->setDisplayChildren(false);
+        }
+
+        if ($authorizationChecker->isGranted('ROLE_ACCESS_STATS')) {
+            $stats = $menu->addChild('Stats')->setExtra('translation_domain', 'NewAdminBundle');
+            $stats->addChild('Series', array('route' => 'pumukit_stats_series_index'))->setExtra('translation_domain', 'NewAdminBundle');
+            $stats->addChild('Multimedia Objects', array('route' => 'pumukit_stats_mmobj_index'))->setExtra('translation_domain', 'NewAdminBundle');
+
+            //TODO: Use VOTERS: https://github.com/KnpLabs/KnpMenu/blob/master/doc/01-Basic-Menus.markdown#the-current-menu-item
+            //Voters are a way to check if a menu item is the current one. Now we are just checking the routes and setting the Current element manually
+            $route = $this->container->get('request_stack')->getMasterRequest()->attributes->get('_route');
+            $statsRoutes = array('pumukit_stats_series_index', 'pumukit_stats_mmobj_index', 'pumukit_stats_series_index_id', 'pumukit_stats_mmobj_index_id');
+            if(in_array($route, $statsRoutes)) {
+                $stats->setCurrent(true);
+            }
+        }
+
+        return $menu;
+    }
 }
