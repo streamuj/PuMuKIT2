@@ -1181,6 +1181,7 @@ class MultimediaObjectRepository extends DocumentRepository
             $qb = $this->createStandardQueryBuilder();
         else
             $qb = $this->createQueryBuilder();
+        return $qb;
         return $qb->getQuery()->execute();
     }
 
