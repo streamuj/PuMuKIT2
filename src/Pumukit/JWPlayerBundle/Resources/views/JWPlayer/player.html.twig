@@ -2,6 +2,20 @@
 
 {% block body_base %}
   {% if track %}
+  <div style="position: absolute;
+              left: 17.5%;
+              width: 60%;
+              z-index: 400;
+              top: 10%;
+              padding: 20px;
+              background-color: #015442;
+              font-size: 23px;
+              font-weight: bold;
+              font-family: Arial, Verdana, Helvetica, 'San Serif';
+              color: #ffffff;
+              text-align: center;"
+       >{{ multimediaObject.getTitle() }}</diV>
+
     {% set captions = captions(multimediaObject) %}
     {% set captions_block %}
         {% if captions is not empty %}
