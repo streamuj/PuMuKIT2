@@ -2,7 +2,7 @@
 
 {% block body %}
 
-<h1>Encoder</h1>
+<h1>{% trans %}Encoder{% endtrans %}</h1>
 
 <div class="row stats_jobs">
   {% if app.user and is_granted(constant('Pumukit\\SchemaBundle\\Security\\Permission::ACCESS_JOBS')) %}
