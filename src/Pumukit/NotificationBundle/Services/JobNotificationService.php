@@ -55,13 +55,14 @@ class JobNotificationService
             $subject = ($this->platformName?$this->platformName.': ':'').$successMessage;
             $template = 'PumukitNotificationBundle:Email:job.html.twig';
             $parameters = array(
-                                'subject' => $subject,
-                                'job_status' => Job::$statusTexts[$job->getStatus()],
-                                'job' => $job,
-                                'commandLine' => $this->jobService->renderBat($job),
-                                'sender_name' => $this->senderName,
-                                'multimedia_object_admin_link' => $multimediaObjectAdminLink
-                                );
+                'subject' => $subject,
+                'job_status' => Job::$statusTexts[$job->getStatus()],
+                'job' => $job,
+                'commandLine' => $this->jobService->renderBat($job),
+                'sender_name' => $this->senderName,
+                'multimedia_object_admin_link' => $multimediaObjectAdminLink,
+                'object' => $multimediaObject,
+            );
             $output = $this->senderService->sendNotification($job->getEmail(), $subject, $template, $parameters, false);
             return $output;
         }

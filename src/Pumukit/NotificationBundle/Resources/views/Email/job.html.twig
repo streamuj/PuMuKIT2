@@ -2,7 +2,29 @@
 
 
 <p>
-{% trans %}Multimedia Object Admin Link{% endtrans %}: <a href="{{ multimedia_object_admin_link }}" target="_blank">{{ multimedia_object_admin_link }}</a>
+{% trans %}The encoder job{% endtrans %}:
+</p>
+
+<ul>
+<li>
+<strong>{% trans %}Series title{% endtrans %}:</strong> {{ object.getSeries().getTitle() }}
+</li>
+<li>
+<strong>{% trans %}Multimedia object{% endtrans %}:</strong> {{ object.getTitle() }}
+</li>
+<li>
+<strong>{% trans %}Encoder profile{% endtrans %}:</strong> {{ job.getProfile() }}
+</li>
+<li>
+<strong>{% trans %}Date{% endtrans %}:</strong> {{ job.getTimeini()|date('Y-m-d H:i:s') }}
+</li>
+<li>
+<strong>{% trans %}Job Id{% endtrans %}:</strong> {{ job.getId() }}
+</li>
+</ul>
+
+<p>
+{% trans %}has finished successfully{% endtrans %}. {% trans %}Multimedia Object Admin Link{% endtrans %}: <a href="{{ multimedia_object_admin_link }}" target="_blank">{{ multimedia_object_admin_link }}</a>
 </p>
 
 <details>
