@@ -90,14 +90,19 @@ class ClientService
             return $this->adminUrl;
         }
 
-        $output = $this->request('/services/available.json?serviceType=org.opencastproject.episode');
+        $output = $this->request('/services/available.json?serviceType=org.opencastproject.archive');
         $decode = $this->decodeJson($output['var']);
-        if (isset($decode['services'])) {
-            if (isset($decode['services']['service'])) {
-                if (isset($decode['services']['service']['host'])) {
-                    $this->adminUrl = $decode['services']['service']['host'];
-                }
-            }
+
+
+        if (isset($decode['services']['service']['host']) &&
+            filter_var($decode['services']['service']['host'], FILTER_VALIDATE_URL)) {
+
+            $this->adminUrl = $decode['services']['service']['host'];
+        }
+        if (isset($decode['services']['service'][0]['host']) &&
+            filter_var($decode['services']['service'][0]['host'], FILTER_VALIDATE_URL)) {
+
+            $this->adminUrl = $decode['services']['service'][0]['host'];
         }
 
         return $this->adminUrl;
@@ -199,7 +204,7 @@ class ClientService
      */
     public function getMediapackageFromArchive($id)
     {
-        $output = $this->request('/episode/episode.json?id='.$id, array(), 'GET', true);
+        $output = $this->request('/archive/episode.json?id='.$id, array(), 'GET', true);
 
         if ($output['status'] !== 200) {
             return false;
