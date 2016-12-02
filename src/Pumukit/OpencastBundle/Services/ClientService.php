@@ -95,14 +95,18 @@ class ClientService
             return $this->adminUrl;
         }
 
-        $output = $this->request('/services/available.json?serviceType=org.opencastproject.episode');
+        $output = $this->request('/services/available.json?serviceType=org.opencastproject.info');
         $decode = $this->decodeJson($output['var']);
-        if (isset($decode['services'])) {
-            if (isset($decode['services']['service'])) {
-                if (isset($decode['services']['service']['host'])) {
-                    $this->adminUrl = $decode['services']['service']['host'];
-                }
-            }
+
+        if (isset($decode['services']['service']['host']) &&
+            filter_var($decode['services']['service']['host'], FILTER_VALIDATE_URL)) {
+
+            $this->adminUrl = $decode['services']['service']['host'];
+        }
+        if (isset($decode['services']['service'][0]['host']) &&
+            filter_var($decode['services']['service'][0]['host'], FILTER_VALIDATE_URL)) {
+
+            $this->adminUrl = $decode['services']['service'][0]['host'];
         }
 
         return $this->adminUrl;
