@@ -23,6 +23,10 @@ class OpencastController extends PlayerController implements WebTVController
      */
     public function magicAction( MultimediaObject $multimediaObject, Request $request ) {
         $array = $this->doAction($multimediaObject, $request);
+        if ($array instanceof Response) {
+            return $array;
+        }
+
         $array['magic_url'] = true;
         return $this->render('PumukitWebTVBundle:MultimediaObject:index.html.twig',
                              $array
@@ -34,6 +38,10 @@ class OpencastController extends PlayerController implements WebTVController
      */
     public function indexAction( MultimediaObject $multimediaObject, Request $request ) {
         $array = $this->doAction($multimediaObject, $request);
+        if ($array instanceof Response) {
+            return $array;
+        }
+
         return $this->render('PumukitWebTVBundle:MultimediaObject:index.html.twig',
                              $array
         );
