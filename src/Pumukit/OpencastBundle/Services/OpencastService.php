@@ -20,8 +20,9 @@ class OpencastService
     private $profileService;
     private $multimediaObjectService;
     private $defaultVars;
+    private $errorIfFileNotExist;
 
-    public function __construct(JobService $jobService, ProfileService $profileService, MultimediaObjectService $multimediaObjectService, array $sbsConfiguration = array(), array $urlMapping = array(), array $defaultVars = array())
+    public function __construct(JobService $jobService, ProfileService $profileService, MultimediaObjectService $multimediaObjectService, array $sbsConfiguration = array(), array $urlMapping = array(), array $defaultVars = array(), $errorIfFileNotExist = true)
     {
         $this->jobService = $jobService;
         $this->profileService = $profileService;
@@ -29,6 +30,7 @@ class OpencastService
         $this->sbsConfiguration = $sbsConfiguration;
         $this->urlPathMapping = $urlMapping;
         $this->defaultVars = $defaultVars;
+        $this->errorIfFileNotExist = $errorIfFileNotExist;
         $this->initSbsConfiguration();
     }
 
@@ -51,20 +53,22 @@ class OpencastService
     }
 
     /**
-     * Gen SBS according to configuration in parameters
+     * Gen SBS according to configuration in parameters.
      *
      * @param MultimediaObject $multimediaObject
      * @param array            $opencastUrls
-     * @return boolean
+     *
+     * @return bool
      */
-    public function genAutoSbs(MultimediaObject $multimediaObject, $opencastUrls=array())
+    public function genAutoSbs(MultimediaObject $multimediaObject, $opencastUrls = array())
     {
-        if (!$this->generateSbs)
+        if (!$this->generateSbs) {
             return false;
+        }
 
         if ($this->useFlavour) {
             $flavourTrack = null;
-            foreach($multimediaObject->getTracksWithTag($this->sbsFlavour) as $track) {
+            foreach ($multimediaObject->getTracksWithTag($this->sbsFlavour) as $track) {
                 if (!$track->isOnlyAudio()) {
                     $flavourTrack = $track;
                     break;
@@ -80,46 +84,57 @@ class OpencastService
     }
 
     /**
-     * Get path
+     * Get path.
      *
      * @param string $url
+     *
      * @return string
      */
     public function getPath($url)
     {
-        foreach($this->urlPathMapping as $m) {
-            $path = str_replace($m["url"], $m["path"], $url);
+        foreach ($this->urlPathMapping as $m) {
+            $path = str_replace($m['url'], $m['path'], $url);
             if (realpath($path)) {
                 return $path;
             }
+        }
+
+        if ($this->errorIfFileNotExist) {
+            throw new \RuntimeException(sprintf(
+                'Error accessing to the track path of "%s". Check "pumukit_opencast.url_mapping".',
+                $url
+            ));
         }
 
         return null;
     }
 
     /**
-     * Generate SBS Track
+     * Generate SBS Track.
      *
      * @param MultimediaObject $multimediaObject
      * @param array            $opencastUrls
      * @rettun boolean
      */
-    public function generateSbsTrack(MultimediaObject $multimediaObject, $opencastUrls=array())
+    public function generateSbsTrack(MultimediaObject $multimediaObject, $opencastUrls = array())
     {
-        if (!$this->generateSbs)
+        if (!$this->generateSbs) {
             return false;
+        }
 
-        if (!$this->sbsProfileName)
+        if (!$this->sbsProfileName) {
             return false;
+        }
 
         $tracks = $multimediaObject->getTracks();
-        if (!$tracks)
+        if (!$tracks) {
             return false;
+        }
 
         $track = $tracks[0];
         $path = $this->getPath($track->getUrl());
 
-        $language = $multimediaObject->getProperty('opencastlanguage')?strtolower($multimediaObject->getProperty('opencastlanguage')):'en';
+        $language = $multimediaObject->getProperty('opencastlanguage') ? strtolower($multimediaObject->getProperty('opencastlanguage')) : 'en';
 
         $vars = $this->defaultVars;
         if ($opencastUrls) {
@@ -131,12 +146,13 @@ class OpencastService
 
     private function useTrackAsSbs(MultimediaObject $multimediaObject, Track $track)
     {
-        if (!$this->sbsProfileName)
+        if (!$this->sbsProfileName) {
             return false;
+        }
 
         $sbsProfile = $this->profileService->getProfile($this->sbsProfileName);
 
-        $track->addTag('profile:' . $this->sbsProfileName);
+        $track->addTag('profile:'.$this->sbsProfileName);
 
         $tags = array('master', 'display');
         foreach ($tags as $tag) {
@@ -145,11 +161,12 @@ class OpencastService
             }
         }
 
-        foreach(array_filter(preg_split('/[,\s]+/', $sbsProfile['tags'])) as $tag) {
+        foreach (array_filter(preg_split('/[,\s]+/', $sbsProfile['tags'])) as $tag) {
             $track->addTag(trim($tag));
         }
 
         $multimediaObject = $this->multimediaObjectService->updateMultimediaObject($multimediaObject);
+
         return true;
     }
 }
