@@ -18,6 +18,7 @@ class ClientService
     private $deletionWorkflowName;
     private $manageOpencastUsers;
     private $insecure = false;
+    private $legacyMode = false;
     private $logger;
 
     /**
@@ -33,7 +34,8 @@ class ClientService
      * @param LoggerInterface $logger
      */
     public function __construct($url = '', $user = '', $passwd = '', $player = '/engage/ui/watch.html', $scheduler = '/admin/index.html#/recordings', $dashboard = '/dashboard/index.html',
-                                $deleteArchiveMediaPackage = false, $deletionWorkflowName = 'delete-archive', $manageOpencastUsers = false, $insecure = false, $adminUrl = null, LoggerInterface $logger)
+                                $deleteArchiveMediaPackage = false, $deletionWorkflowName = 'delete-archive', $manageOpencastUsers = false, $insecure = false, $adminUrl = null, $legacyMode = false,
+                                LoggerInterface $logger)
     {
         $this->logger = $logger;
 
@@ -55,6 +57,7 @@ class ClientService
         $this->manageOpencastUsers = $manageOpencastUsers;
         $this->insecure = $insecure;
         $this->adminUrl = $adminUrl;
+        $this->legacyMode = $legacyMode;
     }
 
     /**
@@ -90,7 +93,9 @@ class ClientService
             return $this->adminUrl;
         }
 
-        $output = $this->request('/services/available.json?serviceType=org.opencastproject.archive');
+        $serviceType = ($this->legacyMode) ? 'org.opencastproject.episode' : 'org.opencastproject.archive';
+
+        $output = $this->request('/services/available.json?serviceType=' . $serviceType);
         $decode = $this->decodeJson($output['var']);
 
 
@@ -204,7 +209,8 @@ class ClientService
      */
     public function getMediapackageFromArchive($id)
     {
-        $output = $this->request('/archive/episode.json?id='.$id, array(), 'GET', true);
+        $endpoint = ($this->legacyMode) ? '/archive/episode.json' : '/episode/episode.json';
+        $output = $this->request($endpoint . '?id='.$id, array(), 'GET', true);
 
         if ($output['status'] !== 200) {
             return false;

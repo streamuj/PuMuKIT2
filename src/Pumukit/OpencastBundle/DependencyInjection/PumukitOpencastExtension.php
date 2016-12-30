@@ -54,6 +54,7 @@ class PumukitOpencastExtension extends Extension
               ->addArgument($config['manage_opencast_users'])
               ->addArgument(new Parameter('pumukit2.insecure_http_client'))
               ->addArgument($config['admin_host'])
+              ->addArgument($config['legacy_mode'])
               ->addArgument(new Reference('logger'));
 
             $container
