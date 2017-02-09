@@ -424,6 +424,22 @@ class ClientService
     }
 
     /**
+     * Get index admin url.
+     *
+     * Gets the admin url for Opencast
+     */
+    public function getIndexAdminUrl()
+    {
+        if ($this->legacyMode) {
+            $index = '/admin/index.html';
+        } else {
+            $index = '/admin-ng/index.html';
+        }
+
+        return $this->getAdminUrl() . $index;
+    }
+
+    /**
      * Request.
      *
      * Makes a given request (path)
