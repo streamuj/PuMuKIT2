@@ -36,6 +36,12 @@ pumukit_opencast:
           url: 'http://engage-demo.opencast.org/static/engage-player/'
           path: /mnt/path/to/share/srv/matterhorn/downloads/engage-player/
         ...
+    admin_host: 'http://demo.opencast.org:8080'
+    scheduler_on_menu: false
+    scheduler: '/admin-ng/index.html#/events/events'
+    dashboard_on_menu: false
+    dashboard: '/dashboard/index.html'
+    manage_opencast_users: false
 ```
 Mandatory:
    - `host` is the Opencast Matterhorn server URL (Engage node in cluster).
@@ -58,6 +64,12 @@ Optional:
    - `url_mappging` is a list of url-path mappging used to generate the side by side video. Mandatory if `generate_sbs` is set to true.
       - `url` is the internal URL of the Opencast Matterhorn installation, used by Matterhorn to locate services running on the instance and for inter-node communication in distributed setups involving more than one Matterhorn node (org.opencastproject.server.url).
       - `path` is the directory where the system will store its processed files (including temporary files). This directory should be persistent between reboots (i.e., not /tmp) (org.opencastproject.storage.dir).
+   - `admin_host` is the Opencast Matterhorn admin server URL. Optional and used to avoid extra queries.
+   - `scheduler_on_menu` when set to true, lists an Opencast scheduler link on the menu. Default value: false.
+   - `scheduler` is the Opencast schedule URL or path (default for OC 2.x /admin-ng/index.html#/events/events). For OC 1.x use /admin/index.html#/recordings. For OC 2.x /admin-ng/index.html#/recordings is also valid.
+   - `dashboard_on_menu` when set to true, lists a Galicaster dashboard link on the menu. Default value: false.
+   - `dashboard` is the Galicaster dashboard URL or path (default /dashboard/index.html).'
+   - `manage_opencast_users` is the permission to create/modify/delete Opencast users from PuMuKIT. Deafult value: false.
 
 For more info about Opencast Matterhorn parameters go to [Opencast Documentation](https://bitbucket.org/opencast-community/matterhorn/src/d9890525acc0c14ee20b2523da4873551c6a91f2/etc/config.properties?at=master)
 
