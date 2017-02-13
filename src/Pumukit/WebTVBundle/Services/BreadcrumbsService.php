@@ -31,6 +31,12 @@ class BreadcrumbsService
 
     public function init()
     {
+
+        if ($this->session->has('breadcrumbs/breadcrumbs')) {
+            $this->breadcrumbs = $this->session->get('breadcrumbs/breadcrumbs');
+            return;
+        }
+
         if (!$this->session->has('breadcrumbs/title')) {
             $this->session->set('breadcrumbs/title', $this->translator->trans($this->allTitle));
         }
@@ -57,6 +63,9 @@ class BreadcrumbsService
             $this->breadcrumbs = array(array('title' => $this->parentWeb['title'], 'link' => $this->parentWeb['url']));
         }
         $this->breadcrumbs[] = array('title' => $this->homeTitle, 'link' => $this->router->generate('pumukit_webtv_index_index'));
+
+        $this->session->set('breadcrumbs/breadcrumbs', $this->breadcrumbs);
+
     }
 
     public function addList($title, $routeName, array $routeParameters = array(), $forceTranslation = false)
@@ -73,7 +82,8 @@ class BreadcrumbsService
 
     public function addSeries(Series $series)
     {
-        if (1 == count($this->breadcrumbs)) {
+        $count = ($this->parentWeb !== null) ? 2 : 1;
+        if ($count == count($this->breadcrumbs)) {
             $this->add($this->session->get('breadcrumbs/title', $this->allTitle),
                  $this->session->get('breadcrumbs/routeName', $this->allRoute),
                  $this->session->get('breadcrumbs/routeParameters', array()));
@@ -84,7 +94,7 @@ class BreadcrumbsService
 
     public function addMultimediaObject(MultimediaObject $multimediaObject)
     {
-        $this->addSeries($multimediaObject->getSeries());
+        //$this->addSeries($multimediaObject->getSeries());
         $this->add($multimediaObject->getTitle(), 'pumukit_webtv_multimediaobject_index', array('id' => $multimediaObject->getId()));
     }
 
@@ -92,6 +102,8 @@ class BreadcrumbsService
     {
         $this->breadcrumbs[] = array('title' => $title,
                                  'link' => $this->router->generate($routeName, $routeParameters), );
+
+        $this->session->set('breadcrumbs/breadcrumbs', $this->breadcrumbs);
     }
 
     public function getBreadcrumbs()
