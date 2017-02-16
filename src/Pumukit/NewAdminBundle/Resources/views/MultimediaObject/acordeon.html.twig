@@ -16,14 +16,30 @@
                         <div class="panel-body">
                             <div class="form-group">
                                 <label for="filters_search" class="control-label">{% trans %}Search{% endtrans %} :</label>
-                                <input type="text" class="form-control" name="criteria[search]" id="filters_search" value="{{ criteria['search']|default("") }}">
+                                <input type="text" class="form-control" name="criteria[search]" id="filters_search" value="{{ criteria['search']|default("") }}" data-toggle="tooltip" data-placement="left" title="{% trans %}Search by title, subtitle, description or id{% endtrans %}" placeholder="{% trans %}Search by title, subtitle, description or id{% endtrans %}">
                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="accordion_person" class="panel-group" role="tablist" aria-multiselectable="true">
+                <div class="panel panel-default">
+                    <div class="panel-heading" role="tab" id="headingSearch">
+                        <h2 class="panel-title">
+                            <a class="show" data-toggle="collapse" data-parent="#accordion_person" href="#collapsePerson"
+                               aria-expanded="true" aria-controls="collapseSearch">
+                                <i class="mdi-navigation-menu pull-right"></i> {% trans %}Person{% endtrans %}
+                            </a>
+                        </h2>
+                    </div>
+                    <div id="collapsePerson" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingSearch">
+                        <div class="panel-body">
 
                             <div class="form-group">
                                 <label for="filters_person" class="control-label">{% trans %}Person{% endtrans %} :</label>
-                                <input type="text" class="form-control" name="criteria[person_name]" id="filters_person_name" value="{{ criteria['person_name']|default("") }}">
+                                <input type="text" class="form-control" name="criteria[person_name]" id="filters_person_name" value="{{ criteria['person_name']|default("") }}"  data-toggle="tooltip" data-placement="left" title="{% trans %}Search by name, surname or id{% endtrans %}" placeholder="{% trans %}Search by name, surname or id{% endtrans %}">
                             </div>
-                            <div class="form-group">
+                            <div class="form-group" id="filter_person_role_group" style="display:none">
                                 <label for="filters_person_role" class="control-label">{% trans %}Roles{% endtrans %} :</label>
                                 <select class="form-control" name="criteria[person_role]" id="filters_person_role">
                                     <option value="all">{% trans %}All{% endtrans %}</option>
@@ -32,6 +48,22 @@
                                     {% endfor %}
                                 </select>
                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="accordion_others" class="panel-group" role="tablist" aria-multiselectable="true">
+                <div class="panel panel-default">
+                    <div class="panel-heading" role="tab" id="headingSearch">
+                        <h2 class="panel-title">
+                            <a class="show" data-toggle="collapse" data-parent="#accordion_others" href="#collapseOthers"
+                               aria-expanded="true" aria-controls="collapseSearch">
+                                <i class="mdi-navigation-menu pull-right"></i> {% trans %}Others{% endtrans %}
+                            </a>
+                        </h2>
+                    </div>
+                    <div id="collapseOthers" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingSearch">
+                        <div class="panel-body">
 
                             <div class="form-group">
                                 <label for="filter_place" class="control-label">{% trans %}Publication Channels{% endtrans %} :</label>
@@ -106,4 +138,12 @@
         }
         return false;
     }
+
+    $('#filters_person_name').keyup(function() {
+        if($('#filters_person_name').val().length == 0) {
+            $('#filter_person_role_group').hide();
+        } else {
+            $('#filter_person_role_group').show();
+        }
+    });
 </script>
