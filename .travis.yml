@@ -29,6 +29,7 @@ before_script:
 
 
 script:
+    - php app/console c:c
     - find src -type f -name "*.php" -print0 | xargs -0 -n1 -P8 php -l
     - php app/console lint:yaml src
     - php app/console lint:yaml app
