@@ -1809,19 +1809,27 @@ function load_children_tag(id, cod) {
 
 function toggle_section_tag(id, element, level, cod) {
 
-  if(element.parentElement.classList.contains("expanded")){
+  var parentElementClassName = element.parentElement.className;
+  var indexOfExpanded = parentElementClassName.indexOf('expanded');
+  var indexOfNoload = parentElementClassName.indexOf('noload');
+  var indexOfCollapsed = parentElementClassName.indexOf('collapsed');
+  if(indexOfExpanded >= 0){
     $(".c_" + cod).hide();
     $(".c_" + cod + " .expanded").removeClass("expanded").addClass("collapsed");
   }else{
-    if(element.parentElement.classList.contains("noload")) {
-      element.parentElement.classList.remove("noload");
+    if(indexOfNoload >= 0) {
+      element.parentElement.className = $.trim(parentElementClassName.replace('noload', ''));
       load_children_tag(id, cod);
     }else {
       $(".d_" + cod).show();
     }
   }
-  element.parentElement.classList.toggle("collapsed");
-  element.parentElement.classList.toggle("expanded");
+  if (indexOfCollapsed >= 0) {
+      element.parentElement.className = element.parentElement.className.replace('collapsed', 'expanded');
+  }
+  if (indexOfExpanded >= 0) {
+      element.parentElement.className = element.parentElement.className.replace('expanded', 'collapsed');
+  }
 }
 
 
