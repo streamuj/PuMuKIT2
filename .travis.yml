@@ -36,15 +36,15 @@ addons:
       - libavcodec-extra-53
 
 before_install:
-  - sudo apt-key adv --keyserver ${KEY_SERVER} --recv ${KEY_ID}
+  - apt-key adv --keyserver ${KEY_SERVER} --recv ${KEY_ID}
   - echo "deb ${MONGO_REPO_URI} ${MONGO_REPO_TYPE}${SERVER_VERSION} multiverse" | sudo tee ${SOURCES_LOC}
-  - sudo apt-get update -qq
+  - apt-get update -qq
 
 install:
-  - sudo apt-get install mongodb-org
+  - apt-get install mongodb-org
   - if nc -z localhost 27017; then sudo service mongod stop; fi
-  - sudo pip install mongo-orchestration
-  - sudo mongo-orchestration start
+  - pip install mongo-orchestration
+  - mongo-orchestration start
 
 before_script:
   - curl -XPUT http://localhost:8889/v1/sharded_clusters/myCluster --data @tests/sharded.json | python -m json.tool
