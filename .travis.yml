@@ -10,6 +10,7 @@ env:
 
 services:
   - mongodb
+  - docker
 
 addons:
   apt:
@@ -26,7 +27,8 @@ before_script:
   - composer self-update
   - php -i
   - composer install
-
+  - docker pull phpstan/phpstan
+  - docker run --rm -v src/Pumukit:/app phpstan/phpstan analyse / --level=5
 
 script:
     - find src -type f -name "*.php" -print0 | xargs -0 -n1 -P8 php -l
@@ -37,8 +39,3 @@ script:
     - ./bin/travis_checks/check_var_dumps
     - php bin/php-cs-fixer.phar fix src --level=symfony --dry-run -v
     - phpunit -c app
-    - ./vendor/bin/phpunit --coverage-clover=coverage.clover
-
-after_script:
-    - wget https://scrutinizer-ci.com/ocular.phar
-    - php ocular.phar code-coverage:upload --format=php-clover coverage.clover
