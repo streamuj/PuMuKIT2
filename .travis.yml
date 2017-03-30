@@ -7,9 +7,10 @@ php:
   - 7.0
 
 env:
-  - MONGO_VERSION=stable
-  - DRIVER_VERSION="stable"
-  - ADAPTER_VERSION="^1.0.0"
+  global:
+    - MONGO_VERSION=stable
+    - DRIVER_VERSION="stable"
+    - ADAPTER_VERSION="^1.0.0"
 
 services:
   - mongodb
