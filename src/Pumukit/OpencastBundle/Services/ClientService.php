@@ -436,7 +436,7 @@ class ClientService
             $index = '/admin-ng/index.html';
         }
 
-        return $this->getAdminUrl() . $index;
+        return $this->getAdminUrl().$index;
     }
 
     /**
