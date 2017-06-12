@@ -202,15 +202,12 @@ class ClientService
      */
     public function getMediapackageFromArchive($id)
     {
-        $output = $this->request('/episode/episode.json?id='.$id, array(), 'GET', true);
-
-        if ($output['status'] !== 200) {
+        try {
+            $output = $this->request('/episode/episode.json?id='.$id, array(), 'GET', true);
+        } catch (\Exception $e) {
             $output = $this->request('/archive/episode.json?id='.$id, array(), 'GET', true);
-
-            if ($output['status'] !== 200) {
-                return false;
-            }
         }
+
         $decode = $this->decodeJson($output['var']);
 
         if ($decode['search-results']['total'] == 0) {
