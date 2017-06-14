@@ -23,7 +23,7 @@ addons:
 before_script:
   - composer self-update
   - php -i
-  - composer install --ignore-platform-reqs
+  - composer install --ignore-platform-reqs --no-scripts
 
 
 script:
