@@ -2,8 +2,7 @@ sudo: false
 language: php
 
 php:
-  - 5.5
-  - 5.6
+  - 7.1
 
 env:
   - MONGO_VERSION=stable
@@ -22,18 +21,11 @@ addons:
       - libavcodec-extra-53
 
 before_script:
-  - yes '' | pecl -q install -f mongo-${MONGO_VERSION}
   - composer self-update
   - php -i
-  - composer install
+  - composer install --ignore-platform-reqs
 
 
 script:
-    - find src -type f -name "*.php" -print0 | xargs -0 -n1 -P8 php -l
-    - php app/console lint:yaml src
-    - php app/console lint:yaml app
-    - php app/console lint:twig src
-    - php app/console lint:twig app
-    - ./bin/travis_checks/check_var_dumps
-    - php bin/php-cs-fixer.phar fix src --level=symfony --dry-run -v
-    - phpunit -c app
+    - curl -L -O https://github.com/phpstan/phpstan/releases/download/0.7/phpstan-0.7.phar
+    - php phpstan-0.7.phar analyse src/
