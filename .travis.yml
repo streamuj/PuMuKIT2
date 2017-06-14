@@ -21,6 +21,7 @@ addons:
       - libavcodec-extra-53
 
 before_script:
+  - phpenv config-rm xdebug.ini
   - composer self-update
   - php -i
   - composer install --ignore-platform-reqs --no-scripts
