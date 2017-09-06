@@ -1,0 +1,11 @@
+{{ form_start(form, {'method': 'POST', 'action': path('pumukitnewadmin_unesco_list'), 'name' : 'unesco_form', 'attr' : {'class': 'unesco_form'}}) }}
+    {% for child in form %}
+        <div class="col-xs-12 col-md-3">
+            {{ form_row(child) }}
+        </div>
+    {% endfor %}
+    <div class="col-xs-12 col-md-3">
+        <button class="btn btn-default btn-raised" data-toggle="collapse" href="#collapseAdvanceForm" aria-expanded="false" aria-controls="collapseExample">{% trans %}Advance{% endtrans %}</button>
+        <button id="submitBasicForm" class="btn btn-pumukit btn-raised" type="submit">{% trans %}Send{% endtrans %}</button>
+    </div>
+{{ form_end(form) }}
