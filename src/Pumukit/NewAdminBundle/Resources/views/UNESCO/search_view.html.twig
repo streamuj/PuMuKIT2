@@ -1,0 +1,36 @@
+{% form_theme form 'PumukitNewAdminBundle:Themes:fields.html.twig' %}
+
+<div class="well">
+    <div class="row">
+        <div class="col-xs-12">
+            <div id="basic_form">
+                {% include 'PumukitNewAdminBundle:UNESCO:basic_form.html.twig' %}
+            </div>
+        </div>
+        <div class="col-xs-12">
+            <div class="advance_form collapse" id="collapseAdvanceForm">
+                {% include 'PumukitNewAdminBundle:UNESCO:advance_form.html.twig' %}
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    $('.unesco_form').on('submit',function(event) {
+        event.preventDefault();
+        $.ajax({
+            url: '{{ path('pumukitnewadmin_unesco_list') }}',
+            method: 'POST',
+            data: $(this).serialize(),
+            success: function (response) {
+                console.log('ok');
+            },
+            error: function (response) {
+                console.log('ko');
+            }
+        });
+        return false;
+
+    });
+</script>

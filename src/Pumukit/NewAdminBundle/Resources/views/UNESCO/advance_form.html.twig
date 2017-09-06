@@ -1,0 +1,144 @@
+<div class="well">
+    <div class="row">
+        <h4 class="text-center"><strong>Advance search form</strong></h4>
+        <hr />
+
+        <form name="advance_form" method="POST" action="">
+            <div class="col-md-6">
+
+                <div class="form-group">
+                    <label for="id" class="col-md-3 control-label">{% trans %}ID{% endtrans %}</label>
+                    <div class="col-md-9">
+                        <input id="id" type="text" class="form-control" name="id" placeholder="{% trans %}ID{% endtrans %}" />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="seriesTitle" class="col-md-3 control-label">{% trans %}Series title{% endtrans %}</label>
+                    <div class="col-md-9">
+                        <input id="seriesTitle" type="text" class="form-control" name="seriesTitle" placeholder="{% trans %}Series Title{% endtrans %}" />
+                    </div>
+                </div>
+
+                <div class="clearfix"></div>
+                <div class="form-group">
+                    <label for="title" class="col-md-3 control-label">{% trans %}Title{% endtrans %}</label>
+                    <div class="col-md-9">
+                        <input id="title" type="text" class="form-control" name="title" placeholder="{% trans %}Title{% endtrans %}" />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="Subtitle" class="col-md-3 control-label">{% trans %}Subtitle{% endtrans %}</label>
+                    <div class="col-md-9">
+                        <input id="subtitle" type="text" class="form-control" name="Subtitle" placeholder="{% trans %}Subtitle{% endtrans %}" />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="keyword" class="col-md-3 control-label">{% trans %}Keyword{% endtrans %}</label>
+                    <div class="col-md-9">
+                        <input id="keyword" type="text" class="form-control" name="Keyword" placeholder="{% trans %}Keyword{% endtrans %}" />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="initPublicDate" class="col-md-3 control-label">{% trans %}Public date{% endtrans %}</label>
+                    <div class="col-md-4">
+                        <input id="initPublicDate" class="form-control" type="date" pattern="(\d\d\d\d)-(\d\d)-(\d\d)" title="{% trans %}Format YYYY-MM-DD{% endtrans %}">
+                    </div>
+                    <div class="col-md-4">
+                        <input type="finishPublicDate" class="form-control" type="date" pattern="(\d\d\d\d)-(\d\d)-(\d\d)" title="{% trans %}Format YYYY-MM-DD{% endtrans %}">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="initRecordDate" class="col-md-3 control-label">{% trans %}Record date{% endtrans %}</label>
+                    <div class="col-md-4">
+                        <input id="initRecordDate" class="form-control" type="date" pattern="(\d\d\d\d)-(\d\d)-(\d\d)" title="{% trans %}Format YYYY-MM-DD{% endtrans %}">
+                    </div>
+                    <div class="col-md-4">
+                        <input id="finishRecordDate" class="form-control" type="date" pattern="(\d\d\d\d)-(\d\d)-(\d\d)" title="{% trans %}Format YYYY-MM-DD{% endtrans %}">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="Description" class="col-md-3 control-label">{% trans %}Description{% endtrans %}</label>
+                    <div class="col-md-9">
+                        <input id="Description" type="text" class="form-control" name="Description" placeholder="{% trans %}Description{% endtrans %}" />
+                    </div>
+                </div>
+
+                <div class="form-group" style="display:inline-block">
+                    <div class="checkbox">
+                        <label>{% trans %}Announce{% endtrans %}
+                            <input id="announce" type="checkbox" name="new" />
+                        </label>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="col-md-6">
+            {% for role in roles if role.display %}
+                <div class="form-group">
+                    <label for="{{ role.getCod() }}" class="col-md-3 control-label">{{ role.getName(app.request.getLocale()) }}</label>
+                    <div class="col-md-9">
+                        <input type="text" id="{{ role.getCod() }}" class="form-control" name="{{ role.getCod() }}" placeholder="{{ role.getName(app.request.getLocale()) }}">
+                    </div>
+                </div>
+            {% endfor %}
+            </div>
+
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="broadcast" class="col-md-3 control-label">{% trans %}Broadcast{% endtrans %}</label>
+                    <div class="col-md-9">
+                        <select id="broadcast" name="broadcast" class="form-control">
+                            <option value="all">{% trans %}All{% endtrans %}</option>
+                            {% for key, broadcast in broadcasts %}
+                                <option value="{{ key }}">{{ broadcast }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="status" class="col-md-3 control-label">{% trans %}Status{% endtrans %}</label>
+                    <div class="col-md-9">
+                        <select id="status" name="status" class="form-control">
+                            <option value="all">{% trans %}All{% endtrans %}</option>
+                            {% for key, status in statusPub %}
+                                <option value="{{ key }}">{{ status }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xs-12 col-md-6 text-right">
+                <button id="submitAdvanceForm" class="btn btn-pumukit btn-raised" type="submit">{% trans %}Send{% endtrans %}</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $('#collapseAdvanceForm').on('show.bs.collapse', function () {
+        $('#pumukitnewadmin_unesco_basicform_seriesTitle').attr('disabled',true);
+        $('#pumukitnewadmin_unesco_basicform_keyword').attr('disabled',true);
+        $('#pumukitnewadmin_unesco_basicform_id').attr('disabled',true);
+        $('#submitBasicForm').attr('disabled', true);
+        $('#submitAdvanceForm').attr('disabled', false);
+    });
+
+    $('#collapseAdvanceForm').on('hide.bs.collapse', function () {
+        $('#pumukitnewadmin_unesco_basicform_seriesTitle').attr('disabled',false);
+        $('#pumukitnewadmin_unesco_basicform_keyword').attr('disabled',false);
+        $('#pumukitnewadmin_unesco_basicform_id').attr('disabled',false);
+        $('#submitBasicForm').attr('disabled', false);
+        $('#submitAdvanceForm').attr('disabled',true);
+    });
+</script>
