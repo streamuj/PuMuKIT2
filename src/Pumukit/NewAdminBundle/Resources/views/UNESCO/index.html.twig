@@ -1,0 +1,27 @@
+{% extends 'PumukitNewAdminBundle::layout.html.twig' %}
+
+{% block body %}
+    <div class="col-md-2">
+        <div class="well">
+            {% render(controller('PumukitNewAdminBundle:UNESCO:menuTags')) %}
+        </div>
+    </div>
+    <div class="col-md-8">
+        <div id="advance_search">
+            {% render(controller('PumukitNewAdminBundle:UNESCO:advanceSearchForm')) %}
+        </div>
+        <div id="list_mms">
+            {% render(controller('PumukitNewAdminBundle:UNESCO:list')) %}
+        </div>
+        <div id="edit_mms">
+            {#{% if(app.session.has('admin/series/id') and app.session.has('admin/mms/id')) %}
+                {{ render(url('pumukitnewadmin_mms_edit', {'id': app.session.get('admin/mms/id'), 'seriesId': app.session.get('admin/series/id')})) }}
+            {% endif %}#}
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div id="show_data">
+
+        </div>
+    </div>
+{% endblock %}
