@@ -126,6 +126,7 @@ class UNESCOController extends Controller implements NewAdminController
      */
     public function listAction($tag = null)
     {
+
         $session = $this->get('session');
         $page = $session->get('admin/unesco/page', 1);
         $maxPerPage = $session->get('admin/unesco/paginate', 10);
@@ -590,5 +591,4 @@ class UNESCOController extends Controller implements NewAdminController
 
         return $allGroups;
     }
-
 }
