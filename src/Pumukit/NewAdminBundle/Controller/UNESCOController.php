@@ -9,6 +9,8 @@ use Pumukit\SchemaBundle\Document\MultimediaObject;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Pagerfanta\Pagerfanta;
@@ -57,11 +59,25 @@ class UNESCOController extends Controller implements NewAdminController
     );
 
     /**
+     * @param Request $request
+     *
+     * @return array
+     *
      * @Route("/", name="pumukitnewadmin_unesco_index")
      * @Template()
      */
-    public function indexAction()
+    public function indexAction(Request $request)
     {
+        $session = $this->get('session');
+        $page = $request->query->get('page');
+        $paginate = $request->query->get('paginate');
+        if (isset($page)) {
+            $session->set('admin/unesco/page', $page);
+        }
+        if (isset($paginate)) {
+            $session->set('admin/unesco/paginate', $paginate);
+        }
+
         return array();
     }
 
@@ -89,8 +105,8 @@ class UNESCOController extends Controller implements NewAdminController
 
         $countMultimediaObjectsWithoutTag = $dm->getRepository('PumukitSchemaBundle:MultimediaObject')->findWithoutTag($unescoTag);
         $defaultTagOptions = array(
-            array('key' => 2,'title' => $translator->trans('All'), 'count' => $countMultimediaObjects),
-            array('key' => 1,'title' => $translator->trans('Without category'), 'count' => count($countMultimediaObjectsWithoutTag)),
+            array('key' => 2, 'title' => $translator->trans('All'), 'count' => $countMultimediaObjects),
+            array('key' => 1, 'title' => $translator->trans('Without category'), 'count' => count($countMultimediaObjectsWithoutTag)),
         );
 
         return array('tags' => $tagUNESCO, 'defaultTagOptions' => $defaultTagOptions);
@@ -98,23 +114,26 @@ class UNESCOController extends Controller implements NewAdminController
 
     /**
      * @Route("/list/{tag}", name="pumukitnewadmin_unesco_list")
-     * @Template("PumukitNewAdminBundle:MultimediaObject:listAll.html.twig")
+     * @Template("PumukitNewAdminBundle:UNESCO:list.html.twig")
      *
      * @param Request $request
-     * @param string $tag
+     * @param string  $tag
      *
      * @return array
      */
     public function listAction(Request $request, $tag = null)
     {
-        dump($request);
         $session = $this->get('session');
         $page = $session->get('admin/unesco/page', 1);
         $maxPerPage = $session->get('admin/unesco/paginate', 10);
 
-        if(isset($tag) or $session->has('admin/unesco/tag')) {
-            $tag = (isset($tag)? $tag : $session->get('admin/unesco/tag'));
-            $multimediaObjects = $this->searchMultimediaObjects($request, $tag);
+        if (isset($tag) or $session->has('admin/unesco/tag')) {
+            $tag = (isset($tag) ? $tag : $session->get('admin/unesco/tag'));
+        }
+        if ($session->has('UNESCO/criteria')) {
+            $multimediaObjects = $this->searchMultimediaObjects($session->get('UNESCO/criteria'), $tag);
+        } elseif ($tag) {
+            $multimediaObjects = $this->searchMultimediaObjects($session->get('UNESCO/criteria'), $tag);
         } else {
             $dm = $this->container->get('doctrine_mongodb')->getManager();
             $multimediaObjects = $dm->getRepository('PumukitSchemaBundle:MultimediaObject')->createStandardQueryBuilder();
@@ -125,7 +144,7 @@ class UNESCOController extends Controller implements NewAdminController
 
         $adapter->setMaxPerPage($maxPerPage)->setNormalizeOutOfRangePages(true);
 
-        if (($adapter->getNbResults() / $maxPerPage) > $page) {
+        if ($adapter->getNbPages() < $page) {
             $page = $adapter->getNbPages();
             $session->set('admin/unesco/page', $page);
         }
@@ -139,42 +158,210 @@ class UNESCOController extends Controller implements NewAdminController
     }
 
     /**
-     * @param $request
+     * @Route("/remove/session", name="pumukitnewadmin_unesco_removesession")
+     *
+     * @return JsonResponse
+     */
+    public function resetSessionAction()
+    {
+        $session = $this->get('session');
+        $session->remove('UNESCO/criteria');
+        $session->remove('UNESCO/formbasic');
+        $session->remove('admin/unesco/tag');
+        $session->remove('admin/unesco/page');
+        $session->remove('admin/unesco/paginate');
+
+        return new JsonResponse(array('success'));
+    }
+
+    /**
+     * @Route("/add/criteria", name="pumukitnewadmin_unesco_addcriteria")
+     *
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
+    public function addCriteriaSession(Request $request)
+    {
+        $session = $this->get('session');
+
+        if ($request->request->get('pumukitnewadmin_unesco_basicform')) {
+            $criteria = $request->request->get('pumukitnewadmin_unesco_basicform');
+            unset($criteria['_token']);
+            $formBasic = true;
+        } else {
+            $criteria = $request->request->get('criteria');
+            $formBasic = false;
+        }
+
+        $newCriteria = array();
+        foreach ($criteria as $key => $value) {
+            if ('_id' === $key and !empty($value)) {
+                $newCriteria['_id'] = new \MongoId($value);
+            } elseif ('type' === $key and !empty($value)) {
+                $newCriteria['type'] = $value;
+            } elseif ('duration' === $key and !empty($value)) {
+                $newCriteria['track.duration'] = $value;
+            } elseif ('year' === $key and !empty($value)) {
+                $newCriteria['year'] = $value;
+            } elseif ('Text' === $key and !empty($value)) {
+                $newCriteria['$text'] = new \MongoRegex('/.*'.$value.'.*/i');
+            } elseif ('broadcast' === $key and !empty($value)) {
+                if ('all' != $value) {
+                    $newCriteria['embeddedBroadcast.type'] = $value;
+                }
+            } elseif ('statusPub' === $key and !empty($value)) {
+                if ('all' != $value) {
+                    $newCriteria['status'] = intval($value);
+                }
+            } elseif ('announce' === $key and !empty($value)) {
+                $newCriteria['tags.cod'] = 'PUDENEW';
+            } elseif ('roles' === $key) {
+                foreach ($value as $key2 => $field) {
+                    if (!empty($field)) {
+                        $newCriteria['roles'][$key2]['people.cod'] = $key2;
+                        $newCriteria['roles'][$key2]['people.$.people.name'] = new \MongoRegex('/.*'.$field.'.*/i');
+                    }
+                }
+            } elseif (in_array($key, array('initPublicDate', 'finishPublicDate', 'initRecordDate', 'finishRecordDate'))) {
+                if ('initPublicDate' === $key and !empty($value)) {
+                    $newCriteria['public_date_init'] = $value;
+                } elseif ('finishPublicDate' === $key and !empty($value)) {
+                    $newCriteria['public_date_finish'] = $value;
+                } elseif ('initRecordDate' === $key and !empty($value)) {
+                    $newCriteria['record_date_init'] = $value;
+                } elseif ('finishRecordDate' === $key and !empty($value)) {
+                    $newCriteria['record_date_finish'] = $value;
+                }
+            } elseif (!empty($value)) {
+                $newCriteria[$key.'.'.$request->getLocale()] = new \MongoRegex('/.*'.$value.'.*/i');
+            }
+        }
+
+        $session->set('UNESCO/criteria', $newCriteria);
+        $session->set('UNESCO/formbasic', $formBasic);
+
+        return new JsonResponse(array('success'));
+    }
+
+    /**
+     * @param MultimediaObject $multimediaObject
+     *
+     * @return array
+     * @Route("edit/{id}", name="pumukit_new_admin_unesco_edit")
+     * @ParamConverter("multimediaObject", class="PumukitSchemaBundle:MultimediaObject", options={"mapping": {"id":
+     *                                     "id"}})
+     * @Template("PumukitNewAdminBundle:UNESCO:edit.html.twig")
+     */
+    public function editUNESCOAction(MultimediaObject $multimediaObject)
+    {
+        $this->container->get('session')->set('UNESCO/mmo', $multimediaObject->getId());
+
+        return array('multimediaObject' => $multimediaObject);
+    }
+
+    /**
+     * @param $criteria
      * @param $tag
      *
      * @return mixed
      */
-    private function searchMultimediaObjects($request, $tag)
+    private function searchMultimediaObjects($criteria, $tag)
     {
         $dm = $this->container->get('doctrine_mongodb')->getManager();
         $session = $this->get('session');
         $session->set('admin/unesco/tag', $tag);
 
-        $caseUNESCO = false;
-        if(isset($tag) and "-1" != $tag) {
-            $caseUNESCO = (strtoupper(substr($tag,0,1)));
+        $tagCondition = $tag;
+        if (isset($tag) and !in_array($tag, array('1', '2'))) {
+            $tagCondition = (strtoupper(substr($tag, 0, 1)));
         }
 
-        switch ($tag) {
-            case "1":
+        switch ($tagCondition) {
+            case '1':
                 $unescoTag = $dm->getRepository('PumukitSchemaBundle:Tag')->findOneBy(array('cod' => 'UNESCO'));
-                $multimediaObjects = $dm->getRepository('PumukitSchemaBundle:MultimediaObject')->createStandardQueryBuilder()->field('tags._id')->notEqual(new \MongoId($unescoTag->getId()));
+                $query = $dm->getRepository('PumukitSchemaBundle:MultimediaObject')->createStandardQueryBuilder()->field('tags._id')->notEqual(new \MongoId($unescoTag->getId()));
                 break;
-            case ($caseUNESCO === 'U'):
+            case 'U':
                 $unescoTag = $dm->getRepository('PumukitSchemaBundle:Tag')->findOneBy(array('cod' => $tag));
-                $multimediaObjects = $dm->getRepository('PumukitSchemaBundle:MultimediaObject')->createStandardQueryBuilder()->field('tags._id')->equals(new \MongoId($unescoTag->getId()));
+                $query = $dm->getRepository('PumukitSchemaBundle:MultimediaObject')->createStandardQueryBuilder()->field('tags._id')->equals(new \MongoId($unescoTag->getId()));
                 break;
-            case "2":
-                $multimediaObjects = $dm->getRepository('PumukitSchemaBundle:MultimediaObject')->createStandardQueryBuilder();
-                break;
+            case '2':
             default:
+                $query = $dm->getRepository('PumukitSchemaBundle:MultimediaObject')->createStandardQueryBuilder();
                 break;
         }
 
-        return $multimediaObjects;
+        if (isset($criteria) and !empty($criteria)) {
+            $query = $this->addCriteria($query, $criteria);
+        }
+
+        return $query;
     }
 
     /**
+     * @param $query
+     * @param $criteria
+     *
+     * @return mixed
+     */
+    private function addCriteria($query, $criteria)
+    {
+        foreach ($criteria as $key => $field) {
+            if ('roles' === $key and count($field) > 1) {
+                foreach ($field as $key2 => $value) {
+                    $aCriteria[] = $query->expr()->field($key2)->equals($value);
+                }
+                $query->field('people')->equals($query->expr()->elemMatch($aCriteria));
+            } elseif ('public_date_init' === $key and !empty($field)) {
+                $public_date_init = $field;
+            } elseif ('public_date_finish' === $key and !empty($field)) {
+                $public_date_finish = $field;
+            } elseif ('record_date_init' === $key and !empty($field)) {
+                $record_date_init = $field;
+            } elseif ('record_date_finish' === $key and !empty($field)) {
+                $record_date_finish = $field;
+            } elseif ('$text' === $key and !empty($field)) {
+                $query->text($field);
+            } elseif ('type' === $key and !empty($field)) {
+                if ('all' != $field) {
+                    $query->field('type')->equals($field);
+                }
+            } elseif ('track.duration' == $key and !empty($field)) {
+                $query = $this->findDuration($query, $key, $field);
+            } elseif ('year' == $key and !empty($field)) {
+                $query = $this->findDuration($query, 'year', $field);
+            } else {
+                $query->field($key)->equals($field);
+            }
+        }
+
+        if (isset($public_date_init) and isset($public_date_finish)) {
+            $query->field('public_date')->range(new \MongoDate(strtotime($public_date_init)), new \MongoDate(strtotime($public_date_finish)));
+        } elseif (isset($public_date_init) and !empty($public_date_init)) {
+            $date = date($public_date_init.'T23:59:59');
+            $query->field('public_date')->range(new \MongoDate(strtotime($public_date_init)), new \MongoDate(strtotime($date)));
+        } elseif (isset($public_date_finish) and !empty($public_date_finish)) {
+            $date = date($public_date_finish.'T23:59:59');
+            $query->field('public_date')->range(new \MongoDate(strtotime($public_date_finish)), new \MongoDate(strtotime($date)));
+        }
+
+        if (isset($record_date_init) and isset($record_date_finish)) {
+            $query->field('record_date')->range(new \MongoDate(strtotime($record_date_init)), new \MongoDate(strtotime($record_date_finish)));
+        } elseif (isset($record_date_init)) {
+            $date = date($record_date_init.'T23:59:59');
+            $query->field('record_date')->range(new \MongoDate(strtotime($record_date_init)), new \MongoDate(strtotime($date)));
+        } elseif (isset($record_date_finish)) {
+            $date = date($record_date_finish.'T23:59:59');
+            $query->field('record_date')->range(new \MongoDate(strtotime($record_date_finish)), new \MongoDate(strtotime($date)));
+        }
+
+        return $query;
+    }
+
+    /**
+     * @param Request $request
+     *
      * @Route("/advance/search/form", name="pumukitnewadmin_unesco_advance_search_form")
      * @Template("PumukitNewAdminBundle:UNESCO:search_view.html.twig")
      *
@@ -204,11 +391,73 @@ class UNESCOController extends Controller implements NewAdminController
             EmbeddedBroadcast::TYPE_GROUPS => $translator->trans('Groups'),
         );
 
+        $type = array(
+            MultimediaObject::TYPE_VIDEO => $translator->trans('Video'),
+            MultimediaObject::TYPE_AUDIO => $translator->trans('Audio'),
+        );
+
         return array(
             'form' => $form->createView(),
             'roles' => $roles,
             'statusPub' => $statusPub,
             'broadcasts' => $broadcasts,
+            'years' => $this->getMmobjsYears(),
+            'type' => $type,
         );
+    }
+
+    /**
+     * @return array
+     */
+    private function getMmobjsYears()
+    {
+        $mmObjColl = $this->get('doctrine_mongodb')->getManager()->getDocumentCollection('PumukitSchemaBundle:MultimediaObject');
+        $pipeline = array(
+            array('$match' => array('status' => MultimediaObject::STATUS_PUBLISHED)),
+            array('$group' => array('_id' => array('$year' => '$record_date'))),
+            array('$sort' => array('_id' => 1)),
+        );
+        $yearResults = $mmObjColl->aggregate($pipeline);
+        $years = array();
+        foreach ($yearResults as $year) {
+            $years[] = $year['_id'];
+        }
+
+        return $years;
+    }
+
+    /**
+     * @param $query
+     * @param $key
+     * @param $field
+     *
+     * @return mixed
+     */
+    private function findDuration($query, $key, $field)
+    {
+        if ('track.duration' === $key) {
+            if ($field == '-5') {
+                $query->field($key)->lte(300);
+            }
+            if ($field == '-10') {
+                $query->field($key)->lte(600);
+            }
+            if ($field == '-30') {
+                $query->field($key)->lte(1800);
+            }
+            if ($field == '-60') {
+                $query->field($key)->lte(3600);
+            }
+            if ($field == '+60') {
+                $query->field($key)->gt(3600);
+            }
+        } elseif ('year' === $key) {
+            $start = \DateTime::createFromFormat('d/m/Y:H:i:s', sprintf('01/01/%s:00:00:01', $field));
+            $end = \DateTime::createFromFormat('d/m/Y:H:i:s', sprintf('01/01/%s:00:00:01', ($field) + 1));
+            $query->field('record_date')->gte($start);
+            $query->field('record_date')->lt($end);
+        }
+
+        return $query;
     }
 }

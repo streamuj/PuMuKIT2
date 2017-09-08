@@ -14,9 +14,9 @@
             {% render(controller('PumukitNewAdminBundle:UNESCO:list')) %}
         </div>
         <div id="edit_mms">
-            {#{% if(app.session.has('admin/series/id') and app.session.has('admin/mms/id')) %}
-                {{ render(url('pumukitnewadmin_mms_edit', {'id': app.session.get('admin/mms/id'), 'seriesId': app.session.get('admin/series/id')})) }}
-            {% endif %}#}
+            {% if(app.session.has('UNESCO/mmo')) %}
+                {{ render(url('pumukit_new_admin_unesco_edit', {'id': app.session.get('UNESCO/mmo')})) }}
+            {% endif %}
         </div>
     </div>
     <div class="col-md-2">
@@ -24,4 +24,30 @@
 
         </div>
     </div>
+
+    <script type="text/javascript">
+        var url = "{{ path('pumukit_schema_apikeywords_mmobj', {'_format':'json'})|raw }}";
+        window.mmobjkeywords = new Bloodhound({
+            datumTokenizer: Bloodhound.tokenizers.obj.whitespace('_id'),
+            queryTokenizer: Bloodhound.tokenizers.whitespace,
+            prefetch: {
+                url: url,
+                ttl: 1800000
+            }
+        });
+
+        window.mmobjkeywords.initialize();
+
+        var url = "{{ path('pumukit_schema_apikeywords_series', {'_format':'json'})|raw }}";
+        window.serieskeywords = new Bloodhound({
+            datumTokenizer: Bloodhound.tokenizers.obj.whitespace('_id'),
+            queryTokenizer: Bloodhound.tokenizers.whitespace,
+            prefetch: {
+                url: url,
+                ttl: 1800000
+            }
+        });
+
+        window.serieskeywords.initialize();
+    </script>
 {% endblock %}
