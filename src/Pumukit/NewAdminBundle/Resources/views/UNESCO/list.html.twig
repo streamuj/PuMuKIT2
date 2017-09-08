@@ -81,12 +81,12 @@
                         {% include 'PumukitNewAdminBundle:MultimediaObject:updatemenu.html.twig' with {'mm': mm} %}
                     </td>
 
-                    <td headers="th-video" onclick="click_fila_edit_urls('mm', this, '{{ path('pumukitnewadmin_mms_show', {'id': mm.id}) }}', '{{ path('pumukitnewadmin_mms_edit', {'id': mm.id}) }}')"
+                    <td headers="th-video" onclick="click_fila_edit_urls('mms', this, '{{ path('pumukitnewadmin_mms_show', {'id': mm.id}) }}', '{{ path('pumukit_new_admin_unesco_edit', {'id': mm.id}) }}')"
                         ondblclick="dblclick_preview_mm('{{ mm.id }}')">
                         <span>{{ mm.isOnlyAudio() ? 'Audio':'Video' }}</span>
                     </td>
 
-                    <td headers="th-img" onclick="click_fila_edit_urls('mm', this, '{{ path('pumukitnewadmin_mms_show', {'id': mm.id}) }}', '{{ path('pumukitnewadmin_mms_edit', {'id': mm.id}) }}')"
+                    <td headers="th-img" onclick="click_fila_edit_urls('mms', this, '{{ path('pumukitnewadmin_mms_show', {'id': mm.id}) }}', '{{ path('pumukit_new_admin_unesco_edit', {'id': mm.id}) }}')"
                         ondblclick="dblclick_preview_mm('{{ mm.id }}')">
                         <img class="mini pic-{{ mm.id }} preview" src="{{ mm|first_url_pic(false, false) }}"
                              alt="{% trans %}No_pic{% endtrans %}" height="23" width="30">
@@ -94,22 +94,22 @@
 
                     <td headers="th-series"><a href="{{ path('pumukitnewadmin_mms_shortener', {'id': mm.id }) }}">{{ mm.series }}</a></td>
 
-                    <td headers="th-title" onclick="click_fila_edit_urls('mm', this, '{{ path('pumukitnewadmin_mms_show', {'id': mm.id}) }}', '{{ path('pumukitnewadmin_mms_edit', {'id': mm.id}) }}')"
+                    <td headers="th-title" onclick="click_fila_edit_urls('mms', this, '{{ path('pumukitnewadmin_mms_show', {'id': mm.id}) }}', '{{ path('pumukit_new_admin_unesco_edit', {'id': mm.id}) }}')"
                         ondblclick="dblclick_preview_mm('{{ mm.id }}')">
                         {{ mm.getTitle() }}
                     </td>
                     <td headers="th-duration" class="text-nowrap"
-                        onclick="click_fila_edit_urls('mm', this, '{{ path('pumukitnewadmin_mms_show', {'id': mm.id}) }}', '{{ path('pumukitnewadmin_mms_edit', {'id': mm.id}) }}')"
+                        onclick="click_fila_edit_urls('mms', this, '{{ path('pumukitnewadmin_mms_show', {'id': mm.id}) }}', '{{ path('pumukit_new_admin_unesco_edit', {'id': mm.id}) }}')"
                         ondblclick="dblclick_preview_mm('{{ mm.id }}')">
                         {{ mmobj_duration(mm) | duration_string }}
                     </td>
                     <td headers="th-rec-date" class="text-nowrap"
-                        onclick="click_fila_edit_urls('mm', this, '{{ path('pumukitnewadmin_mms_show', {'id': mm.id}) }}', '{{ path('pumukitnewadmin_mms_edit', {'id': mm.id}) }}')"
+                        onclick="click_fila_edit_urls('mms', this, '{{ path('pumukitnewadmin_mms_show', {'id': mm.id}) }}', '{{ path('pumukit_new_admin_unesco_edit', {'id': mm.id}) }}')"
                         ondblclick="dblclick_preview_mm('{{ mm.id }}')">
                         {{ mm.getRecordDate()|date('d-m-Y') }}
                     </td>
                     <td headers="th-pub-date" class="text-nowrap"
-                        onclick="click_fila_edit_urls('mm', this, '{{ path('pumukitnewadmin_mms_show', {'id': mm.id}) }}', '{{ path('pumukitnewadmin_mms_edit', {'id': mm.id}) }}')"
+                        onclick="click_fila_edit_urls('mms', this, '{{ path('pumukitnewadmin_mms_show', {'id': mm.id}) }}', '{{ path('pumukit_new_admin_unesco_edit', {'id': mm.id}) }}')"
                         ondblclick="dblclick_preview_mm('{{ mm.id }}')">
                         {{ mm.getPublicDate()|date('d-m-Y') }}
                     </td>
