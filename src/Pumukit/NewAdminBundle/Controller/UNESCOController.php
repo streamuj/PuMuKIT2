@@ -12,6 +12,9 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
+use Pumukit\NewAdminBundle\Form\Type\MultimediaObjectMetaType;
+use Pumukit\NewAdminBundle\Form\Type\MultimediaObjectPubType;
+use Pumukit\SchemaBundle\Security\Permission;
 use Symfony\Component\HttpFoundation\Request;
 use Pagerfanta\Pagerfanta;
 
@@ -116,12 +119,11 @@ class UNESCOController extends Controller implements NewAdminController
      * @Route("/list/{tag}", name="pumukitnewadmin_unesco_list")
      * @Template("PumukitNewAdminBundle:UNESCO:list.html.twig")
      *
-     * @param Request $request
      * @param string  $tag
      *
      * @return array
      */
-    public function listAction(Request $request, $tag = null)
+    public function listAction($tag = null)
     {
         $session = $this->get('session');
         $page = $session->get('admin/unesco/page', 1);
@@ -245,19 +247,90 @@ class UNESCOController extends Controller implements NewAdminController
     }
 
     /**
+     * @param Request $request
      * @param MultimediaObject $multimediaObject
      *
      * @return array
+     * @throws \Exception
+     *
      * @Route("edit/{id}", name="pumukit_new_admin_unesco_edit")
      * @ParamConverter("multimediaObject", class="PumukitSchemaBundle:MultimediaObject", options={"mapping": {"id":
      *                                     "id"}})
      * @Template("PumukitNewAdminBundle:UNESCO:edit.html.twig")
      */
-    public function editUNESCOAction(MultimediaObject $multimediaObject)
+    public function editUNESCOAction(Request $request, MultimediaObject $multimediaObject)
     {
-        $this->container->get('session')->set('UNESCO/mmo', $multimediaObject->getId());
+        $factoryService = $this->get('pumukitschema.factory');
+        $personService = $this->get('pumukitschema.person');
 
-        return array('multimediaObject' => $multimediaObject);
+        $personalScopeRoleCode = $personService->getPersonalScopeRoleCode();
+
+        try {
+            $personalScopeRole = $personService->getPersonalScopeRole();
+        } catch (\Exception $e) {
+            return new Response($e, Response::HTTP_BAD_REQUEST);
+        }
+
+        $roles = $personService->getRoles();
+        if (null === $roles) {
+            throw new \Exception('Not found any role.');
+        }
+
+        $parentTags = $factoryService->getParentTags();
+
+        //$multimediaObject = $this->findOr404($request);
+        $translator = $this->get('translator');
+        $locale = $request->getLocale();
+        $formMeta = $this->createForm(new MultimediaObjectMetaType($translator, $locale), $multimediaObject);
+        $options = array('not_granted_change_status' => !$this->isGranted(Permission::CHANGE_MMOBJECT_STATUS));
+        $formPub = $this->createForm(new MultimediaObjectPubType($translator, $locale), $multimediaObject, $options);
+
+        //If the 'pudenew' tag is not being used, set the display to 'false'.
+        if (!$this->container->getParameter('show_latest_with_pudenew')) {
+            $this->get('doctrine_mongodb.odm.document_manager')
+                ->getRepository('PumukitSchemaBundle:Tag')
+                ->findOneByCod('PUDENEW')
+                ->setDisplay(false);
+        }
+        $pubChannelsTags = $factoryService->getTagsByCod('PUBCHANNELS', true);
+        $pubDecisionsTags = $factoryService->getTagsByCod('PUBDECISIONS', true);
+
+        $jobs = $this->get('pumukitencoder.job')->getNotFinishedJobsByMultimediaObjectId($multimediaObject->getId());
+
+        $notMasterProfiles = $this->get('pumukitencoder.profile')->getProfiles(null, true, false);
+
+        $template = $multimediaObject->isPrototype() ? '_template' : '';
+
+        $isPublished = null;
+        $playableResource = null;
+
+        $activeEditor = $this->checkHasEditor();
+        $notChangePubChannel = !$this->isGranted(Permission::CHANGE_MMOBJECT_PUBCHANNEL);
+        $allBundles = $this->container->getParameter('kernel.bundles');
+        $opencastExists = array_key_exists('PumukitOpencastBundle', $allBundles);
+
+        $allGroups = $this->getAllGroups();
+
+        return array(
+            'mm' => $multimediaObject,
+            'form_meta' => $formMeta->createView(),
+            'form_pub' => $formPub->createView(),
+            //'series' => $series,
+            'roles' => $roles,
+            'personal_scope_role' => $personalScopeRole,
+            'personal_scope_role_code' => $personalScopeRoleCode,
+            'pub_channels' => $pubChannelsTags,
+            'pub_decisions' => $pubDecisionsTags,
+            'parent_tags' => $parentTags,
+            'jobs' => $jobs,
+            'not_master_profiles' => $notMasterProfiles,
+            'template' => $template,
+            'active_editor' => $activeEditor,
+            'opencast_exists' => $opencastExists,
+            'not_change_pub_channel' => $notChangePubChannel,
+            'groups' => $allGroups,
+        );
+
     }
 
     /**
@@ -460,4 +533,28 @@ class UNESCOController extends Controller implements NewAdminController
 
         return $query;
     }
+
+    protected function checkHasEditor()
+    {
+        $router = $this->get('router');
+        $routes = $router->getRouteCollection()->all();
+        $activeEditor = array_key_exists('pumukit_videoeditor_index', $routes);
+
+        return $activeEditor;
+    }
+
+    public function getAllGroups()
+    {
+        $groupService = $this->get('pumukitschema.group');
+        $userService = $this->get('pumukitschema.user');
+        $loggedInUser = $this->getUser();
+        if ($loggedInUser->isSuperAdmin() || $userService->hasGlobalScope($loggedInUser)) {
+            $allGroups = $groupService->findAll();
+        } else {
+            $allGroups = $loggedInUser->getGroups();
+        }
+
+        return $allGroups;
+    }
+
 }
