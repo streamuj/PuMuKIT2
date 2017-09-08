@@ -104,6 +104,7 @@
                         {{ mmobj_duration(mm) | duration_string }}
                     </td>
                     <td headers="th-rec-date" class="text-nowrap"
+
                         onclick="click_fila_edit_urls('mms', this, '{{ path('pumukitnewadmin_unesco_show', {'id': mm.id}) }}', '{{ path('pumukit_new_admin_unesco_edit', {'id': mm.id}) }}')"
                         ondblclick="dblclick_preview_mm('{{ mm.id }}')">
                         {{ mm.getRecordDate()|date('d-m-Y') }}

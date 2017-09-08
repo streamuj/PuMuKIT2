@@ -36,6 +36,13 @@
         </div>
     </div>
 
+    <div class="modal fade" id="myAuxModal" tabindex="-1" role="dialog" aria-labelledby="myAuxModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+            </div>
+        </div>
+    </div>
+
     <script type="text/javascript">
         var url = "{{ path('pumukit_schema_apikeywords_mmobj', {'_format':'json'})|raw }}";
         window.mmobjkeywords = new Bloodhound({
