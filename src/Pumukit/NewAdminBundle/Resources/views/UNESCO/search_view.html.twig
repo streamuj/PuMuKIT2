@@ -1,5 +1,10 @@
 {% form_theme form 'PumukitNewAdminBundle:Themes:fields.html.twig' %}
 
+{% set formBasic = false %}
+{% if app.request.session.has('UNESCO/formbasic') and app.request.session.get('UNESCO/formbasic') != "true" %}
+    {% set formBasic = true %}
+{% endif %}
+
 <div class="well">
     <div class="row">
         <div class="col-xs-12">
@@ -8,26 +13,68 @@
             </div>
         </div>
         <div class="col-xs-12">
-            <div class="advance_form collapse" id="collapseAdvanceForm">
+            <div class="advance_form collapse {% if formBasic == "false" %}in{% endif %}" id="collapseAdvanceForm">
                 {% include 'PumukitNewAdminBundle:UNESCO:advance_form.html.twig' %}
             </div>
+        </div>
+        <div class="col-xs-12">
+            <a class="unescoResetForm" href="#">{% trans %}Reset{% endtrans %}</a>
         </div>
     </div>
 </div>
 
 
 <script type="text/javascript">
+    $(function() {
+        var formBasic = "{{ formBasic }}";
+        if(formBasic == true) {
+            $('#pumukitnewadmin_unesco_basicform_seriesID').attr('disabled',true);
+            $('#pumukitnewadmin_unesco_basicform_Text').attr('disabled',true);
+            $('#pumukitnewadmin_unesco_basicform__id').attr('disabled',true);
+            $('#submitBasicForm').attr('disabled', true);
+            $('#submitAdvanceForm').attr('disabled', false);
+        }
+    });
+
+    $('#collapseAdvanceForm').on('show.bs.collapse', function () {
+        $('#pumukitnewadmin_unesco_basicform_seriesID').attr('disabled',true);
+        $('#pumukitnewadmin_unesco_basicform_Text').attr('disabled',true);
+        $('#pumukitnewadmin_unesco_basicform__id').attr('disabled',true);
+        $('#submitBasicForm').attr('disabled', true);
+        $('#submitAdvanceForm').attr('disabled', false);
+    });
+
+    $('#collapseAdvanceForm').on('hide.bs.collapse', function () {
+        $('#pumukitnewadmin_unesco_basicform_seriesID').attr('disabled',false);
+        $('#pumukitnewadmin_unesco_basicform_Text').attr('disabled',false);
+        $('#pumukitnewadmin_unesco_basicform__id').attr('disabled',false);
+        $('#submitBasicForm').attr('disabled', false);
+        $('#submitAdvanceForm').attr('disabled',true);
+    });
+
     $('.unesco_form').on('submit',function(event) {
         event.preventDefault();
         $.ajax({
-            url: '{{ path('pumukitnewadmin_unesco_list') }}',
+            url: '{{ path('pumukitnewadmin_unesco_addcriteria') }}',
             method: 'POST',
             data: $(this).serialize(),
             success: function (response) {
-                console.log('ok');
+                $('#list_mms').load("{{ path('pumukitnewadmin_unesco_list') }}")
             },
             error: function (response) {
-                console.log('ko');
+                alert('error');
+            }
+        });
+        return false;
+
+    });
+    $('.unescoResetForm').on('click',function(event) {
+        event.preventDefault();
+        $.ajax({
+            url: '{{ path('pumukitnewadmin_unesco_removesession') }}',
+            method: 'POST',
+            success: function (response) {
+                $('#list_mms').load("{{ path('pumukitnewadmin_unesco_list') }}")
             }
         });
         return false;
