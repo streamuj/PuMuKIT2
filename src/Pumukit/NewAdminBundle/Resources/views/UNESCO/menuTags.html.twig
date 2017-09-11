@@ -3,7 +3,7 @@
     {% set active = app.session.get('admin/unesco/tag') %}
 {% endif %}
 
-<ul class="list-unstyled">
+<ul id="tagList" class="list-unstyled">
 
     {% for tagDefault in defaultTagOptions %}
         <li>
@@ -18,10 +18,10 @@
             <span class="mdi-action-list"></span>
              <strong>{{ parent }}</strong>
         </li>
-        <ul id="collapse_{{ loop.index }}" class="collapse in" style="padding-left:20px;">
+        <ul id="collapse_{{ loop.index }}" class="collapse in draggableTags" style="padding-left:20px;">
             {% for children in tag %}
-                <li style="list-style-type: none;">
-                    <a class="unescoTags" href="#" data-href="{{ path('pumukitnewadmin_unesco_list', {'tag' : children.getCod() }) }}" title="{{ children.getTitle(app.request.getLocale()) }}">
+                <li style="list-style-type: none;" draggable="true">
+                    <a class="unescoTags" href="#" draggable="false" data-href="{{ path('pumukitnewadmin_unesco_list', {'tag' : children.getCod() }) }}" title="{{ children.getTitle(app.request.getLocale()) }}">
                         <span class="mdi-file-folder"></span> <strong>{{ children.getTitle(app.request.getLocale()) }} [{{ children.getNumberMultimediaObjects() }}]</strong>
                     </a>
                 </li>

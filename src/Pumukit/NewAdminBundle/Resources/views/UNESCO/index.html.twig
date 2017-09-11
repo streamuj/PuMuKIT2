@@ -14,14 +14,18 @@
             {% render(controller('PumukitNewAdminBundle:UNESCO:list')) %}
         </div>
         <div id="edit_mms">
-            {% if(app.session.has('UNESCO/mmo')) %}
-                {{ render(url('pumukit_new_admin_unesco_edit', {'id': app.session.get('UNESCO/mmo')})) }}
+            {% if(app.session.has('admin/unesco/id')) %}
+                {{ render(url('pumukit_new_admin_unesco_edit', {'id': app.session.get('admin/unesco/id')})) }}
             {% endif %}
         </div>
     </div>
     <div class="col-md-2">
         <div id="preview_mms">
-
+            {% if app.session.has('admin/unesco/id') %}
+                {% render(controller('PumukitNewAdminBundle:UNESCO:show', {'id' : app.session.get('admin/unesco/id')})) %}
+            {% else %}
+                {% render(controller('PumukitNewAdminBundle:UNESCO:show')) %}
+            {% endif %}
         </div>
     </div>
 
