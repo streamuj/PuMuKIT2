@@ -16,6 +16,7 @@ use Pumukit\NewAdminBundle\Form\Type\MultimediaObjectMetaType;
 use Pumukit\NewAdminBundle\Form\Type\MultimediaObjectPubType;
 use Pumukit\SchemaBundle\Security\Permission;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Pagerfanta\Pagerfanta;
 
 /**
@@ -172,6 +173,7 @@ class UNESCOController extends Controller implements NewAdminController
         $session->remove('admin/unesco/tag');
         $session->remove('admin/unesco/page');
         $session->remove('admin/unesco/paginate');
+        $session->remove('admin/unesco/id');
 
         return new JsonResponse(array('success'));
     }
@@ -250,7 +252,7 @@ class UNESCOController extends Controller implements NewAdminController
      * @param Request $request
      * @param MultimediaObject $multimediaObject
      *
-     * @return array
+     * @return array|Response
      * @throws \Exception
      *
      * @Route("edit/{id}", name="pumukit_new_admin_unesco_edit")
@@ -331,6 +333,85 @@ class UNESCOController extends Controller implements NewAdminController
             'groups' => $allGroups,
         );
 
+    }
+
+    /**
+     * @param Request $request
+     * @param string $id
+     * @return array
+     *
+     * @Route("/advance/search/show/{id}", name="pumukitnewadmin_unesco_show")
+     * @Template()
+     */
+    public function showAction(Request $request, $id = null)
+    {
+        $dm = $this->container->get('doctrine_mongodb')->getManager();
+
+        $roles = $this->get('pumukitschema.person')->getRoles();
+        $activeEditor = $this->checkHasEditor();
+
+        $unescoTag = $dm->getRepository('PumukitSchemaBundle:Tag')->findOneByCod('UNESCO');
+
+        if(isset($id)) {
+            $multimediaObject = $dm->getRepository('PumukitSchemaBundle:MultimediaObject')->findOneBy(array('_id' => new \MongoId($id)));
+            $this->get('session')->set('admin/unesco/id', $multimediaObject->getId());
+        } else {
+            $multimediaObject = null;
+        }
+
+        return array(
+            'unescoTag' => $unescoTag,
+            'mm' => $multimediaObject,
+            'roles' => $roles,
+            'active_editor' => $activeEditor,
+        );
+    }
+
+    /**
+     * @param Request $request
+     *
+     * @Route("/advance/search/form", name="pumukitnewadmin_unesco_advance_search_form")
+     * @Template("PumukitNewAdminBundle:UNESCO:search_view.html.twig")
+     *
+     * @return array
+     */
+    public function advanceSearchFormAction(Request $request)
+    {
+        $dm = $this->container->get('doctrine_mongodb')->getManager();
+
+        $translator = $this->get('translator');
+        $locale = $request->getLocale();
+
+        $form = $this->createForm(new UNESCOBasicType($translator, $locale));
+
+        $roles = $dm->getRepository('PumukitSchemaBundle:Role')->findAll();
+
+        $statusPub = array(
+            MultimediaObject::STATUS_PUBLISHED => $translator->trans('Published'),
+            MultimediaObject::STATUS_BLOQ => $translator->trans('Blocked'),
+            MultimediaObject::STATUS_HIDE => $translator->trans('Hidden'),
+        );
+
+        $broadcasts = array(
+            EmbeddedBroadcast::TYPE_PUBLIC => $translator->trans('Public'),
+            EmbeddedBroadcast::TYPE_LOGIN => $translator->trans('Login'),
+            EmbeddedBroadcast::TYPE_PASSWORD => $translator->trans('Password'),
+            EmbeddedBroadcast::TYPE_GROUPS => $translator->trans('Groups'),
+        );
+
+        $type = array(
+            MultimediaObject::TYPE_VIDEO => $translator->trans('Video'),
+            MultimediaObject::TYPE_AUDIO => $translator->trans('Audio'),
+        );
+
+        return array(
+            'form' => $form->createView(),
+            'roles' => $roles,
+            'statusPub' => $statusPub,
+            'broadcasts' => $broadcasts,
+            'years' => $this->getMmobjsYears(),
+            'type' => $type,
+        );
     }
 
     /**
@@ -433,53 +514,6 @@ class UNESCOController extends Controller implements NewAdminController
     }
 
     /**
-     * @param Request $request
-     *
-     * @Route("/advance/search/form", name="pumukitnewadmin_unesco_advance_search_form")
-     * @Template("PumukitNewAdminBundle:UNESCO:search_view.html.twig")
-     *
-     * @return array
-     */
-    public function advanceSearchFormAction(Request $request)
-    {
-        $dm = $this->container->get('doctrine_mongodb')->getManager();
-
-        $translator = $this->get('translator');
-        $locale = $request->getLocale();
-
-        $form = $this->createForm(new UNESCOBasicType($translator, $locale));
-
-        $roles = $dm->getRepository('PumukitSchemaBundle:Role')->findAll();
-
-        $statusPub = array(
-            MultimediaObject::STATUS_PUBLISHED => $translator->trans('Published'),
-            MultimediaObject::STATUS_BLOQ => $translator->trans('Blocked'),
-            MultimediaObject::STATUS_HIDE => $translator->trans('Hidden'),
-        );
-
-        $broadcasts = array(
-            EmbeddedBroadcast::TYPE_PUBLIC => $translator->trans('Public'),
-            EmbeddedBroadcast::TYPE_LOGIN => $translator->trans('Login'),
-            EmbeddedBroadcast::TYPE_PASSWORD => $translator->trans('Password'),
-            EmbeddedBroadcast::TYPE_GROUPS => $translator->trans('Groups'),
-        );
-
-        $type = array(
-            MultimediaObject::TYPE_VIDEO => $translator->trans('Video'),
-            MultimediaObject::TYPE_AUDIO => $translator->trans('Audio'),
-        );
-
-        return array(
-            'form' => $form->createView(),
-            'roles' => $roles,
-            'statusPub' => $statusPub,
-            'broadcasts' => $broadcasts,
-            'years' => $this->getMmobjsYears(),
-            'type' => $type,
-        );
-    }
-
-    /**
      * @return array
      */
     private function getMmobjsYears()
@@ -534,7 +568,7 @@ class UNESCOController extends Controller implements NewAdminController
         return $query;
     }
 
-    protected function checkHasEditor()
+    private function checkHasEditor()
     {
         $router = $this->get('router');
         $routes = $router->getRouteCollection()->all();
@@ -543,7 +577,7 @@ class UNESCOController extends Controller implements NewAdminController
         return $activeEditor;
     }
 
-    public function getAllGroups()
+    private function getAllGroups()
     {
         $groupService = $this->get('pumukitschema.group');
         $userService = $this->get('pumukitschema.user');
