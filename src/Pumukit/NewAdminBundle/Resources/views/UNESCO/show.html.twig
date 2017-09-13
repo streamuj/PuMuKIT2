@@ -1,3 +1,9 @@
+<style type="text/css">
+    .list_unesco.over {
+        border: 2px dashed #000;
+    }
+</style>
+
 <div class="well">
     <div class="well">
 
@@ -21,12 +27,25 @@
                 {% endif %}
             </div>
 
-            <div>
+            {#<div>
                 <div class="panel panel-primary">
                     <div class="panel-heading">
                         <h3 class="panel-title-preview panel-title">Tags {{unescoTag.getTitle() }} </h3>
                     </div>
-                    <div id="unescoDraggableTags" class="panel-body-preview panel-body">
+                    <div class="panel-body-preview panel-body">
+                        <div class="list_unesco" draggable="true" style="padding:5px;">
+                            {% for mtag in mm.tags if mtag.level == 3 and mtag.isChildOf(unescoTag) %}
+                                <span class="label label-default">{{ mtag.title }}</span>
+                            {% else %}
+                                {% trans %}No tags{% endtrans %}.
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>#}
+
+                <div class="row">
+                    <div class="list_unesco" draggable="true" style="padding: 25px 10px 15px 10px;">
                         {% for mtag in mm.tags if mtag.level == 3 and mtag.isChildOf(unescoTag) %}
                             <span class="label label-default">{{ mtag.title }}</span>
                         {% else %}
@@ -34,7 +53,6 @@
                         {% endfor %}
                     </div>
                 </div>
-            </div>
 
             <div>
                 <ul>
@@ -67,3 +85,4 @@
         {% endif %}
     </div>
 </div>
+
