@@ -20,9 +20,12 @@
         </li>
         <ul id="collapse_{{ loop.index }}" class="collapse in draggableTags" style="padding-left:20px;">
             {% for children in tag %}
-                <li style="list-style-type: none;" draggable="true">
-                    <a class="unescoTags" href="#" draggable="false" data-href="{{ path('pumukitnewadmin_unesco_list', {'tag' : children.getCod() }) }}" title="{{ children.getTitle(app.request.getLocale()) }}">
-                        <span class="mdi-file-folder"></span> <strong>{{ children.getTitle(app.request.getLocale()) }} [{{ children.getNumberMultimediaObjects() }}]</strong>
+                <li style="list-style-type: none;" draggable="true" class="draggableTag">
+                    <a class="unescoTags" href="#" draggable="false" data-cod="{{ children.getCod() }}" data-href="{{ path('pumukitnewadmin_unesco_list', {'tag' : children.getCod() }) }}" title="{{ children.getTitle(app.request.getLocale()) }}">
+                        <span class="mdi-file-folder" draggable="false"></span>
+                        <strong draggable="false">
+                            {{ children.getTitle(app.request.getLocale()) }} [{{ children.getNumberMultimediaObjects() }}]
+                        </strong>
                     </a>
                 </li>
             {% endfor %}
@@ -35,4 +38,5 @@
         event.preventDefault();
         $('#list_mms').load($(this).data('href'));
     });
+
 </script>
