@@ -65,6 +65,12 @@
         var path = "{{ path('pumukitnewadmin_unesco_add_tag', {'tagCod': "__COD__", "multimediaObjectId": "__MMO__" }) }}";
         var path = path.replace("__COD__", cod);
         var path = path.replace("__MMO__", mmoid);
+
+        var edit = "{{ url('pumukit_new_admin_unesco_edit', {'id': "__MMO__" })  }}";
+        var edit = edit.replace("__MMO__", mmoid);
+
+        var preview = "{{ path('pumukitnewadmin_unesco_show', {'id': "__MMO__" }) }}";
+        var preview = preview.replace("__MMO__", mmoid);
         $.ajax({
             url: path,
             type: 'GET',
@@ -73,8 +79,8 @@
                 no_success(message);
             },
             success: function (response) {
-                $('#edit_mms').load("{{ url('pumukit_new_admin_unesco_edit', {'id': app.session.get('admin/unesco/id')})  }}");
-                $('#preview_mms').load("{{ path('pumukitnewadmin_unesco_show', {'id': app.session.get('admin/unesco/id')}) }}");
+                $('#edit_mms').load(edit);
+                $('#preview_mms').load(preview);
                 $('#tag_list_unesco').load("{{ path('pumukitnewadmin_unesco_menu_tags') }}");
                 var message = '{% trans %}Multimedia Object tag UNESCO saved OK{% endtrans %}';
                 success(message);
