@@ -144,6 +144,7 @@ class UNESCOController extends Controller implements NewAdminController
             $multimediaObjects = $this->searchMultimediaObjects($session->get('UNESCO/criteria'), $tag);
         } else {
             $dm = $this->container->get('doctrine_mongodb')->getManager();
+
             $multimediaObjects = $dm->getRepository('PumukitSchemaBundle:MultimediaObject')->createStandardQueryBuilder(
             );
         }
@@ -298,6 +299,7 @@ class UNESCOController extends Controller implements NewAdminController
 
         //If the 'pudenew' tag is not being used, set the display to 'false'.
         if (!$this->container->getParameter('show_latest_with_pudenew')) {
+
             $this->get('doctrine_mongodb.odm.document_manager')->getRepository('PumukitSchemaBundle:Tag')->findOneByCod(
                     'PUDENEW'
                 )->setDisplay(false);
@@ -377,6 +379,7 @@ class UNESCOController extends Controller implements NewAdminController
 
     /**
      * @param Request $request
+     *
      * @Route("/advance/search/form", name="pumukitnewadmin_unesco_advance_search_form")
      * @Template("PumukitNewAdminBundle:UNESCO:search_view.html.twig")
      *
@@ -487,6 +490,7 @@ class UNESCOController extends Controller implements NewAdminController
         switch ($tagCondition) {
             case '1':
                 $unescoTag = $dm->getRepository('PumukitSchemaBundle:Tag')->findOneBy(array('cod' => 'UNESCO'));
+
                 $query = $dm->getRepository('PumukitSchemaBundle:MultimediaObject')->createStandardQueryBuilder(
                 )->field('tags._id')->notEqual(new \MongoId($unescoTag->getId()));
                 break;

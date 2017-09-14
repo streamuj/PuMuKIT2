@@ -62,6 +62,7 @@
                 <tr style="cursor: pointer" {% if(app.session.get('admin/mms/id') == mm.id ) %} class="success" {% endif %}>
                     <td headers="th-checkbox">
                         <div class="checkbox pumukit-mms-checkbox">
+
                             <label data-id="{{ mm.id }}" draggable="true">
                                 <input id="{{ mm.id }}" class="mm_checkbox" type="checkbox">
                             </label>

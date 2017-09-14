@@ -1,3 +1,4 @@
+
 <style type="text/css">
     .list_unesco.over {
         border: 2px dashed #000;
@@ -11,14 +12,12 @@
 
             <p>
                 {% trans %}Is part of {% endtrans %}:
-                <a target="_black" href="{{ url('pumukit_webtv_series_index', {id: mm.series.id}) }}"> {{ mm.series.title }} </a>.
+                <a target="blank" href="{{ url('pumukit_webtv_series_index', {id: mm.series.id}) }}"> {{ mm.series.title }} </a>.
             </p>
-
             <div>
                 {% set html5_track = mm.getTrackWithTag('html5') %}
                 {% if html5_track and not active_editor %}
-                    <video id="player" src="{{ track_url(html5_track) }}" controls="" style="background: black; width: 100%;">
-                    </video>
+                    <video id="player" src="{{ track_url(html5_track) }}" controls="" style="background: black; width: 100%;"></video>
                 {% else %}
                     <div class="well" style="padding: 3px;">
                         <div class="embed-responsive embed-responsive-16by9">
@@ -139,4 +138,3 @@
         return false;
     }
 </script>
-
