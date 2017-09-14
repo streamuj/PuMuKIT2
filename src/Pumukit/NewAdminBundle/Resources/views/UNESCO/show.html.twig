@@ -10,49 +10,50 @@
         {% if mm is defined and mm is not null %}
 
             <p>
-                {% trans %}Is part of {% endtrans %}: <a target="_black" href="{{ url('pumukit_webtv_series_index', {id: mm.series.id}) }}"> {{mm.series.title}} </a>.
+                {% trans %}Is part of {% endtrans %}:
+                <a target="_black" href="{{ url('pumukit_webtv_series_index', {id: mm.series.id}) }}"> {{ mm.series.title }} </a>.
             </p>
 
             <div>
                 {% set html5_track = mm.getTrackWithTag('html5') %}
                 {% if html5_track and not active_editor %}
-                    <video id="player" src="{{ track_url(html5_track)  }}" controls="" style="background: black; width: 100%;">
+                    <video id="player" src="{{ track_url(html5_track) }}" controls="" style="background: black; width: 100%;">
                     </video>
                 {% else %}
                     <div class="well" style="padding: 3px;">
                         <div class="embed-responsive embed-responsive-16by9">
-                            <img src="{{ mm|first_url_pic(false, false) }}" class="img-responsive pic-{{mm.id}} preview" style="width: 100%" alt="{% trans %}Thumbnail{% endtrans %}">
+                            <img src="{{ mm|first_url_pic(false, false) }}" class="img-responsive pic-{{ mm.id }} preview" style="width: 100%" alt="{% trans %}Thumbnail{% endtrans %}">
                         </div>
                     </div>
                 {% endif %}
             </div>
 
-            {#<div>
+            <div>
                 <div class="panel panel-primary">
                     <div class="panel-heading">
-                        <h3 class="panel-title-preview panel-title">Tags {{unescoTag.getTitle() }} </h3>
+                        <h3 class="panel-title-preview panel-title">Tags {{ unescoTag.getTitle() }} </h3>
                     </div>
                     <div class="panel-body-preview panel-body">
-                        <div class="list_unesco" draggable="true" style="padding:5px;">
+                        <div id="list_unesco" onDrop="dropItem(this, event)" onDragEnter="return false" onDragOver="return false">
+
                             {% for mtag in mm.tags if mtag.level == 3 and mtag.isChildOf(unescoTag) %}
-                                <span class="label label-default">{{ mtag.title }}</span>
+                                <div id="taglist_{{ mtag.getCod() }}" class="unesco_tags" draggable="true">
+                                    <span class="label label-default">{{ mtag.title }} |
+                                        <a href="#" data-href="{{ path('pumukitnewadmin_unesco_delete_tag', {'tagCod': mtag.getCod(), "multimediaObjectId": mm.getId() }) }}" class="delete_tag_unesco">
+                                            <i class="mdi-content-clear"></i>
+                                        </a>
+                                    </span>
+                                </div>
                             {% else %}
-                                {% trans %}No tags{% endtrans %}.
+                                <div class="unesco_tags" draggable="true">
+                                    {% trans %}No tags{% endtrans %}.
+                                </div>
                             {% endfor %}
+
                         </div>
                     </div>
                 </div>
-            </div>#}
-
-                <div class="row">
-                    <div class="list_unesco" draggable="true" style="padding: 25px 10px 15px 10px;">
-                        {% for mtag in mm.tags if mtag.level == 3 and mtag.isChildOf(unescoTag) %}
-                            <span class="label label-default">{{ mtag.title }}</span>
-                        {% else %}
-                            {% trans %}No tags{% endtrans %}.
-                        {% endfor %}
-                    </div>
-                </div>
+            </div>
 
             <div>
                 <ul>
@@ -85,4 +86,57 @@
         {% endif %}
     </div>
 </div>
+
+<script type="text/javascript">
+
+    function dropItem(item, e) {
+        var cod = e.dataTransfer.getData('cod');
+        if($('#taglist_' + cod).length == 0) {
+            updateMultimediaObject(cod);
+        }
+    }
+
+    $('.delete_tag_unesco').on('click',function(event) {
+        event.preventDefault();
+        $.ajax({
+            url: $(this).data('href'),
+            type: 'GET',
+            error: function (request, json) {
+                var message = '{% trans %}Multimedia Object tag UNESCO saved ERROR{% endtrans %}';
+                no_success(message);
+            },
+            success: function (response) {
+                $('#edit_mms').load("{{ url('pumukit_new_admin_unesco_edit', {'id': app.session.get('admin/unesco/id')})  }}");
+                $('#tag_list_unesco').load("{{ path('pumukitnewadmin_unesco_menu_tags') }}");
+                $('#preview_mms').load("{{ path('pumukitnewadmin_unesco_show', {'id': app.session.get('admin/unesco/id')}) }}");
+                var message = '{% trans %}Multimedia Object tag UNESCO saved OK{% endtrans %}';
+                success(message);
+            }
+        });
+        return false;
+    });
+
+    function updateMultimediaObject(cod) {
+        event.preventDefault();
+        var path = "{{ path('pumukitnewadmin_unesco_add_tag', {'tagCod': "__COD__", "multimediaObjectId": "__MMO__" }) }}";
+        var path = path.replace("__COD__", cod);
+        var path = path.replace("__MMO__", "{{ app.session.get('admin/unesco/id') }}");
+        $.ajax({
+            url: path,
+            type: 'GET',
+            error: function (request, json) {
+                var message = '{% trans %}Multimedia Object tag UNESCO saved ERROR{% endtrans %}';
+                no_success(message);
+            },
+            success: function (response) {
+                $('#edit_mms').load("{{ url('pumukit_new_admin_unesco_edit', {'id': app.session.get('admin/unesco/id')})  }}");
+                $('#preview_mms').load("{{ path('pumukitnewadmin_unesco_show', {'id': app.session.get('admin/unesco/id')}) }}");
+                $('#tag_list_unesco').load("{{ path('pumukitnewadmin_unesco_menu_tags') }}");
+                var message = '{% trans %}Multimedia Object tag UNESCO saved OK{% endtrans %}';
+                success(message);
+            }
+        });
+        return false;
+    }
+</script>
 
