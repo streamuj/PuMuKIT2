@@ -20,8 +20,8 @@
         </li>
         <ul id="collapse_{{ loop.index }}" class="collapse in draggableTags" style="padding-left:20px;">
             {% for children in tag %}
-                <li style="list-style-type: none;" draggable="true" class="draggableTag">
-                    <a class="unescoTags" href="#" draggable="false" data-cod="{{ children.getCod() }}" data-href="{{ path('pumukitnewadmin_unesco_list', {'tag' : children.getCod() }) }}" title="{{ children.getTitle(app.request.getLocale()) }}">
+                <li id="children_{{ children.getCod() }}" draggable="true" ondragstart="dragItem(this, '{{ children.getCod() }}', '{{ children.getTitle(app.request.getLocale()) }}', event)" ondragend="dragEnd(this, event)" class="draggableTag" style="list-style-type: none;">
+                    <a class="unescoTags" href="#" draggable="false" data-href="{{ path('pumukitnewadmin_unesco_list', {'tag' : children.getCod() }) }}" title="{{ children.getTitle(app.request.getLocale()) }}">
                         <span class="mdi-file-folder" draggable="false"></span>
                         <strong draggable="false">
                             {{ children.getTitle(app.request.getLocale()) }} [{{ children.getNumberMultimediaObjects() }}]
@@ -38,5 +38,15 @@
         event.preventDefault();
         $('#list_mms').load($(this).data('href'));
     });
+
+    function dragItem(item, cod, title, e) {
+        item.style.opacity = '0.4';
+        e.dataTransfer.setData('cod', cod);
+        e.dataTransfer.setData('title', title);
+    }
+
+    function dragEnd(item, e) {
+        item.style.opacity = '';
+    }
 
 </script>

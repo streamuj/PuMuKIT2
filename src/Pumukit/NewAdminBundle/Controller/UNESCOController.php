@@ -66,7 +66,6 @@ class UNESCOController extends Controller implements NewAdminController
      * @param Request $request
      *
      * @return array
-     *
      * @Route("/", name="pumukitnewadmin_unesco_index")
      * @Template()
      */
@@ -107,10 +106,16 @@ class UNESCOController extends Controller implements NewAdminController
 
         $unescoTag = $dm->getRepository('PumukitSchemaBundle:Tag')->findOneBy(array('cod' => 'UNESCO'));
 
-        $countMultimediaObjectsWithoutTag = $dm->getRepository('PumukitSchemaBundle:MultimediaObject')->findWithoutTag($unescoTag);
+        $countMultimediaObjectsWithoutTag = $dm->getRepository('PumukitSchemaBundle:MultimediaObject')->findWithoutTag(
+            $unescoTag
+        );
         $defaultTagOptions = array(
             array('key' => 2, 'title' => $translator->trans('All'), 'count' => $countMultimediaObjects),
-            array('key' => 1, 'title' => $translator->trans('Without category'), 'count' => count($countMultimediaObjectsWithoutTag)),
+            array(
+                'key' => 1,
+                'title' => $translator->trans('Without category'),
+                'count' => count($countMultimediaObjectsWithoutTag),
+            ),
         );
 
         return array('tags' => $tagUNESCO, 'defaultTagOptions' => $defaultTagOptions);
@@ -120,7 +125,7 @@ class UNESCOController extends Controller implements NewAdminController
      * @Route("/list/{tag}", name="pumukitnewadmin_unesco_list")
      * @Template("PumukitNewAdminBundle:UNESCO:list.html.twig")
      *
-     * @param string  $tag
+     * @param string $tag
      *
      * @return array
      */
@@ -140,7 +145,8 @@ class UNESCOController extends Controller implements NewAdminController
             $multimediaObjects = $this->searchMultimediaObjects($session->get('UNESCO/criteria'), $tag);
         } else {
             $dm = $this->container->get('doctrine_mongodb')->getManager();
-            $multimediaObjects = $dm->getRepository('PumukitSchemaBundle:MultimediaObject')->createStandardQueryBuilder();
+            $multimediaObjects = $dm->getRepository('PumukitSchemaBundle:MultimediaObject')->createStandardQueryBuilder(
+            );
         }
 
         $adapter = new DoctrineODMMongoDBAdapter($multimediaObjects);
@@ -228,7 +234,10 @@ class UNESCOController extends Controller implements NewAdminController
                         $newCriteria['roles'][$key2]['people.$.people.name'] = new \MongoRegex('/.*'.$field.'.*/i');
                     }
                 }
-            } elseif (in_array($key, array('initPublicDate', 'finishPublicDate', 'initRecordDate', 'finishRecordDate'))) {
+            } elseif (in_array(
+                $key,
+                array('initPublicDate', 'finishPublicDate', 'initRecordDate', 'finishRecordDate')
+            )) {
                 if ('initPublicDate' === $key and !empty($value)) {
                     $newCriteria['public_date_init'] = $value;
                 } elseif ('finishPublicDate' === $key and !empty($value)) {
@@ -250,12 +259,12 @@ class UNESCOController extends Controller implements NewAdminController
     }
 
     /**
-     * @param Request $request
+     * @param Request          $request
      * @param MultimediaObject $multimediaObject
      *
      * @return array|Response
-     * @throws \Exception
      *
+     * @throws \Exception
      * @Route("edit/{id}", name="pumukit_new_admin_unesco_edit")
      * @ParamConverter("multimediaObject", class="PumukitSchemaBundle:MultimediaObject", options={"mapping": {"id":
      *                                     "id"}})
@@ -290,10 +299,9 @@ class UNESCOController extends Controller implements NewAdminController
 
         //If the 'pudenew' tag is not being used, set the display to 'false'.
         if (!$this->container->getParameter('show_latest_with_pudenew')) {
-            $this->get('doctrine_mongodb.odm.document_manager')
-                ->getRepository('PumukitSchemaBundle:Tag')
-                ->findOneByCod('PUDENEW')
-                ->setDisplay(false);
+            $this->get('doctrine_mongodb.odm.document_manager')->getRepository('PumukitSchemaBundle:Tag')->findOneByCod(
+                    'PUDENEW'
+                )->setDisplay(false);
         }
         $pubChannelsTags = $factoryService->getTagsByCod('PUBCHANNELS', true);
         $pubDecisionsTags = $factoryService->getTagsByCod('PUBDECISIONS', true);
@@ -333,18 +341,16 @@ class UNESCOController extends Controller implements NewAdminController
             'not_change_pub_channel' => $notChangePubChannel,
             'groups' => $allGroups,
         );
-
     }
 
     /**
-     * @param Request $request
      * @param string $id
-     * @return array
      *
+     * @return array
      * @Route("/advance/search/show/{id}", name="pumukitnewadmin_unesco_show")
      * @Template()
      */
-    public function showAction(Request $request, $id = null)
+    public function showAction($id = null)
     {
         $dm = $this->container->get('doctrine_mongodb')->getManager();
 
@@ -353,8 +359,10 @@ class UNESCOController extends Controller implements NewAdminController
 
         $unescoTag = $dm->getRepository('PumukitSchemaBundle:Tag')->findOneByCod('UNESCO');
 
-        if(isset($id)) {
-            $multimediaObject = $dm->getRepository('PumukitSchemaBundle:MultimediaObject')->findOneBy(array('_id' => new \MongoId($id)));
+        if (isset($id)) {
+            $multimediaObject = $dm->getRepository('PumukitSchemaBundle:MultimediaObject')->findOneBy(
+                array('_id' => new \MongoId($id))
+            );
             $this->get('session')->set('admin/unesco/id', $multimediaObject->getId());
         } else {
             $multimediaObject = null;
@@ -370,7 +378,6 @@ class UNESCOController extends Controller implements NewAdminController
 
     /**
      * @param Request $request
-     *
      * @Route("/advance/search/form", name="pumukitnewadmin_unesco_advance_search_form")
      * @Template("PumukitNewAdminBundle:UNESCO:search_view.html.twig")
      *
@@ -416,6 +423,52 @@ class UNESCOController extends Controller implements NewAdminController
     }
 
     /**
+     * @param $tagCod
+     * @param $multimediaObjectId
+     *
+     * @return JsonResponse
+     * @Route("/delete/tag/{multimediaObjectId}/{tagCod}", name="pumukitnewadmin_unesco_delete_tag")
+     */
+    public function deleteTagDnD($tagCod, $multimediaObjectId)
+    {
+        $dm = $this->container->get('doctrine_mongodb')->getManager();
+        $tagService = $this->container->get('pumukitschema.tag');
+
+        $multimediaObject = $dm->getRepository('PumukitSchemaBundle:MultimediaObject')->findOneById(
+            new \MongoId($multimediaObjectId)
+        );
+
+        $tag = $dm->getRepository('PumukitSchemaBundle:Tag')->findOneByCod($tagCod);
+
+        $tagService->removeTagFromMultimediaObject($multimediaObject, $tag->getId());
+
+        return new JsonResponse(array('success'));
+    }
+
+    /**
+     * @param $tagCod
+     * @param $multimediaObjectId
+     *
+     * @return JsonResponse
+     * @Route("/add/tag/{multimediaObjectId}/{tagCod}", name="pumukitnewadmin_unesco_add_tag")
+     */
+    public function addTagDnD($tagCod, $multimediaObjectId)
+    {
+        $dm = $this->container->get('doctrine_mongodb')->getManager();
+        $tagService = $this->container->get('pumukitschema.tag');
+
+        $multimediaObject = $dm->getRepository('PumukitSchemaBundle:MultimediaObject')->findOneById(
+            new \MongoId($multimediaObjectId)
+        );
+
+        $tag = $dm->getRepository('PumukitSchemaBundle:Tag')->findOneByCod($tagCod);
+
+        $tagService->addTagToMultimediaObject($multimediaObject, $tag->getId());
+
+        return new JsonResponse(array('success'));
+    }
+
+    /**
      * @param $criteria
      * @param $tag
      *
@@ -435,11 +488,13 @@ class UNESCOController extends Controller implements NewAdminController
         switch ($tagCondition) {
             case '1':
                 $unescoTag = $dm->getRepository('PumukitSchemaBundle:Tag')->findOneBy(array('cod' => 'UNESCO'));
-                $query = $dm->getRepository('PumukitSchemaBundle:MultimediaObject')->createStandardQueryBuilder()->field('tags._id')->notEqual(new \MongoId($unescoTag->getId()));
+                $query = $dm->getRepository('PumukitSchemaBundle:MultimediaObject')->createStandardQueryBuilder(
+                )->field('tags._id')->notEqual(new \MongoId($unescoTag->getId()));
                 break;
             case 'U':
                 $unescoTag = $dm->getRepository('PumukitSchemaBundle:Tag')->findOneBy(array('cod' => $tag));
-                $query = $dm->getRepository('PumukitSchemaBundle:MultimediaObject')->createStandardQueryBuilder()->field('tags._id')->equals(new \MongoId($unescoTag->getId()));
+                $query = $dm->getRepository('PumukitSchemaBundle:MultimediaObject')->createStandardQueryBuilder(
+                )->field('tags._id')->equals(new \MongoId($unescoTag->getId()));
                 break;
             case '2':
             default:
@@ -492,23 +547,41 @@ class UNESCOController extends Controller implements NewAdminController
         }
 
         if (isset($public_date_init) and isset($public_date_finish)) {
-            $query->field('public_date')->range(new \MongoDate(strtotime($public_date_init)), new \MongoDate(strtotime($public_date_finish)));
+            $query->field('public_date')->range(
+                new \MongoDate(strtotime($public_date_init)),
+                new \MongoDate(strtotime($public_date_finish))
+            );
         } elseif (isset($public_date_init) and !empty($public_date_init)) {
             $date = date($public_date_init.'T23:59:59');
-            $query->field('public_date')->range(new \MongoDate(strtotime($public_date_init)), new \MongoDate(strtotime($date)));
+            $query->field('public_date')->range(
+                new \MongoDate(strtotime($public_date_init)),
+                new \MongoDate(strtotime($date))
+            );
         } elseif (isset($public_date_finish) and !empty($public_date_finish)) {
             $date = date($public_date_finish.'T23:59:59');
-            $query->field('public_date')->range(new \MongoDate(strtotime($public_date_finish)), new \MongoDate(strtotime($date)));
+            $query->field('public_date')->range(
+                new \MongoDate(strtotime($public_date_finish)),
+                new \MongoDate(strtotime($date))
+            );
         }
 
         if (isset($record_date_init) and isset($record_date_finish)) {
-            $query->field('record_date')->range(new \MongoDate(strtotime($record_date_init)), new \MongoDate(strtotime($record_date_finish)));
+            $query->field('record_date')->range(
+                new \MongoDate(strtotime($record_date_init)),
+                new \MongoDate(strtotime($record_date_finish))
+            );
         } elseif (isset($record_date_init)) {
             $date = date($record_date_init.'T23:59:59');
-            $query->field('record_date')->range(new \MongoDate(strtotime($record_date_init)), new \MongoDate(strtotime($date)));
+            $query->field('record_date')->range(
+                new \MongoDate(strtotime($record_date_init)),
+                new \MongoDate(strtotime($date))
+            );
         } elseif (isset($record_date_finish)) {
             $date = date($record_date_finish.'T23:59:59');
-            $query->field('record_date')->range(new \MongoDate(strtotime($record_date_finish)), new \MongoDate(strtotime($date)));
+            $query->field('record_date')->range(
+                new \MongoDate(strtotime($record_date_finish)),
+                new \MongoDate(strtotime($date))
+            );
         }
 
         return $query;
@@ -519,7 +592,9 @@ class UNESCOController extends Controller implements NewAdminController
      */
     private function getMmobjsYears()
     {
-        $mmObjColl = $this->get('doctrine_mongodb')->getManager()->getDocumentCollection('PumukitSchemaBundle:MultimediaObject');
+        $mmObjColl = $this->get('doctrine_mongodb')->getManager()->getDocumentCollection(
+            'PumukitSchemaBundle:MultimediaObject'
+        );
         $pipeline = array(
             array('$match' => array('status' => MultimediaObject::STATUS_PUBLISHED)),
             array('$group' => array('_id' => array('$year' => '$record_date'))),
@@ -591,5 +666,4 @@ class UNESCOController extends Controller implements NewAdminController
 
         return $allGroups;
     }
-
 }
