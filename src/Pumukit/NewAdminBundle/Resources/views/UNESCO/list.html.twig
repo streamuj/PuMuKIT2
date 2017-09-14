@@ -62,8 +62,8 @@
                 <tr style="cursor: pointer" {% if(app.session.get('admin/mms/id') == mm.id ) %} class="success" {% endif %}>
                     <td headers="th-checkbox">
                         <div class="checkbox pumukit-mms-checkbox">
-                            <label data-id="{{ mm.id }}" draggable="true">
-                                <input id="{{ mm.id }}" class="mm_checkbox" type="checkbox">
+                            <label data-id="{{ mm.id }}" draggable="true" ondragstart="getAllDnDChecked(this, event)" ondragend="dragEndCheckbox(this,event)">
+                                <input data-id="{{ mm.id }}" id="{{ mm.id }}" class="mm_checkbox" type="checkbox">
                             </label>
                         </div>
                     </td>
@@ -167,3 +167,27 @@
         </table>
     {% endif %}
 </div>
+
+<script type="text/javascript">
+
+    function getAllDnDChecked(item, event) {
+        var data = [];
+        var i = 0;
+        $("input:checkbox:checked").each(function() {
+             data.push($(this).data('id'));
+             i = i + 1;
+        });
+
+        var dragIcon = document.createElement('img');
+        dragIcon.src = document.getElementById('dnd_image_' + (i-1)).src;
+        dragIcon.width = 35;
+        event.dataTransfer.setDragImage(dragIcon, 0, 0)
+
+        event.dataTransfer.setData('data', data);
+    }
+
+    function dragEndCheckbox(item, event) {
+        item.style.opacity = '';
+    }
+
+</script>
