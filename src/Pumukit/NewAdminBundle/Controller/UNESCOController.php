@@ -299,7 +299,6 @@ class UNESCOController extends Controller implements NewAdminController
 
         //If the 'pudenew' tag is not being used, set the display to 'false'.
         if (!$this->container->getParameter('show_latest_with_pudenew')) {
-
             $this->get('doctrine_mongodb.odm.document_manager')->getRepository('PumukitSchemaBundle:Tag')->findOneByCod(
                     'PUDENEW'
                 )->setDisplay(false);

@@ -116,7 +116,6 @@
     });
 
     function updateMultimediaObject(cod) {
-        event.preventDefault();
         var path = "{{ path('pumukitnewadmin_unesco_add_tag', {'tagCod': "__COD__", "multimediaObjectId": "__MMO__" }) }}";
         var path = path.replace("__COD__", cod);
         var path = path.replace("__MMO__", "{{ app.session.get('admin/unesco/id') }}");

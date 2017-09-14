@@ -21,7 +21,7 @@
         <ul id="collapse_{{ loop.index }}" class="collapse in draggableTags" style="padding-left:20px;">
             {% for children in tag %}
                 <li id="children_{{ children.getCod() }}" draggable="true" ondragstart="dragItem(this, '{{ children.getCod() }}', '{{ children.getTitle(app.request.getLocale()) }}', event)" ondragend="dragEnd(this, event)" class="draggableTag" style="list-style-type: none;">
-                    <a class="unescoTags" href="#" draggable="false" data-href="{{ path('pumukitnewadmin_unesco_list', {'tag' : children.getCod() }) }}" title="{{ children.getTitle(app.request.getLocale()) }}">
+                    <a class="unescoTags" href="#" draggable="false" data-tag="{{ children.getCod() }}" data-href="{{ path('pumukitnewadmin_unesco_list', {'tag' : children.getCod() }) }}" title="{{ children.getTitle(app.request.getLocale()) }}" onDrop="dropTagItem(this, '{{ children.getCod() }}', event)" onDragEnter="return false" onDragOver="return false">
                         <span class="mdi-file-folder" draggable="false"></span>
                         <strong draggable="false">
                             {{ children.getTitle(app.request.getLocale()) }} [{{ children.getNumberMultimediaObjects() }}]
@@ -39,6 +39,7 @@
         $('#list_mms').load($(this).data('href'));
     });
 
+    /* From menuTags to preview_mms */
     function dragItem(item, cod, title, e) {
         item.style.opacity = '0.4';
         e.dataTransfer.setData('cod', cod);
@@ -49,4 +50,36 @@
         item.style.opacity = '';
     }
 
+    /* From list_mms to menuTags */
+    function dropTagItem(item, cod, e) {
+        var list_mmo = e.dataTransfer.getData('data');
+        var list_mmo = list_mmo.split(",");
+        for (var value of list_mmo) {
+            if(value != '') {
+                updateMultimediaObjectByTag(cod, value);
+            }
+        };
+    }
+
+    function updateMultimediaObjectByTag(cod, mmoid) {
+        var path = "{{ path('pumukitnewadmin_unesco_add_tag', {'tagCod': "__COD__", "multimediaObjectId": "__MMO__" }) }}";
+        var path = path.replace("__COD__", cod);
+        var path = path.replace("__MMO__", mmoid);
+        $.ajax({
+            url: path,
+            type: 'GET',
+            error: function (request, json) {
+                var message = '{% trans %}Multimedia Object tag UNESCO saved ERROR{% endtrans %}';
+                no_success(message);
+            },
+            success: function (response) {
+                $('#edit_mms').load("{{ url('pumukit_new_admin_unesco_edit', {'id': app.session.get('admin/unesco/id')})  }}");
+                $('#preview_mms').load("{{ path('pumukitnewadmin_unesco_show', {'id': app.session.get('admin/unesco/id')}) }}");
+                $('#tag_list_unesco').load("{{ path('pumukitnewadmin_unesco_menu_tags') }}");
+                var message = '{% trans %}Multimedia Object tag UNESCO saved OK{% endtrans %}';
+                success(message);
+            }
+        });
+        return false;
+    }
 </script>
