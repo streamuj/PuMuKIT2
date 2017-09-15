@@ -75,14 +75,14 @@
             url: path,
             type: 'GET',
             error: function (request, json) {
-                var message = '{% trans %}Multimedia Object tag UNESCO saved ERROR{% endtrans %}';
+                var message = '{% trans %}Saving error{% endtrans %}';
                 no_success(message);
             },
             success: function (response) {
                 $('#edit_mms').load(edit);
                 $('#preview_mms').load(preview);
                 $('#tag_list_unesco').load("{{ path('pumukitnewadmin_unesco_menu_tags') }}");
-                var message = '{% trans %}Multimedia Object tag UNESCO saved OK{% endtrans %}';
+                var message = '{% trans %}Saved{% endtrans %}';
                 success(message);
             }
         });

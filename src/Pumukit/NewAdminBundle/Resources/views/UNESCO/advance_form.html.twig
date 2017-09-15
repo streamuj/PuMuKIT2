@@ -1,6 +1,6 @@
 <div class="well">
     <div class="row">
-        <h4 class="text-center"><strong>{% trans %}Advance search form{% endtrans %}</strong></h4>
+        <h4 class="text-center"><strong>{% trans %}Advanced search form{% endtrans %}</strong></h4>
         <hr />
 
         <form class="unesco_form" name="advance_form" method="POST" action="{{ path('pumukitnewadmin_unesco_list') }}">
@@ -25,7 +25,7 @@
                 <div class="form-group">
                     <label for="text" class="col-md-3 control-label">{% trans %}Text{% endtrans %}</label>
                     <div class="col-md-9">
-                        <input id="keyword" type="text" class="form-control" name="criteria[text]" placeholder="{% trans %}Search by title, subtitle or description{% endtrans %}" />
+                        <input id="Text" type="text" class="form-control" name="criteria[Text]" placeholder="{% trans %}Search by title, subtitle or description{% endtrans %}" />
                     </div>
                 </div>
 
@@ -70,7 +70,7 @@
                 <div class="form-group">
                     <label for="duration" class="col-md-3 control-label">{% trans %}Duration{% endtrans %}</label>
                     <div class="col-md-9">
-                        <select id="duration" name="criteria[duration]" class="form-control" onchange="submitForm(this);">
+                        <select id="duration" name="criteria[duration]" class="form-control">
                             <option value="">{% trans%}All{% endtrans %}</option>
                             <option value="-5">{% trans %}Up to 5 minutes{% endtrans %}</option>
                             <option value="-10">{% trans %}Up to 10 minutes{% endtrans %}</option>
@@ -96,7 +96,7 @@
 
                 <div class="clearfix"></div>
                 <div class="form-group">
-                    <label for="initPublicDate" class="col-md-3 control-label">{% trans %}Public date{% endtrans %}</label>
+                    <label for="initPublicDate" class="col-md-3 control-label">{% trans %}Publication date{% endtrans %}</label>
                     <div class="col-md-4">
                         <input id="initPublicDate" name="criteria[initPublicDate]" class="form-control" type="date" pattern="(\d\d\d\d)-(\d\d)-(\d\d)" title="{% trans %}Format YYYY-MM-DD{% endtrans %}">
                     </div>
@@ -107,7 +107,7 @@
 
                 <div class="clearfix"></div>
                 <div class="form-group">
-                    <label for="initRecordDate" class="col-md-3 control-label">{% trans %}Record date{% endtrans %}</label>
+                    <label for="initRecordDate" class="col-md-3 control-label">{% trans %}Recording date{% endtrans %}</label>
                     <div class="col-md-4">
                         <input id="initRecordDate" name="criteria[initRecordDate]" class="form-control" type="date" pattern="(\d\d\d\d)-(\d\d)-(\d\d)" title="{% trans %}Format YYYY-MM-DD{% endtrans %}">
                     </div>
