@@ -195,7 +195,6 @@ class UNESCOController extends Controller implements NewAdminController
     public function addCriteriaSession(Request $request)
     {
         $session = $this->get('session');
-
         $criteria = $request->request->get('criteria');
 
         $formBasic = false;

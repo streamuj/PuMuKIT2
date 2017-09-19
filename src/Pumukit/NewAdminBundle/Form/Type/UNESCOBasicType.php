@@ -70,7 +70,6 @@ class UNESCOBasicType extends AbstractType
                 'label' => $this->translator->trans('Text', array(), null, $this->locale),
             )
         );
-
     }
 
     public function getName()

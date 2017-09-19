@@ -1,5 +1,3 @@
-{#{% form_theme form 'PumukitNewAdminBundle:Themes:fields.html.twig' %}#}
-
 {% set formBasic = false %}
 {% if app.request.session.has('UNESCO/formbasic') and app.request.session.get('UNESCO/formbasic') != "true" %}
     {% set formBasic = true %}
@@ -28,8 +26,6 @@
                 <a class="unescoResetForm" href="#">{% trans %}Reset{% endtrans %}</a>
             </div>
         </form>
-
-
     </div>
 </div>
 
@@ -60,4 +56,5 @@
         return false;
 
     });
+
 </script>
