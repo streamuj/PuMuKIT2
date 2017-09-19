@@ -131,7 +131,6 @@ class UNESCOController extends Controller implements NewAdminController
      */
     public function listAction($tag = null)
     {
-
         $session = $this->get('session');
         $page = $session->get('admin/unesco/page', 1);
         $maxPerPage = $session->get('admin/unesco/paginate', 10);
@@ -176,6 +175,7 @@ class UNESCOController extends Controller implements NewAdminController
     {
         $session = $this->get('session');
         $session->remove('UNESCO/criteria');
+        $session->remove('UNESCO/form');
         $session->remove('UNESCO/formbasic');
         $session->remove('admin/unesco/tag');
         $session->remove('admin/unesco/page');
@@ -196,43 +196,50 @@ class UNESCOController extends Controller implements NewAdminController
     {
         $session = $this->get('session');
 
-        if ($request->request->get('pumukitnewadmin_unesco_basicform')) {
-            $criteria = $request->request->get('pumukitnewadmin_unesco_basicform');
-            unset($criteria['_token']);
-            $formBasic = true;
-        } else {
-            $criteria = $request->request->get('criteria');
-            $formBasic = false;
-        }
+        $criteria = $request->request->get('criteria');
 
+        $formBasic = false;
         $newCriteria = array();
+        $tag = array();
         foreach ($criteria as $key => $value) {
-            dump($key);
-            if (('_id' === $key or 'id' === $key) and !empty($value)) {
+            if (('id' === $key) and !empty($value)) {
                 $newCriteria['_id'] = new \MongoId($value);
+                $formBasic = true;
+            } elseif (('seriesID' === $key) and !empty($value)) {
+                $newCriteria['series'] = new \MongoId($value);
+                $formBasic = true;
             } elseif ('type' === $key and !empty($value)) {
                 $newCriteria['type'] = $value;
+                $formBasic = true;
             } elseif ('duration' === $key and !empty($value)) {
                 $newCriteria['track.duration'] = $value;
+                $formBasic = true;
             } elseif ('year' === $key and !empty($value)) {
                 $newCriteria['year'] = $value;
-            } elseif ('Text' === $key and !empty($value)) {
+                $formBasic = true;
+            } elseif ('text' === $key and !empty($value)) {
                 $newCriteria['$text'] = new \MongoRegex('/.*'.$value.'.*/i');
+                $formBasic = true;
             } elseif ('broadcast' === $key and !empty($value)) {
                 if ('all' != $value) {
                     $newCriteria['embeddedBroadcast.type'] = $value;
                 }
-            } elseif ('statusPub' === $key and !empty($value)) {
+            } elseif ('statusPub' === $key) {
                 if ('all' != $value) {
                     $newCriteria['status'] = intval($value);
                 }
             } elseif ('announce' === $key and !empty($value)) {
-                $newCriteria['tags.cod'] = 'PUDENEW';
+                $tag[] = 'PUDENEW';
+            } elseif ('puderadio' === $key and !empty($value)) {
+                $tag[] = 'PUDERADIO';
+            } elseif ('pudetv' === $key and !empty($value)) {
+                $tag[] = 'PUDETV';
+            } elseif ('genre' === $key and !empty($value)) {
+                $tag[] = $value;
             } elseif ('roles' === $key) {
                 foreach ($value as $key2 => $field) {
                     if (!empty($field)) {
-                        $newCriteria['roles'][$key2]['people.cod'] = $key2;
-                        $newCriteria['roles'][$key2]['people.$.people.name'] = new \MongoRegex('/.*'.$field.'.*/i');
+                        $newCriteria['roles'][$key2] = new \MongoRegex('/.*'.$field.'.*/i');
                     }
                 }
             } elseif (in_array(
@@ -253,6 +260,11 @@ class UNESCOController extends Controller implements NewAdminController
             }
         }
 
+        if (!empty($tag)) {
+            $newCriteria['tags.cod'] = array('$all' => $tag);
+        }
+
+        $session->set('UNESCO/form', $criteria);
         $session->set('UNESCO/criteria', $newCriteria);
         $session->set('UNESCO/formbasic', $formBasic);
 
@@ -384,16 +396,19 @@ class UNESCOController extends Controller implements NewAdminController
      *
      * @return array
      */
-    public function advanceSearchFormAction(Request $request)
+    public function advancedSearchFormAction(Request $request)
     {
         $dm = $this->container->get('doctrine_mongodb')->getManager();
 
         $translator = $this->get('translator');
         $locale = $request->getLocale();
 
-        $form = $this->createForm(new UNESCOBasicType($translator, $locale));
+        //$form = $this->createForm(new UNESCOBasicType($translator, $locale));
 
         $roles = $dm->getRepository('PumukitSchemaBundle:Role')->findAll();
+
+        $pudeRadio = $dm->getRepository('PumukitSchemaBundle:Tag')->findOneByCod('PUDERADIO');
+        $pudeTV = $dm->getRepository('PumukitSchemaBundle:Tag')->findOneByCod('PUDETV');
 
         $statusPub = array(
             MultimediaObject::STATUS_PUBLISHED => $translator->trans('Published'),
@@ -413,13 +428,23 @@ class UNESCOController extends Controller implements NewAdminController
             MultimediaObject::TYPE_AUDIO => $translator->trans('Audio'),
         );
 
+        $genreParent = $dm->getRepository('PumukitSchemaBundle:Tag')->findOneByCod('GENRE');
+        $genres = $dm->getRepository('PumukitSchemaBundle:Tag')->findBy(array('parent.$id' => new \MongoId($genreParent->getId())));
+        $aGenre = array();
+        foreach ($genres as $genre) {
+            $aGenre[$genre->getCod()] = $genre->getTitle($locale);
+        }
+
         return array(
-            'form' => $form->createView(),
+            //'form' => $form->createView(),
+            'genre' => $aGenre,
             'roles' => $roles,
             'statusPub' => $statusPub,
             'broadcasts' => $broadcasts,
             'years' => $this->getMmobjsYears(),
             'type' => $type,
+            'puderadio' => $pudeRadio,
+            'pudetv' => $pudeTV,
         );
     }
 
@@ -519,11 +544,10 @@ class UNESCOController extends Controller implements NewAdminController
     private function addCriteria($query, $criteria)
     {
         foreach ($criteria as $key => $field) {
-            if ('roles' === $key and count($field) > 1) {
+            if ('roles' === $key and count($field) >= 1) {
                 foreach ($field as $key2 => $value) {
-                    $aCriteria[] = $query->expr()->field($key2)->equals($value);
+                    $query->field('people')->elemMatch($query->expr()->field('cod')->equals($key2)->field('people.name')->equals($value));
                 }
-                $query->field('people')->equals($query->expr()->elemMatch($aCriteria));
             } elseif ('public_date_init' === $key and !empty($field)) {
                 $public_date_init = $field;
             } elseif ('public_date_finish' === $key and !empty($field)) {
