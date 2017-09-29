@@ -449,6 +449,94 @@
         <source>Logo</source>
         <target xml:lang="de" state="needs-translation">Logo</target>
       </trans-unit>
+      <trans-unit id="94966d90747b97d1f0f206c98a8b1ac3" resname="Send">
+        <source>Send</source>
+        <target xml:lang="de" state="needs-translation">Send</target>
+      </trans-unit>
+      <trans-unit id="87f9f735a1d36793ceaecd4e47124b63" resname="Events">
+        <source>Events</source>
+        <target xml:lang="de" state="needs-translation">Events</target>
+      </trans-unit>
+      <trans-unit id="161f25f9025f957f236bd529f7d1eb38" resname="Starts">
+        <source>Starts</source>
+        <target xml:lang="de" state="needs-translation">Starts</target>
+      </trans-unit>
+      <trans-unit id="8425cc8cae1477d22d87e3ec59ec9326" resname="Next session">
+        <source>Next session</source>
+        <target xml:lang="de" state="needs-translation">Next session</target>
+      </trans-unit>
+      <trans-unit id="e12167aa0a7698e6ebc92b4ce3909b53" resname="To">
+        <source>To</source>
+        <target xml:lang="de" state="needs-translation">To</target>
+      </trans-unit>
+      <trans-unit id="6ce3bdc39e544725038e0e87b771db1e" resname="Questions">
+        <source>Questions</source>
+        <target xml:lang="de" state="needs-translation">Questions</target>
+      </trans-unit>
+      <trans-unit id="a4a7f7bd7fe3e8f903979f1bea6bf9b3" resname="Download this audio">
+        <source>Download this audio</source>
+        <target xml:lang="de" state="needs-translation">Download this audio</target>
+      </trans-unit>
+      <trans-unit id="176ee76a868757e0c2058ad60d9d7514" resname="Download this video">
+        <source>Download this video</source>
+        <target xml:lang="de" state="needs-translation">Download this video</target>
+      </trans-unit>
+      <trans-unit id="b3950900a4184826e146e7dd6daa3946" resname="Live events">
+        <source>Live events</source>
+        <target xml:lang="de" state="needs-translation">Live events</target>
+      </trans-unit>
+      <trans-unit id="625501b6af2270f63b11f383be3dcb70" resname="No live events now.">
+        <source>No live events now.</source>
+        <target xml:lang="de" state="needs-translation">No live events now.</target>
+      </trans-unit>
+      <trans-unit id="1f9d00c3d18f41c15788bfa93efc9cfe" resname="There are no scheduled live events. You will find ended live events in the series catalogue or through the media portal search.">
+        <source>There are no scheduled live events. You will find ended live events in the series catalogue or through the media portal search.</source>
+        <target xml:lang="de" state="needs-translation">There are no scheduled live events. You will find ended live events in the series catalogue or through the media portal search.</target>
+      </trans-unit>
+      <trans-unit id="b658acd7298e4f58058387dbbc4b327d" resname="This page isn't available. Sorry about that.">
+        <source>This page isn't available. Sorry about that.</source>
+        <target xml:lang="de" state="needs-translation">This page isn't available. Sorry about that.</target>
+      </trans-unit>
+      <trans-unit id="795a273f05736cc8c7b77d3a88bc9bee" resname="Try searching for something else:">
+        <source>Try searching for something else:</source>
+        <target xml:lang="de" state="needs-translation">Try searching for something else:</target>
+      </trans-unit>
+      <trans-unit id="7ecbb3f6a2ac11e7abc4cec278b6b50a" resname="Home">
+        <source>Home</source>
+        <target xml:lang="de" state="needs-translation">Home</target>
+      </trans-unit>
+      <trans-unit id="7ecbb766a2ac11e7abc4cec278b6b50a" resname="By subject catalogue">
+        <source>By subject catalogue</source>
+        <target xml:lang="de" state="needs-translation">By subject catalogue</target>
+      </trans-unit>
+      <trans-unit id="7ecbb89ca2ac11e7abc4cec278b6b50a" resname="University">
+        <source>University</source>
+        <target xml:lang="de" state="needs-translation">University</target>
+      </trans-unit>
+      <trans-unit id="7ecbb978a2ac11e7abc4cec278b6b50a" resname="Business">
+        <source>Business</source>
+        <target xml:lang="de" state="needs-translation">Business</target>
+      </trans-unit>
+      <trans-unit id="7ecbba40a2ac11e7abc4cec278b6b50a" resname="Natural Sciences">
+        <source>Natural Sciences</source>
+        <target xml:lang="de" state="needs-translation">Natural Sciences</target>
+      </trans-unit>
+      <trans-unit id="7ecbbb08a2ac11e7abc4cec278b6b50a" resname="Health &amp; Medicine">
+        <source>Health &amp; Medicine</source>
+        <target xml:lang="de" state="needs-translation">Health &amp; Medicine</target>
+      </trans-unit>
+      <trans-unit id="7ecbbf90a2ac11e7abc4cec278b6b50a" resname="Law">
+        <source>Law</source>
+        <target xml:lang="de" state="needs-translation">Law</target>
+      </trans-unit>
+      <trans-unit id="d17999cea2ac11e7abc4cec278b6b50a" resname="Social Matters &amp; Education">
+        <source>Social Matters &amp; Education</source>
+        <target xml:lang="de" state="needs-translation">Social Matters &amp; Education</target>
+      </trans-unit>
+      <trans-unit id="c0d3dfeea2ac11e7abc4cec278b6b50a" resname="Subjects">
+        <source>Subjects</source>
+        <target xml:lang="de" state="needs-translation">Subjects</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>
