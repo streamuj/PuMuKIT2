@@ -116,6 +116,28 @@
                   <option {% if series.maxPerPage == 20 %}selected{% endif %} value="20">20</option>
                   <option {% if series.maxPerPage == 50 %}selected{% endif %} value="50">50</option>
                 </select>
+
+                <script>
+                  $('.pagerfanta .active')
+                      .prop('contenteditable', true)
+                      .keypress(function(e) {
+                          if (isNaN(String.fromCharCode(e.which))) e.preventDefault();
+                          if (e.which == 13) {
+                            int = parseInt(this.children[0].innerHTML);
+                            if (!isNaN(int)) {
+                                window.location.search = '?page=' + int;
+                            }
+                          }
+                      })
+                      .focusout(function(e){
+                          int = parseInt(this.children[0].innerHTML);
+                          if (!isNaN(int)) {
+                              window.location.search = '?page=' + int;
+                          }
+                      })
+                  ;
+                  
+                </script>
                 {% endif %}
 
               </div>
