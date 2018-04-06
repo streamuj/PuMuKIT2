@@ -5,6 +5,13 @@
 {% block body %}
     {% set breadcrumbs_font_color = '#fff' %}
 
+    {% set background_circle_series = '#349141' %}
+    {% set background_circle_mms = '#E07E03' %}
+    {% set background_circle_hours = '#225594' %}
+    {% set menu_background = '#fff' %}
+    {% set menu_font_color = '#000' %}
+    {% set page_background = '#fff' %}
+
     {{ parent() }}
     .breadcrumbs_color {
         border-bottom: 10px solid #D66400;
@@ -22,6 +29,60 @@
     .row.subseries_title_wrapper.place_subserial {
         margin-top:30px;
         margin-bottom:30px;
+    }
+
+    .widget {
+        font-size:12px;
+    }
+    /* Categories menu */
+    .categories-title {
+        border-bottom: 1px solid #EAEAEA;
+    }
+    .categories-title span{
+        font-size:16px;
+    }
+
+    /* Stats menu */
+    .stats-title {
+        border-bottom: 1px solid #EAEAEA;
+    }
+    .stats-title span{
+        font-size:16px;
+    }
+
+    .row-stats-circle {
+        padding: 15px 15px;
+    }
+
+    .stats-series {
+        background-color: #349141;
+    }
+
+    .stats-mms {
+        background-color: #E07E03;
+    }
+
+    .stats-hours {
+        background-color: #225594;
+    }
+
+    .stats-circle {
+        width: 65px;
+        height: 65px;
+        border-radius: 65px;
+        padding: 20px 0px;
+        line-height: 12px;
+        color: white;
+        font-family: Arial, Helvetica, sans-serif;
+        font-weight: bold;
+    }
+
+    /* Live menu */
+    .live-title {
+        border-bottom: 1px solid #EAEAEA;
+    }
+    .live-title span{
+        font-size:16px;
     }
 
 {% endblock %}

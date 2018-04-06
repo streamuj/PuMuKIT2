@@ -1,10 +1,34 @@
-<div class="widget_Slidebar" id="total">
-  <h2>TOTAL</h2>
-  <div style="padding: 2px 5px">
-    <ul style="list-style-type:none">
-      <li>{{ counts.series }} {% trans %}Series{% endtrans %}</li>
-      <li>{{ counts.mms }} {% trans %}Videos{% endtrans %}</li>
-      <li>{{ counts.hours }} {% trans %}Hours{% endtrans %}</li>
-    </ul>
-  </div>
+<div class="widget slidebar stats">
+    <div id="total" class="widget_stats">
+        <h3 class="stats-title text-left">
+            <span class="glyphicon glyphicon-stats" aria-hidden="true"></span>
+            {% trans %}Stats{% endtrans %}
+        </h3>
+        <div class="row row-stats-circle">
+            <div class="col-xs-4">
+                <div class="stats-circle center-block stats-series">
+                    <div>
+                        <strong>{{ counts.series }}</strong>
+                    </div>
+                    <div class="stats-label">{% trans %}Series{% endtrans %}</div>
+                </div>
+            </div>
+            <div class="col-xs-4">
+                <div class="stats-circle center-block stats-mms">
+                    <div>
+                        <strong>{{ counts.mms }}</strong>
+                    </div>
+                    <div class="stats-label">{% trans %}Videos{% endtrans %}</div>
+                </div>
+            </div>
+            <div class="col-xs-4">
+                <div class="stats-circle center-block stats-hours">
+                    <div>
+                        <strong>{{ counts.hours }}</strong>
+                    </div>
+                    <div class="stats-label">{% trans %}Hours{% endtrans %}</div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

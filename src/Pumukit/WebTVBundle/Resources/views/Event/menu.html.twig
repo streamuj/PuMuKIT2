@@ -1,0 +1,30 @@
+<div class="widget slidebar live">
+    <h3 class="live-title text-left">
+        <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
+        {% trans %}Live{% endtrans %}
+    </h3>
+    <ul>
+    {% if advance_live_channels['type'] %}
+        <!-- Feature with sessions -->
+        {% if advance_live_channels['events'] is not empty %}
+            {% for key, live in advance_live_channels['events'] %}
+                <li style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">
+                    <a href="{{ path('pumukit_live_event_id', {'id': key }) }}" class="element">
+                        {{ live['sessions'][0]['start']|convertMongoDate | localizeddate('none','short',app.request.getLocale()) }}
+                        {{ live['event']['name'][app.request.getLocale()] | default('No title'| trans) | capitalize }}
+                    </a>
+                </li>
+            {% endfor %}
+        {% endif %}
+    {% else %}
+        <!-- Feature without sessions -->
+        {% for live in advance_live_channels['channels'] %}
+            <li>
+                <a href="{{ path('pumukit_live_id', {'id': live.id}) }}" class="element">
+                    {{ live.name | default('No title'| trans) | capitalize }}
+                </a>
+            </li>
+        {% endfor %}
+    {% endif %}
+    </ul>
+</div>

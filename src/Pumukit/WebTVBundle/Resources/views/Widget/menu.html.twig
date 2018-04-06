@@ -1,7 +1,12 @@
-<div class="row widget slidebar">
+<div class="widget slidebar categories">
+    <h3 class="categories-title text-left">
+        <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+        {% trans %}Categories{% endtrans %}
+    </h3>
     <ul>
         <!-- Principal -->
         <li>
+
             <a href="{{ path('pumukit_webtv_index_index') }}" class="element {{ menu_selected=="pumukit_webtv_index_index"?'selected':'' }}">
                 {{ home_title |trans }}
             </a>
@@ -21,30 +26,6 @@
             </a>
         </li>
 
-        <!-- Live Channels -->
-        {% if advance_live_channels['type'] %}
-            <!-- Feature with sessions -->
-            {% if advance_live_channels['events'] is not empty %}
-                {% for key, live in advance_live_channels['events'] %}
-                    <li style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">
-                        <a href="{{ path('pumukit_live_event_id', {'id': key }) }}" class="element">
-                            {{ live['sessions'][0]['start']|convertMongoDate | localizeddate('none','short',app.request.getLocale()) }}
-                            {{ live['event']['name'][app.request.getLocale()] | default('No title'| trans) }}
-                        </a>
-                    </li>
-                {% endfor %}
-            {% endif %}
-        {% else %}
-            <!-- Feature without sessions -->
-            {% for live in advance_live_channels['channels'] %}
-                <li>
-                    <a href="{{ path('pumukit_live_id', {'id': live.id}) }}" class="element">
-                        {{ live.name | default('No title'| trans) }}
-                    </a>
-                </li>
-            {% endfor %}
-        {% endif %}
-
         <!-- Mediateca -->
         <li>
             <a href="{{ path('pumukit_webtv_medialibrary_index') }}" class="element {{ menu_selected=="pumukit_webtv_medialibrary_index"?'selected':'' }}">
@@ -60,6 +41,7 @@
         </li>
 
     </ul>
+
     <ul class="nav navbar-nav visible-xs">
         {% if locales|length > 1 %}
             <li class="dropdown">
@@ -82,8 +64,9 @@
 
 </div>
 
+{% if advance_live_channels %}
+    {% include 'PumukitWebTVBundle:Event:menu.html.twig' %}
+{% endif  %}
 {% if menu_stats %}
-    <div class="row widget slidebar stats">
-        {% render(controller('PumukitWebTVBundle:Widget:stats')) %}
-    </div>
+    {% render(controller('PumukitWebTVBundle:Widget:stats')) %}
 {% endif %}
