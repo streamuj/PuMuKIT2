@@ -63,12 +63,35 @@ class JobGeneratorListener
 
         foreach ($tag->getChildren() as $pubchannel) {
             if ($multimediaObject->containsTag($pubchannel)) {
-                if (!$master->containsTag('ENCODED_'.$pubchannel->getCod()) && false === strpos($profile['target'], $pubchannel->getCod())) {
+                if (!$master->containsTag('ENCODED_'.$pubchannel->getCod()) &&
+                    false === strpos($profile['target'], $pubchannel->getCod()) &&
+                    !$this->isAlreadyPublised($multimediaObject, $pubchannel->getCod())
+                ) {
                     $master->addTag('ENCODED_'.$pubchannel->getCod());
                     $this->generateJobs($multimediaObject, $pubchannel->getCod());
                 }
             }
         }
+    }
+
+    /**
+     * Return true if the multimedia object contains a track with a profile with a target with this pub channel.
+     */
+    private function isAlreadyPublised(MultimediaObject $multimediaObject, $pubChannelCod)
+    {
+        foreach ($multimediaObject->getTracks() as $track) {
+            $profileName = $track->getProfileName();
+            if (!$profileName || !isset($this->profiles[$profileName])) {
+                continue;
+            }
+            $profile = $this->profiles[$profileName];
+
+            if ($profile['target'] && false !== strpos($profile['target'], $pubChannelCod)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
