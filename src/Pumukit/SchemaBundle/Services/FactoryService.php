@@ -440,7 +440,7 @@ class FactoryService
         }
 
         foreach ($prototype->getTags() as $tag) {
-            $tagAdded = $this->tagService->addTagToMultimediaObject($new, $tag->getId(), false);
+            $this->tagService->addTagToMultimediaObject($new, $tag->getId(), false);
         }
 
         foreach ($prototype->getRoles() as $embeddedRole) {

@@ -515,7 +515,6 @@ class PersonController extends AdminController implements NewAdminController
         }
         $owner = $request->get('owner', false);
         try {
-            $series = $multimediaObject->getSeries();
             $personService = $this->get('pumukitschema.person');
             $translator = $this->get('translator');
             $person = $personService->findPersonById($request->get('id'));

@@ -39,7 +39,7 @@ class MultimediaObjectController extends SortableAdminController implements NewA
     {
         $config = $this->getConfiguration();
 
-        $criteria = $this->getCriteria($config);
+        $this->getCriteria($config);
 
         $factoryService = $this->get('pumukitschema.factory');
 
@@ -91,7 +91,6 @@ class MultimediaObjectController extends SortableAdminController implements NewA
     {
         $dm = $this->get('doctrine_mongodb')->getManager();
         $session = $this->get('session');
-        $config = $this->getConfiguration();
 
         $factoryService = $this->get('pumukitschema.factory');
 
@@ -773,9 +772,9 @@ class MultimediaObjectController extends SortableAdminController implements NewA
         foreach ($ids as $id) {
             $resource = $this->find($id);
             if ($resource->containsTagWithCod('PUDENEW')) {
-                $addedTags = $tagService->removeTagFromMultimediaObject($resource, $tagNew->getId());
+                $tagService->removeTagFromMultimediaObject($resource, $tagNew->getId());
             } else {
-                $addedTags = $tagService->addTagToMultimediaObject($resource, $tagNew->getId());
+                $tagService->addTagToMultimediaObject($resource, $tagNew->getId());
             }
         }
 
@@ -789,7 +788,8 @@ class MultimediaObjectController extends SortableAdminController implements NewA
     public function listAction(Request $request)
     {
         $config = $this->getConfiguration();
-        $criteria = $this->getCriteria($config);
+
+        $this->getCriteria($config);
         $factoryService = $this->get('pumukitschema.factory');
         $seriesId = $request->get('seriesId', null);
         $sessionId = $this->get('session')->get('admin/series/id', null);

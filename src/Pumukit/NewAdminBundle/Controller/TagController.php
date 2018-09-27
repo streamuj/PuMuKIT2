@@ -71,7 +71,6 @@ class TagController extends Controller implements NewAdminController
      */
     public function updateAction(Tag $tag, Request $request)
     {
-        $dm = $this->get('doctrine_mongodb')->getManager();
         $translator = $this->get('translator');
         $locale = $request->getLocale();
         $form = $this->createForm(new TagType($translator, $locale), $tag);
@@ -96,7 +95,6 @@ class TagController extends Controller implements NewAdminController
     public function createAction(Tag $parent, Request $request)
     {
         $dm = $this->get('doctrine_mongodb')->getManager();
-        $repo = $dm->getRepository('PumukitSchemaBundle:Tag');
 
         $tag = new Tag();
         $tag->setParent($parent);

@@ -11,13 +11,11 @@ class PlaylistType extends AbstractType
 {
     private $translator;
     private $locale;
-    private $disablePudenew;
 
-    public function __construct(TranslatorInterface $translator, $locale = 'en', $disablePudenew = true)
+    public function __construct(TranslatorInterface $translator, $locale = 'en')
     {
         $this->translator = $translator;
         $this->locale = $locale;
-        $this->disablePudenew = $disablePudenew;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)

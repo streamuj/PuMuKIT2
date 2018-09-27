@@ -8,16 +8,13 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\Finder\Finder;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\ProcessBuilder;
 
 class PumukitRefactorFileSystemCommand extends ContainerAwareCommand
 {
     private $dm;
-    private $output;
     private $input;
-    private $finder;
     private $fileSystem;
     private $pics;
     private $materials;
@@ -31,17 +28,17 @@ class PumukitRefactorFileSystemCommand extends ContainerAwareCommand
             ->addOption('pics', null, InputArgument::OPTIONAL, 'Refactor pics')
             ->addOption('materials', null, InputArgument::OPTIONAL, 'Refactor materials')
             ->setHelp(<<<'EOT'
-                
+
                 Pumukit refactor wrongs path for images and materials
-                
+
                 Example to use:
-                
+
                 1. Refactor pics
                     php app/console pumukit:refactor:files:path --pics=true
                 2. Refactor materials
                     php app/console pumukit:refactor:files:path --materials=true
                 3. Refactor both
-                    php app/console pumukit:refactor:files:path --pics=true --materials=true            
+                    php app/console pumukit:refactor:files:path --pics=true --materials=true
 EOT
             );
     }
@@ -50,16 +47,14 @@ EOT
      * @param InputInterface  $input
      * @param OutputInterface $output
      */
-    protected function initialize(InputInterface $input, OutputInterface $output)
+    protected function initialize(InputInterface $input)
     {
         $this->dm = $this->getContainer()->get('doctrine_mongodb')->getManager();
         $this->logger = $this->getContainer()->get('logger');
-        $this->output = $output;
         $this->input = $input;
 
         $this->pics = $this->input->getOption('pics');
         $this->materials = $this->input->getOption('materials');
-        $this->finder = new Finder();
         $this->fileSystem = new Filesystem();
     }
 

@@ -48,7 +48,6 @@
             <argument>%pumukitencode.thumbnail.width%</argument>
             <argument>%pumukitencode.thumbnail.height%</argument>
             <argument>%pumukit2.uploads_dir%/pic</argument>
-            <argument>%pumukit2.uploads_url%/pic</argument>
             <argument>%pumukit.picextractor.command%</argument>
         </service>
 

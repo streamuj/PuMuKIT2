@@ -16,10 +16,9 @@ class PicExtractorService
     private $width;
     private $height;
     private $targetPath;
-    private $targetUrl;
     private $command;
 
-    public function __construct(DocumentManager $documentManager, MultimediaObjectPicService $mmsPicService, $width, $height, $targetPath, $targetUrl, $command = null)
+    public function __construct(DocumentManager $documentManager, MultimediaObjectPicService $mmsPicService, $width, $height, $targetPath, $command = null)
     {
         $this->dm = $documentManager;
         $this->mmsPicService = $mmsPicService;
@@ -29,7 +28,6 @@ class PicExtractorService
         if (!$this->targetPath) {
             throw new \InvalidArgumentException("The path '".$targetPath."' for storing Pic does not exist.");
         }
-        $this->targetUrl = $targetUrl;
         $this->command = $command ?: 'avprobe -ss {{ss}} -y -i "{{input}}" -r 1 -vframes 1 -s {{size}} -f image2 "{{output}}"';
     }
 

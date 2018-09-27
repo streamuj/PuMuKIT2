@@ -306,7 +306,7 @@ class OaiController extends Controller
 
         if ($this->container->getParameter('pumukitoai.use_dc_thumbnail')) {
             $thumbnail = $this->get('pumukitschema.pic')->getFirstUrlPic($object, true);
-            $XMLiden = $XMLoai_dc->addChild('dc:thumbnail', $thumbnail, 'http://purl.org/dc/elements/1.1/');
+            $XMLoai_dc->addChild('dc:thumbnail', $thumbnail, 'http://purl.org/dc/elements/1.1/');
         }
 
         foreach ($object->getFilteredTracksWithTags(array('display')) as $track) {
@@ -389,7 +389,7 @@ class OaiController extends Controller
         $XML = new SimpleXMLExtended('<OAI-PMH></OAI-PMH>');
         $XML->addAttribute('xmlns', 'http://www.openarchives.org/OAI/2.0/');
         $XML->addAttribute('xsi:schemaLocation', 'http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd', 'http://www.w3.org/2001/XMLSchema-instance');
-        $XMLresponseDate = $XML->addChild('responseDate', date("Y-m-d\TH:i:s\Z"));
+        $XML->addChild('responseDate', date("Y-m-d\TH:i:s\Z"));
 
         $toDom = dom_import_simplexml($XML);
         $fromDom = dom_import_simplexml($responseXml);

@@ -71,8 +71,6 @@ class BroadcastController extends AdminController implements NewAdminController
         $this->checkCreateBroadcastDisabled();
 
         $dm = $this->get('doctrine_mongodb')->getManager();
-        $config = $this->getConfiguration();
-
         $broadcast = $this->createNew();
         $form = $this->getForm($broadcast);
 

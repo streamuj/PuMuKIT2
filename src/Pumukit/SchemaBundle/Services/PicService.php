@@ -292,35 +292,6 @@ class PicService
     }
 
     /**
-     * @param      $object
-     * @param bool $absolute
-     * @param bool $hd
-     *
-     * @return null|string
-     */
-    public function getPosterUrl($object, $absolute = false, $hd = true)
-    {
-        $pics = $object->getPics();
-        $picUrl = null;
-        if (0 === count($pics)) {
-            return $picUrl;
-        }
-
-        foreach ($pics as $pic) {
-            if ($pic->getUrl() && $pic->containsTag('poster')) {
-                $picUrl = $pic->getUrl();
-                break;
-            }
-        }
-
-        if ($absolute) {
-            return $this->getAbsoluteUrlPic($picUrl);
-        }
-
-        return $picUrl;
-    }
-
-    /**
      * Get absolute path of a given pic path.
      *
      * @param string $picPath

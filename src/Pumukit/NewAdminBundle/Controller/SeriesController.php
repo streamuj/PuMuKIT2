@@ -605,9 +605,9 @@ class SeriesController extends AdminController implements NewAdminController
                         $mm = $repo->find($id);
                         if (!$this->isGranted(Permission::getRoleTagDisableForPubChannel($tag->getCod()))) {
                             if ($mustContainsTag && (!($mm->containsTag($tag)))) {
-                                $tagAdded = $tagService->addTag($mm, $tag);
+                                $tagService->addTag($mm, $tag);
                             } elseif ((!($mustContainsTag)) && $mm->containsTag($tag)) {
-                                $tagAdded = $tagService->removeTag($mm, $tag);
+                                $tagService->removeTag($mm, $tag);
                             }
                         }
                     }
@@ -740,7 +740,7 @@ class SeriesController extends AdminController implements NewAdminController
                 }
             }
             if ($enableFilter) {
-                $filter = $dm->getFilterCollection()->enable('backoffice');
+                $dm->getFilterCollection()->enable('backoffice');
             }
         }
 

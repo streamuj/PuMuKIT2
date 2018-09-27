@@ -3,18 +3,14 @@
 namespace Pumukit\InspectionBundle\Services;
 
 use Pumukit\SchemaBundle\Document\Track;
-use Symfony\Component\HttpKernel\Log\LoggerInterface;
 
 class InspectionFfmpegService implements InspectionServiceInterface
 {
-    private $logger;
-
-    public function __construct(LoggerInterface $logger = null)
+    public function __construct()
     {
         if (!class_exists('ffmpeg_movie')) {
             throw new \LogicException('ffmpeg_movie is not loaded');
         }
-        $this->logger = $logger;
     }
 
     // TO DO check if the duration is rounded up

@@ -518,7 +518,7 @@ class JobService
             $this->logger->info('[execute] duration: '.$duration);
 
             //Check for different durations. Throws exception if they don't match.
-            $this->searchError($profile, $out, $job->getDuration(), $duration);
+            $this->searchError($profile, $job->getDuration(), $duration);
 
             $job->setTimeend(new \DateTime('now'));
             $job->setStatus(Job::STATUS_FINISHED);
@@ -568,7 +568,7 @@ class JobService
      *
      * @throws \Exception
      */
-    public function searchError($profile, $var, $duration_in, $duration_end)
+    public function searchError($profile, $duration_in, $duration_end)
     {
         // This allows to configure a profile for videos without timestamps to be reindexed.
         if (isset($profile['nocheckduration']) && $profile['nocheckduration']) {

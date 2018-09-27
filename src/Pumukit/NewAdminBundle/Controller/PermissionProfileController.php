@@ -87,7 +87,6 @@ class PermissionProfileController extends AdminController implements NewAdminCon
     public function createAction(Request $request)
     {
         $permissionProfileService = $this->get('pumukitschema.permissionprofile');
-        $config = $this->getConfiguration();
 
         $permissionProfile = new PermissionProfile();
         $form = $this->getForm($permissionProfile);
@@ -184,7 +183,7 @@ class PermissionProfileController extends AdminController implements NewAdminCon
             if ($permissionProfileId === $this->get('session')->get('admin/permissionprofile/id')) {
                 $this->get('session')->remove('admin/permissionprofile/id');
             }
-            $newDefault = $this->get('pumukitschema.permissionprofile')->checkDefault($permissionProfile);
+            $this->get('pumukitschema.permissionprofile')->checkDefault($permissionProfile);
         } catch (\Exception $e) {
             throw $e;
         }

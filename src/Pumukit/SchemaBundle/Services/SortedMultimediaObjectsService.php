@@ -28,8 +28,7 @@ class SortedMultimediaObjectsService
     {
         $sorting = $series->getSortingCriteria();
 
-        $mms = $this->dm
-          ->getRepository('PumukitSchemaBundle:MultimediaObject')
+        $mms = $this->repo
           ->findOrderedBy($series, $sorting);
 
         $rank = 1;

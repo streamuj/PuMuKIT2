@@ -13,18 +13,14 @@ class TrackService
     private $dm;
     private $dispatcher;
     private $tmpPath;
-    private $profileService;
     private $forceDeleteOnDisk;
-    private $jobRepo;
 
-    public function __construct(DocumentManager $documentManager, TrackEventDispatcherService $dispatcher, ProfileService $profileService, $tmpPath = null, $forceDeleteOnDisk = true)
+    public function __construct(DocumentManager $documentManager, TrackEventDispatcherService $dispatcher, $tmpPath = null, $forceDeleteOnDisk = true)
     {
         $this->dm = $documentManager;
         $this->dispatcher = $dispatcher;
-        $this->profileService = $profileService;
         $this->tmpPath = $tmpPath ? realpath($tmpPath) : sys_get_temp_dir();
         $this->forceDeleteOnDisk = $forceDeleteOnDisk;
-        $this->jobRepo = $this->dm->getRepository('PumukitEncoderBundle:Job');
     }
 
     /**
@@ -133,7 +129,7 @@ class TrackService
             $finder = new Finder();
             $finder->files()->in($dirname);
             if (0 === $finder->count()) {
-                $dirDeleted = rmdir($dirname);
+                $deleted = rmdir($dirname);
                 if (!$deleted) {
                     throw new \Exception("Error deleting directory '".$dirname."'on disk");
                 }

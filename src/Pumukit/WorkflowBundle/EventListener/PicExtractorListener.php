@@ -15,7 +15,6 @@ class PicExtractorListener
 {
     private $dm;
     private $logger;
-    private $mmsPicService;
     private $picExtractorService;
     private $resourcesDir;
     private $defaultAudioPic;
@@ -23,10 +22,9 @@ class PicExtractorListener
     private $autoExtractPic;
     private $audioPicCopy;
 
-    public function __construct(DocumentManager $documentManager, MultimediaObjectPicService $mmsPicService, PicExtractorService $picExtractorService, LoggerInterface $logger, $profileService, $autoExtractPic = true)
+    public function __construct(DocumentManager $documentManager, PicExtractorService $picExtractorService, LoggerInterface $logger, $profileService, $autoExtractPic = true)
     {
         $this->dm = $documentManager;
-        $this->mmsPicService = $mmsPicService;
         $this->picExtractorService = $picExtractorService;
         $this->logger = $logger;
         $this->resourcesDir = realpath(__DIR__.'/../Resources/public/images');
@@ -91,16 +89,5 @@ class PicExtractorListener
                             .$multimediaObject->getId().'"');
 
         return true;
-    }
-
-    private function createPicFile()
-    {
-        if (copy($this->defaultAudioPic, $this->audioPicCopy)) {
-            $picFile = new UploadedFile($this->audioPicCopy, $this->defaultAudioPicOriginalName, null, null, null, true);
-
-            return $picFile;
-        }
-
-        return null;
     }
 }

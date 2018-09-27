@@ -46,6 +46,16 @@ class CpuStatus
     private $status = self::STATUS_WORKING;
 
     /**
+     * Get id.
+     *
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
      * Set name.
      *
      * @param string $name
