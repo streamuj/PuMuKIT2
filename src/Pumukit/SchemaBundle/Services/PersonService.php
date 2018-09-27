@@ -346,7 +346,7 @@ class PersonService
             foreach ($mmobj->getRoles() as $embeddedRole) {
                 if ($mmobj->containsPersonWithRole($person, $embeddedRole)) {
                     if (!($mmobj->removePersonWithRole($person, $embeddedRole))) {
-                        throw new \Exception('There was an error removing person '.$person->getId().' with role '.$role->getCod().' in multimedia object '.$multimediaObject->getId());
+                        throw new \Exception('There was an error removing person '.$person->getId().' with role '.$embeddedRole->getCod().' in multimedia object '.$mmobj->getId());
                     }
                     $this->dispatcher->dispatchDelete($mmobj, $person, $embeddedRole);
                 }
@@ -536,24 +536,4 @@ class PersonService
         return $embeddedPerson;
     }
 
-    /**
-     * Update embedded role.
-     *
-     * @param Role         $role
-     * @param EmbeddedRole $embeddedRole
-     *
-     * @return EmbeddedRole
-     */
-    private function updateEmbeddedRole(Role $role, EmbeddedRole $embeddedRole)
-    {
-        if (null !== $role) {
-            $embeddedRole->setCod($role->getCod());
-            $embeddedRole->setXml($role->getXml());
-            $embeddedRole->setDisplay($role->getDisplay());
-            $embeddedRole->setI18nName($role->getI18nName());
-            $embeddedRole->setLocale($role->getLocale());
-        }
-
-        return $embeddedRole;
-    }
 }

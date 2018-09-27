@@ -11,10 +11,8 @@ use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 class CreateMMOCommand extends ContainerAwareCommand
 {
     private $dm;
-    private $mmobjRepo;
     private $seriesRepo;
     private $jobService;
-    private $profileService;
     private $inspectionService;
     private $factoryService;
     private $tagService;
@@ -43,10 +41,8 @@ EOT
     protected function initialize(InputInterface $input, OutputInterface $output)
     {
         $this->dm = $this->getContainer()->get('doctrine_mongodb')->getManager();
-        $this->mmobjRepo = $this->dm->getRepository('PumukitSchemaBundle:MultimediaObject');
         $this->seriesRepo = $this->dm->getRepository('PumukitSchemaBundle:Series');
         $this->jobService = $this->getContainer()->get('pumukitencoder.job');
-        $this->profileService = $this->getContainer()->get('pumukitencoder.profile');
         $this->inspectionService = $this->getContainer()->get('pumukit.inspection');
         $this->factoryService = $this->getContainer()->get('pumukitschema.factory');
         $this->tagService = $this->getContainer()->get('pumukitschema.tag');
@@ -112,7 +108,7 @@ EOT
         $multimediaObject->setTitle($title);
         $this->tagService->addTagByCodToMultimediaObject($multimediaObject, 'PUCHWEBTV');
 
-        $track = $this->jobService->createTrackFromInboxOnServer($multimediaObject, $path, $profile, 2, $locale, array());
+        $this->jobService->createTrackFromInboxOnServer($multimediaObject, $path, $profile, 2, $locale, array());
     }
 
     private function getDefaultMasterProfile()

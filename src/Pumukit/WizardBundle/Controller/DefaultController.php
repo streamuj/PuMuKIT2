@@ -486,7 +486,7 @@ class DefaultController extends Controller
                                 }
                             }
                             foreach ($pubchannel as $tagCode => $valueOn) {
-                                $addedTags = $this->addTagToMultimediaObjectByCode($multimediaObject, $tagCode);
+                                $this->addTagToMultimediaObjectByCode($multimediaObject, $tagCode);
                             }
                         }
                     }
@@ -647,8 +647,6 @@ class DefaultController extends Controller
      */
     private function getSeries($seriesData = array())
     {
-        $dm = $this->get('doctrine_mongodb.odm.document_manager');
-
         $seriesId = $this->getKeyData('id', $seriesData);
         if ($seriesId && ('null' !== $seriesId)) {
             $series = $this->findSeriesById($seriesId);

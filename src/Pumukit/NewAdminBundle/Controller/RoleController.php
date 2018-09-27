@@ -31,7 +31,7 @@ class RoleController extends SortableAdminController implements NewAdminControll
         if (($request->isMethod('PUT') || $request->isMethod('POST'))) {
             if ($form->bind($request)->isValid()) {
                 try {
-                    $person = $personService->updateRole($role);
+                    $personService->updateRole($role);
                 } catch (\Exception $e) {
                     return new JsonResponse(array('status' => $e->getMessage()), 409);
                 }

@@ -499,7 +499,7 @@ class JobService
         $cpu = $this->cpuService->getCpuByName($job->getCpu());
         $commandLine = $this->renderBat($job);
 
-        $executor = $this->getExecutor($profile['app'], $cpu);
+        $executor = $this->getExecutor($cpu);
 
         try {
             $this->mkdir(dirname($job->getPathEnd()));
@@ -523,7 +523,7 @@ class JobService
             $this->logger->info('[execute] duration: '.$duration);
 
             //Check for different durations. Throws exception if they don't match.
-            $this->searchError($profile, $out, $job->getDuration(), $duration);
+            $this->searchError($profile, $job->getDuration(), $duration);
 
             $job->setTimeend(new \DateTime('now'));
             $job->setStatus(Job::STATUS_FINISHED);
@@ -565,7 +565,6 @@ class JobService
      * Throw a exception if error executing the job.
      *
      * @param $profile
-     * @param $var
      * @param $duration_in
      * @param $duration_end
      *
@@ -573,7 +572,7 @@ class JobService
      *
      * @throws \Exception
      */
-    public function searchError($profile, $var, $duration_in, $duration_end)
+    public function searchError($profile, $duration_in, $duration_end)
     {
         // This allows to configure a profile for videos without timestamps to be reindexed.
         if (isset($profile['nocheckduration']) && $profile['nocheckduration']) {
@@ -868,12 +867,11 @@ class JobService
     }
 
     /**
-     * @param $app
      * @param $cpu
      *
      * @return LocalExecutor|RemoteHTTPExecutor
      */
-    private function getExecutor($app, $cpu)
+    private function getExecutor($cpu)
     {
         $localhost = array('localhost', '127.0.0.1');
         $executor = (in_array($cpu['host'], $localhost)) ? new LocalExecutor() : new RemoteHTTPExecutor();

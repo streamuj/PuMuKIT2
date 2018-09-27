@@ -64,14 +64,13 @@ class BroadcastController extends AdminController implements NewAdminController
      *
      * @param Request $request
      *
-     * @return RedirectResponse|Response
+     * @return array|RedirectResponse|JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|Response
      */
     public function createAction(Request $request)
     {
         $this->checkCreateBroadcastDisabled();
 
         $dm = $this->get('doctrine_mongodb')->getManager();
-        $config = $this->getConfiguration();
 
         $broadcast = $this->createNew();
         $form = $this->getForm($broadcast);
@@ -113,15 +112,13 @@ class BroadcastController extends AdminController implements NewAdminController
      *
      * @param Request $request
      *
-     * @return RedirectResponse|Response
+     * @return array|RedirectResponse|JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse|Response
      */
     public function updateAction(Request $request)
     {
         $this->checkCreateBroadcastDisabled();
 
         $dm = $this->get('doctrine_mongodb')->getManager();
-
-        $config = $this->getConfiguration();
 
         $broadcast = $this->findOr404($request);
         $form = $this->getForm($broadcast);
@@ -185,9 +182,6 @@ class BroadcastController extends AdminController implements NewAdminController
         $this->checkCreateBroadcastDisabled();
 
         $config = $this->getConfiguration();
-        $session = $this->get('session');
-
-        $sorting = $request->get('sorting');
 
         $criteria = $this->getCriteria($config);
         $broadcasts = $this->getResources($request, $config, $criteria);

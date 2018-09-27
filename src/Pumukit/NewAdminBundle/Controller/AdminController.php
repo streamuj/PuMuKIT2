@@ -189,9 +189,6 @@ class AdminController extends ResourceController implements NewAdminController
         $config = $this->getConfiguration();
         $pluralName = $config->getPluralResourceName();
         $resourceName = $config->getResourceName();
-        $session = $this->get('session');
-
-        $sorting = $request->get('sorting');
 
         $criteria = $this->getCriteria($config);
         $resources = $this->getResources($request, $config, $criteria);
@@ -245,7 +242,6 @@ class AdminController extends ResourceController implements NewAdminController
 
     public function find($id)
     {
-        $config = $this->getConfiguration();
         $repository = $this->getRepository();
 
         $criteria = array('id' => $id);

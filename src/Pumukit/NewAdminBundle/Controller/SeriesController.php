@@ -605,9 +605,9 @@ class SeriesController extends AdminController implements NewAdminController
                         $mm = $repo->find($id);
                         if (!$this->isGranted(Permission::getRoleTagDisableForPubChannel($tag->getCod()))) {
                             if ($mustContainsTag && (!($mm->containsTag($tag)))) {
-                                $tagAdded = $tagService->addTag($mm, $tag);
+                                $tagService->addTag($mm, $tag);
                             } elseif ((!($mustContainsTag)) && $mm->containsTag($tag)) {
-                                $tagAdded = $tagService->removeTag($mm, $tag);
+                                $tagService->removeTag($mm, $tag);
                             }
                         }
                     }
@@ -725,7 +725,7 @@ class SeriesController extends AdminController implements NewAdminController
             $enableFilter = false;
             if ($dm->getFilterCollection()->isEnabled('backoffice')) {
                 $enableFilter = true;
-                $filter = $dm->getFilterCollection()->disable('backoffice');
+                $dm->getFilterCollection()->disable('backoffice');
             }
             $mmobjRepo = $dm->getRepository('PumukitSchemaBundle:MultimediaObject');
             $allMmobjs = $mmobjRepo->createStandardQueryBuilder()->field('series')->equals($series->getId())->getQuery()->execute();
@@ -733,14 +733,14 @@ class SeriesController extends AdminController implements NewAdminController
                 if (!$resource->containsPersonWithRole($person, $role) ||
                    count($resource->getPeopleByRole($role, true)) > 1) {
                     if ($enableFilter) {
-                        $filter = $dm->getFilterCollection()->enable('backoffice');
+                        $dm->getFilterCollection()->enable('backoffice');
                     }
 
                     return false;
                 }
             }
             if ($enableFilter) {
-                $filter = $dm->getFilterCollection()->enable('backoffice');
+                $dm->getFilterCollection()->enable('backoffice');
             }
         }
 

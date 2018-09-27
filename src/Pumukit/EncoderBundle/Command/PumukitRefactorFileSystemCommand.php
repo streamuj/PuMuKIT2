@@ -17,7 +17,6 @@ class PumukitRefactorFileSystemCommand extends ContainerAwareCommand
     private $dm;
     private $output;
     private $input;
-    private $finder;
     private $fileSystem;
     private $pics;
     private $materials;
@@ -59,7 +58,6 @@ EOT
 
         $this->pics = $this->input->getOption('pics');
         $this->materials = $this->input->getOption('materials');
-        $this->finder = new Finder();
         $this->fileSystem = new Filesystem();
     }
 
@@ -78,25 +76,25 @@ EOT
         }
 
         if ($this->pics && in_array(strtolower($this->pics), array('false', 'true', '1', '0'))) {
-            $output->writeln('Trying to refactor pics paths ...');
+            $this->output->writeln('Trying to refactor pics paths ...');
             try {
                 $this->refactorPicsPath();
             } catch (\Exception $exception) {
                 throw new \Exception($exception->getMessage());
             }
 
-            $output->writeln('Refactor pics done');
+            $this->output->writeln('Refactor pics done');
         }
 
         if ($this->materials && in_array(strtolower($this->materials), array('false', 'true', '1', '0'))) {
-            $output->writeln('Trying to refactor materials paths ...');
+            $this->output->writeln('Trying to refactor materials paths ...');
             try {
                 $this->refactorMaterialsPath();
             } catch (\Exception $exception) {
                 throw new \Exception($exception->getMessage());
             }
 
-            $output->writeln('Refactor materials done');
+            $this->output->writeln('Refactor materials done');
         }
     }
 

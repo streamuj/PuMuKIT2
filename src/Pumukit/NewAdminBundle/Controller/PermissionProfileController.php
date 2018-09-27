@@ -24,17 +24,12 @@ class PermissionProfileController extends AdminController implements NewAdminCon
     public function indexAction(Request $request)
     {
         $config = $this->getConfiguration();
-        $session = $this->get('session');
-        $sorting = $request->get('sorting');
 
         $criteria = $this->getCriteria($config);
         $permissionProfiles = $this->getResources($request, $config, $criteria);
 
         list($permissions, $dependencies) = $this->getPermissions();
         $scopes = PermissionProfile::$scopeDescription;
-
-        $createBroadcastsEnabled = !$this->container->getParameter('pumukit_new_admin.disable_broadcast_creation');
-        $showSeriesTypeTab = $this->container->hasParameter('pumukit2.use_series_channels') && $this->container->getParameter('pumukit2.use_series_channels');
 
         return array(
                      'permissionprofiles' => $permissionProfiles,
@@ -55,7 +50,6 @@ class PermissionProfileController extends AdminController implements NewAdminCon
     {
         $config = $this->getConfiguration();
         $session = $this->get('session');
-        $sorting = $request->get('sorting');
 
         $criteria = $this->getCriteria($config);
         $permissionProfiles = $this->getResources($request, $config, $criteria);
@@ -92,9 +86,7 @@ class PermissionProfileController extends AdminController implements NewAdminCon
      */
     public function createAction(Request $request)
     {
-        $dm = $this->get('doctrine_mongodb')->getManager();
         $permissionProfileService = $this->get('pumukitschema.permissionprofile');
-        $config = $this->getConfiguration();
 
         $permissionProfile = new PermissionProfile();
         $form = $this->getForm($permissionProfile);
@@ -131,16 +123,14 @@ class PermissionProfileController extends AdminController implements NewAdminCon
      */
     public function updateAction(Request $request)
     {
-        $dm = $this->get('doctrine_mongodb')->getManager();
         $permissionProfileService = $this->get('pumukitschema.permissionprofile');
-        $config = $this->getConfiguration();
 
         $permissionProfile = $this->findOr404($request);
         $form = $this->getForm($permissionProfile);
 
         if (in_array($request->getMethod(), array('POST', 'PUT', 'PATCH')) && $form->submit($request, !$request->isMethod('PATCH'))->isValid()) {
             try {
-                $permissionProfile = $permissionProfileService->update($permissionProfile);
+                $permissionProfileService->update($permissionProfile);
             } catch (\Exception $e) {
                 return new JsonResponse(array('status' => $e->getMessage()), 409);
             }
@@ -179,10 +169,8 @@ class PermissionProfileController extends AdminController implements NewAdminCon
      */
     public function deleteAction(Request $request)
     {
-        $config = $this->getConfiguration();
         $permissionProfile = $this->findOr404($request);
         $permissionProfileId = $permissionProfile->getId();
-        $changeDefault = $permissionProfile->isDefault();
 
         $response = $this->isAllowedToBeDeleted($permissionProfile);
         if ($response instanceof Response) {
@@ -195,7 +183,6 @@ class PermissionProfileController extends AdminController implements NewAdminCon
             if ($permissionProfileId === $this->get('session')->get('admin/permissionprofile/id')) {
                 $this->get('session')->remove('admin/permissionprofile/id');
             }
-            $newDefault = $this->get('pumukitschema.permissionprofile')->checkDefault($permissionProfile);
         } catch (\Exception $e) {
             throw $e;
         }
