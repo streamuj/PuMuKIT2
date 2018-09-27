@@ -363,11 +363,6 @@ class DefaultController extends Controller
 
             $pubchannel = $this->getKeyData('pubchannel', $trackData);
 
-            //$showSeries = false;
-            /* if (('null' === $seriesId) || (null === $seriesId)) { */
-            /*     $showSeries = true; */
-            /* } */
-
             // TODO Fragment this. Develop better way.
             $option = $this->getKeyData('option', $typeData);
             try {

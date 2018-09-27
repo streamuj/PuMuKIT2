@@ -280,8 +280,6 @@ class StatsService
      */
     private function aggrPipeAddMatch(\DateTime $fromDate = null, \DateTime $toDate = null, $matchExtra = array(), $pipeline = array())
     {
-        //$filterMath = $this->dm->getFilterCollection()->getFilterCriteria($this->repo->getClassMetadata());
-
         $date = array();
         if ($fromDate) {
             $fromMongoDate = new \MongoDate($fromDate->format('U'), $fromDate->format('u'));
@@ -296,7 +294,6 @@ class StatsService
         }
 
         if (count($matchExtra) > 0 || count($date) > 0) {
-            //$pipeline[] = array('$match' => array_merge($filterMath, $matchExtra, $date));
             $pipeline[] = array('$match' => array_merge($matchExtra, $date));
         }
 

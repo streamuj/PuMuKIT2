@@ -25,7 +25,7 @@ class AnnotationsAPIController extends Controller
     public function getAction(Request $request)
     {
         //TODO: Do the annotation getting using a service function.
-        //$opencastAnnotationService = $this->container->get('video_editor.opencast_annotations');
+        //Like: $opencastAnnotationService = $this->container->get('video_editor.opencast_annotations');
         $serializer = $this->get('serializer');
 
         $episode = $request->get('episode');
@@ -37,7 +37,7 @@ class AnnotationsAPIController extends Controller
         $total = 10;
 
         //TODO: Do the annotation getting using a service function.
-        //$resAnnotations = $opencastAnnotationService->getOpencastAnnotations();
+        //Like: $resAnnotations = $opencastAnnotationService->getOpencastAnnotations();
         $resAnnotations = array();
         $annonRepo = $this->get('doctrine_mongodb')->getRepository('PumukitSchemaBundle:Annotation');
         $annonQB = $annonRepo->createQueryBuilder();
@@ -117,10 +117,9 @@ class AnnotationsAPIController extends Controller
     public function createNewAction(Request $request)
     {
         //TODO: Do the annotation getting using a service function.
-        //$opencastAnnotationService = $this->container->get('video_editor.opencast_annotations');
+        //Like: $opencastAnnotationService = $this->container->get('video_editor.opencast_annotations');
         $serializer = $this->get('serializer');
 
-        //$annonRepo = $this->get('doctrine_mongodb')->getRepository('PumukitSchemaBundle:Annotation');
         $episode = $request->get('episode');
         $type = $request->get('type');
         $value = $request->get('value');
@@ -176,7 +175,7 @@ class AnnotationsAPIController extends Controller
     public function editAction(Annotation $annotation, Request $request)
     {
         //TODO: Do the annotation getting using a service function.
-        //$opencastAnnotationService = $this->container->get('video_editor.opencast_annotations');
+        //Like: $opencastAnnotationService = $this->container->get('video_editor.opencast_annotations');
         $serializer = $this->get('serializer');
 
         $value = $request->get('value');

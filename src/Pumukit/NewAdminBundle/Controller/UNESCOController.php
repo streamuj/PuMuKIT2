@@ -382,7 +382,6 @@ class UNESCOController extends Controller implements NewAdminController
 
         $parentTags = $factoryService->getParentTags();
 
-        //$multimediaObject = $this->findOr404($request);
         $translator = $this->get('translator');
         $locale = $request->getLocale();
         $formMeta = $this->createForm(new MultimediaObjectMetaType($translator, $locale), $multimediaObject);
@@ -478,8 +477,6 @@ class UNESCOController extends Controller implements NewAdminController
         $translator = $this->get('translator');
         $locale = $request->getLocale();
 
-        //$form = $this->createForm(new UNESCOBasicType($translator, $locale));
-
         $roles = $dm->getRepository('PumukitSchemaBundle:Role')->findAll();
 
         $pudeRadio = $dm->getRepository('PumukitSchemaBundle:Tag')->findOneByCod('PUDERADIO');
@@ -517,7 +514,6 @@ class UNESCOController extends Controller implements NewAdminController
         $disablePudenew = !$this->container->getParameter('show_latest_with_pudenew');
 
         return array(
-            //'form' => $form->createView(),
             'disable_pudenew' => $disablePudenew,
             'genre' => $aGenre,
             'roles' => $roles,
