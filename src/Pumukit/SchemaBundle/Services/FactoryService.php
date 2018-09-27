@@ -21,7 +21,6 @@ class FactoryService
     private $personService;
     private $userService;
     private $embeddedBroadcastService;
-    private $seriesService;
     private $mmsDispatcher;
     private $seriesDispatcher;
     private $translator;
@@ -30,14 +29,13 @@ class FactoryService
     private $defaultLicense;
     private $addUserAsPerson;
 
-    public function __construct(DocumentManager $documentManager, TagService $tagService, PersonService $personService, UserService $userService, EmbeddedBroadcastService $embeddedBroadcastService, SeriesService $seriesService, MultimediaObjectEventDispatcherService $mmsDispatcher, SeriesEventDispatcherService $seriesDispatcher, TranslatorInterface $translator, $addUserAsPerson = true, array $locales = array(), $defaultCopyright = '', $defaultLicense = '')
+    public function __construct(DocumentManager $documentManager, TagService $tagService, PersonService $personService, UserService $userService, EmbeddedBroadcastService $embeddedBroadcastService, MultimediaObjectEventDispatcherService $mmsDispatcher, SeriesEventDispatcherService $seriesDispatcher, TranslatorInterface $translator, $addUserAsPerson = true, array $locales = array(), $defaultCopyright = '', $defaultLicense = '')
     {
         $this->dm = $documentManager;
         $this->tagService = $tagService;
         $this->personService = $personService;
         $this->userService = $userService;
         $this->embeddedBroadcastService = $embeddedBroadcastService;
-        $this->seriesService = $seriesService;
         $this->mmsDispatcher = $mmsDispatcher;
         $this->seriesDispatcher = $seriesDispatcher;
         $this->translator = $translator;

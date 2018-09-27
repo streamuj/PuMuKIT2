@@ -23,8 +23,6 @@ class OaiController extends Controller
      */
     public function indexAction(Request $request)
     {
-        $verb = $request->query->get('verb');
-
         switch ($request->query->get('verb')) {
         case 'Identify':
             return $this->identify();
@@ -384,16 +382,6 @@ class OaiController extends Controller
         $toDom = dom_import_simplexml($XMLmetadata);
         $fromDom = dom_import_simplexml($XMLoai_dc);
         $toDom->appendChild($toDom->ownerDocument->importNode($fromDom, true));
-    }
-
-    //TODO Delete using ResumptionToken
-    private function validateToken($resumptionToken)
-    {
-        if (null !== $resumptionToken) {
-            $error = false;
-
-            return array('pag' => (((int) $resumptionToken) + 1), 'error' => $error);
-        }
     }
 
     private function genResponse($responseXml, $verb)

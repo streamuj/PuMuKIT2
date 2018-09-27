@@ -48,7 +48,7 @@ class LegacyEventPicController extends Controller implements NewAdminController
             }
             if ($request->files->has('file')) {
                 $picService = $this->get('pumukitlive.eventpic');
-                $media = $picService->addPicFile($event, $request->files->get('file'));
+                $picService->addPicFile($event, $request->files->get('file'));
             }
         } catch (\Exception $e) {
             return array(

@@ -121,8 +121,6 @@ class BroadcastController extends AdminController implements NewAdminController
 
         $dm = $this->get('doctrine_mongodb')->getManager();
 
-        $config = $this->getConfiguration();
-
         $broadcast = $this->findOr404($request);
         $form = $this->getForm($broadcast);
 
@@ -185,9 +183,6 @@ class BroadcastController extends AdminController implements NewAdminController
         $this->checkCreateBroadcastDisabled();
 
         $config = $this->getConfiguration();
-        $session = $this->get('session');
-
-        $sorting = $request->get('sorting');
 
         $criteria = $this->getCriteria($config);
         $broadcasts = $this->getResources($request, $config, $criteria);

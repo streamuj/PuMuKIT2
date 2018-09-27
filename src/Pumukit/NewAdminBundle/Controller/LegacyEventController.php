@@ -67,8 +67,6 @@ class LegacyEventController extends AdminController implements NewAdminControlle
      */
     public function createAction(Request $request)
     {
-        $config = $this->getConfiguration();
-
         $resource = $this->createNew();
         $form = $this->getForm($resource);
 
@@ -316,7 +314,6 @@ class LegacyEventController extends AdminController implements NewAdminControlle
         $session = $this->get('session');
         $session_namespace = 'admin/event';
 
-        $newEventId = $request->get('newEventId');
         $page = $session->get($session_namespace.'/page', 1);
 
         $m = '';

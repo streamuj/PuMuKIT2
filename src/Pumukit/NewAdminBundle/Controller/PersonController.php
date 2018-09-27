@@ -182,7 +182,6 @@ class PersonController extends AdminController implements NewAdminController
         }
 
         $config = $this->getConfiguration();
-        $pluralName = $config->getPluralResourceName();
 
         $criteria = $this->getCriteria($config, $request->getLocale());
         $selectedPersonId = $request->get('selectedPersonId', null);
@@ -517,9 +516,7 @@ class PersonController extends AdminController implements NewAdminController
         $owner = $request->get('owner', false);
         try {
             $series = $multimediaObject->getSeries();
-            $seriesId = $series->getId();
             $personService = $this->get('pumukitschema.person');
-            $userService = $this->get('pumukitschema.user');
             $translator = $this->get('translator');
             $person = $personService->findPersonById($request->get('id'));
             $personalScopeRoleCode = $personService->getPersonalScopeRoleCode();
@@ -696,7 +693,6 @@ class PersonController extends AdminController implements NewAdminController
             }
 
             if ($selectedPersonId) {
-                $newPerson = $this->get('doctrine_mongodb.odm.document_manager')->getRepository('PumukitSchemaBundle:Person')->find($selectedPersonId);
                 $adapter = $resources->getAdapter();
                 $returnedPerson = $adapter->getSlice(0, $adapter->getNbResults());
                 $position = 1;

@@ -262,7 +262,7 @@ class MaterialService
             $finder = new Finder();
             $finder->files()->in($dirname);
             if (0 === $finder->count()) {
-                $dirDeleted = rmdir($dirname);
+                $deleted = rmdir($dirname);
                 if (!$deleted) {
                     throw new \Exception("Error deleting directory '".$dirname."'on disk");
                 }

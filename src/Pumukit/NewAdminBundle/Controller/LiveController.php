@@ -23,8 +23,6 @@ class LiveController extends AdminController implements NewAdminController
      */
     public function createAction(Request $request)
     {
-        $config = $this->getConfiguration();
-
         $resource = $this->createNew();
         $form = $this->getForm($resource);
 

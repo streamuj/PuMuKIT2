@@ -8,12 +8,10 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class TrackUrlService
 {
-    private $dm;
     private $router;
 
-    public function __construct(DocumentManager $dm, UrlGeneratorInterface $router)
+    public function __construct(UrlGeneratorInterface $router)
     {
-        $this->dm = $dm;
         $this->router = $router;
     }
 

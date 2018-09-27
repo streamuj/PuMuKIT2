@@ -8,8 +8,6 @@ use Pumukit\SchemaBundle\Utils\Mongo\TextIndexUtils;
 
 class MultimediaObjectSearchService
 {
-    private $dm;
-
     /**
      * MultimediaObjectSearchService constructor.
      *
@@ -17,7 +15,6 @@ class MultimediaObjectSearchService
      */
     public function __construct(DocumentManager $documentManager)
     {
-        $this->dm = $documentManager;
     }
 
     /**

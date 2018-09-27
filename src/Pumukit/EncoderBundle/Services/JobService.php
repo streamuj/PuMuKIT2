@@ -494,7 +494,7 @@ class JobService
         $cpu = $this->cpuService->getCpuByName($job->getCpu());
         $commandLine = $this->renderBat($job);
 
-        $executor = $this->getExecutor($profile['app'], $cpu);
+        $executor = $this->getExecutor($cpu);
 
         try {
             $this->mkdir(dirname($job->getPathEnd()));
@@ -868,7 +868,7 @@ class JobService
      *
      * @return LocalExecutor|RemoteHTTPExecutor
      */
-    private function getExecutor($app, $cpu)
+    private function getExecutor($cpu)
     {
         $localhost = array('localhost', '127.0.0.1');
         $executor = (in_array($cpu['host'], $localhost)) ? new LocalExecutor() : new RemoteHTTPExecutor();

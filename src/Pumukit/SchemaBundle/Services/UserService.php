@@ -17,7 +17,6 @@ class UserService
     private $personRepo;
     private $groupRepo;
     private $permissionService;
-    private $personalScopeDeleteOwners;
     private $dispatcher;
     private $permissionProfileService;
     private $genUserSalt;
@@ -29,10 +28,9 @@ class UserService
      * @param UserEventDispatcherService $dispatcher
      * @param PermissionService          $permissionService
      * @param PermissionProfileService   $permissionProfileService
-     * @param bool                       $personalScopeDeleteOwners
      * @param bool                       $genUserSalt
      */
-    public function __construct(DocumentManager $documentManager, UserEventDispatcherService $dispatcher, PermissionService $permissionService, PermissionProfileService $permissionProfileService, $personalScopeDeleteOwners = false, $genUserSalt = false)
+    public function __construct(DocumentManager $documentManager, UserEventDispatcherService $dispatcher, PermissionService $permissionService, PermissionProfileService $permissionProfileService, $genUserSalt = false)
     {
         $this->dm = $documentManager;
         $this->repo = $this->dm->getRepository('PumukitSchemaBundle:User');
@@ -41,7 +39,6 @@ class UserService
         $this->groupRepo = $this->dm->getRepository('PumukitSchemaBundle:Group');
         $this->permissionService = $permissionService;
         $this->dispatcher = $dispatcher;
-        $this->personalScopeDeleteOwners = $personalScopeDeleteOwners;
         $this->permissionProfileService = $permissionProfileService;
         $this->genUserSalt = $genUserSalt;
     }

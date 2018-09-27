@@ -118,7 +118,6 @@ EOT
     private function syncTags(InputInterface $input, OutputInterface $output)
     {
         $tagRepo = $this->dm->getRepository('PumukitSchemaBundle:Tag');
-        $mmRepo = $this->dm->getRepository('PumukitSchemaBundle:MultimediaObject');
         $tagColl = $this->dm->getDocumentCollection('PumukitSchemaBundle:Tag');
         $mmColl = $this->dm->getDocumentCollection('PumukitSchemaBundle:MultimediaObject');
 

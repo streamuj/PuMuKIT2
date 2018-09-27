@@ -65,13 +65,13 @@ class OpencastSingleImportCommand extends ContainerAwareCommand
         $tracks = $opencastImportService->getMediaPackageField($media, 'track');
         if (isset($tracks[0])) {
             // NOTE: Multiple tracks
-            $limit = count($tracks);
-            for ($i = 0; $i < $limit; ++$i) {
-                $track = $opencastImportService->createTrackFromMediaPackage($mediaPackage, $multimediaObject, $i);
+            $trackCount = count($tracks);
+            for ($i = 0; $i < $trackCount; ++$i) {
+                $opencastImportService->createTrackFromMediaPackage($mediaPackage, $multimediaObject, $i);
             }
         } else {
             // NOTE: Single track
-            $track = $opencastImportService->createTrackFromMediaPackage($mediaPackage, $multimediaObject);
+            $opencastImportService->createTrackFromMediaPackage($mediaPackage, $multimediaObject);
         }
 
         $mmsService->updateMultimediaObject($multimediaObject);

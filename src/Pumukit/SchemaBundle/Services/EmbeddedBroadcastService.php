@@ -9,24 +9,21 @@ use Pumukit\SchemaBundle\Document\User;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
-use Symfony\Bundle\FrameworkBundle\Routing\Router;
 use Symfony\Component\HttpFoundation\Response;
 
 class EmbeddedBroadcastService
 {
     private $dm;
-    private $repo;
     private $mmsService;
     private $dispatcher;
     private $disabledBroadcast;
     private $authorizationChecker;
-    private $router;
     private $templating;
 
     /**
      * Constructor.
      */
-    public function __construct(DocumentManager $documentManager, MultimediaObjectService $mmsService, MultimediaObjectEventDispatcherService $dispatcher, AuthorizationCheckerInterface $authorizationChecker, EngineInterface $templating, Router $router, $disabledBroadcast)
+    public function __construct(DocumentManager $documentManager, MultimediaObjectService $mmsService, MultimediaObjectEventDispatcherService $dispatcher, AuthorizationCheckerInterface $authorizationChecker, EngineInterface $templating, $disabledBroadcast)
     {
         $this->dm = $documentManager;
         $this->repo = $this->dm->getRepository('PumukitSchemaBundle:MultimediaObject');
@@ -34,7 +31,6 @@ class EmbeddedBroadcastService
         $this->dispatcher = $dispatcher;
         $this->authorizationChecker = $authorizationChecker;
         $this->templating = $templating;
-        $this->router = $router;
         $this->disabledBroadcast = $disabledBroadcast;
     }
 
@@ -283,7 +279,7 @@ class EmbeddedBroadcastService
             return $this->isPasswordCorrect($multimediaObject, $password);
         }
 
-        return $this->renderErrorNotAuthenticated($user);
+        return $this->renderErrorNotAuthenticated();
     }
 
     /**
@@ -326,7 +322,7 @@ class EmbeddedBroadcastService
             return true;
         }
 
-        return $this->renderErrorNotAuthenticated($user);
+        return $this->renderErrorNotAuthenticated();
     }
 
     private function isUserLoggedInAndInGroups(MultimediaObject $multimediaObject, User $user = null)
@@ -342,7 +338,7 @@ class EmbeddedBroadcastService
             }
         }
 
-        return $this->renderErrorNotAuthenticated($user);
+        return $this->renderErrorNotAuthenticated();
     }
 
     private function isPasswordCorrect(MultimediaObject $multimediaObject, $password = null)
@@ -360,7 +356,7 @@ class EmbeddedBroadcastService
         return $this->renderErrorPassword($invalidPassword);
     }
 
-    private function renderErrorNotAuthenticated(User $user = null)
+    private function renderErrorNotAuthenticated()
     {
         $renderedView = $this->templating->render('PumukitWebTVBundle:Index:403forbidden.html.twig', array('show_forceauth' => true));
 

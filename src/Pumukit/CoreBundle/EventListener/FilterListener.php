@@ -50,7 +50,7 @@ class FilterListener
             return;
         }
         if ($controller[0] instanceof AdminController) {
-            $this->enableAdminFilter($routeParams);
+            $this->enableAdminFilter();
         } elseif ($controller[0] instanceof WebTVController) {
             $this->enableWebTVFilter($routeParams);
         } elseif ($controller[0] instanceof PersonalController) {
@@ -125,7 +125,7 @@ class FilterListener
      *
      * This filter is used mainly in the "back-office" part of the application.
      */
-    private function enableAdminFilter($routeParams)
+    private function enableAdminFilter()
     {
         if (!$this->addUserAsPerson) {
             return;

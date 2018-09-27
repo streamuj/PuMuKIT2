@@ -16,7 +16,6 @@ class PumukitInitRepoCommand extends ContainerAwareCommand
 {
     private $dm = null;
     private $tagsRepo = null;
-    private $rolesRepo = null;
 
     private $tagsPath = '../Resources/data/tags/';
     private $rolesPath = '../Resources/data/roles/';
@@ -131,8 +130,6 @@ EOT
 
     protected function executeRoles(InputInterface $input, OutputInterface $output)
     {
-        $this->rolesRepo = $this->dm->getRepository('PumukitSchemaBundle:Role');
-
         $finder = new Finder();
         $finder->files()->in(__DIR__.'/'.$this->rolesPath);
         $file = $input->getArgument('file');
@@ -246,8 +243,6 @@ EOT
             $output->writeln('<info>Found file: '.realpath($file_route).'</info>');
         }
 
-        $idCodMapping = array();
-
         $row = 1;
         $importedTags = array();
         while (false !== ($currentRow = fgetcsv($file, 0, ';'))) {
@@ -292,12 +287,10 @@ EOT
                         break;
                     case 'role':
                         $role = $this->createRoleFromCsvArray($currentRow);
-                        $idCodMapping[$currentRow[0]] = $role;
                         $output->writeln('Role persisted - new id: '.$role->getId().' code: '.$role->getCod());
                         break;
                     case 'permissionprofile':
                         $permissionProfile = $this->createPermissionProfileFromCsvArray($currentRow);
-                        $idCodMapping[$currentRow[0]] = $permissionProfile;
                         $output->writeln('PermissionProfile persisted - new id: '.$permissionProfile->getId().' name: '.$permissionProfile->getName());
                         break;
                     }

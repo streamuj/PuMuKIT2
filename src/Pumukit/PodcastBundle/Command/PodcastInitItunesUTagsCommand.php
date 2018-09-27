@@ -13,7 +13,6 @@ use Pumukit\SchemaBundle\Document\Tag;
 class PodcastInitItunesUTagsCommand extends ContainerAwareCommand
 {
     private $dm = null;
-    private $tagRepo = null;
     private $tagsPath = '../Resources/data/tags/';
 
     protected function configure()
@@ -35,7 +34,6 @@ EOT
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->dm = $this->getContainer()->get('doctrine_mongodb')->getManager();
-        $this->tagRepo = $this->dm->getRepository('PumukitSchemaBundle:Tag');
 
         if ($input->getOption('force')) {
             return $this->executeTags($input, $output);
@@ -117,7 +115,6 @@ EOT
                 if (0 == $row % 100) {
                     echo 'Row '.$row."\n";
                 }
-                $previous_content = $currentRow;
                 ++$row;
             }
             fclose($file);

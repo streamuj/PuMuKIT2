@@ -122,7 +122,7 @@ class OpencastImportService
             $opencastTag = $tagRepo->findOneByCod($this->defaultTagImported);
             if ($opencastTag) {
                 $tagService = $this->tagService;
-                $tagAdded = $tagService->addTagToMultimediaObject($multimediaObject, $opencastTag->getId());
+                $tagService->addTagToMultimediaObject($multimediaObject, $opencastTag->getId());
             }
 
             $multimediaObject = $this->mmsService->updateMultimediaObject($multimediaObject);

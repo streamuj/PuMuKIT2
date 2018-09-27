@@ -62,8 +62,6 @@ class PicExtractorListener
         if ($multimediaObject->getPics()->isEmpty() && $this->autoExtractPic) {
             try {
                 if ($multimediaObject->isOnlyAudio() || $track->isOnlyAudio()) {
-                    // TODO: Change return values when adding final default audio image
-                    //return $this->addDefaultAudioPic($multimediaObject, $track);
                     return false;
                 } else {
                     return $this->generatePicFromVideo($multimediaObject, $track);
@@ -76,27 +74,6 @@ class PicExtractorListener
 
                 return false;
             }
-        }
-
-        return false;
-    }
-
-    private function addDefaultAudioPic(MultimediaObject $multimediaObject, Track $track)
-    {
-        $picFile = $this->createPicFile();
-        if (null === $picFile) {
-            return false;
-        }
-        $multimediaObject = $this->mmsPicService->addPicFile($multimediaObject, $picFile);
-        if (null !== $multimediaObject) {
-            if ($multimediaObject instanceof MultimediaObject) {
-                $this->logger->info(__CLASS__.'['.__FUNCTION__.'] '
-                                    .'Extracted pic from track '.
-                                    $track->getId().' into MultimediaObject "'
-                                    .$multimediaObject->getId().'"');
-            }
-
-            return true;
         }
 
         return false;

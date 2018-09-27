@@ -8,7 +8,6 @@ use Doctrine\ODM\MongoDB\DocumentManager;
 class EmbeddedEventSessionService
 {
     private $dm;
-    private $repo;
     private $collection;
     private $defaultPoster;
     private $defaultThumbnail;

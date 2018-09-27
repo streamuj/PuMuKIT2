@@ -40,7 +40,6 @@ class MultimediaObjectController extends SortableAdminController implements NewA
         $config = $this->getConfiguration();
 
         $criteria = $this->getCriteria($config);
-        $resources = $this->getResources($request, $config, $criteria);
 
         $factoryService = $this->get('pumukitschema.factory');
 
@@ -93,7 +92,6 @@ class MultimediaObjectController extends SortableAdminController implements NewA
         $dm = $this->get('doctrine_mongodb')->getManager();
         $session = $this->get('session');
         $config = $this->getConfiguration();
-        $pluralName = $config->getPluralResourceName();
 
         $factoryService = $this->get('pumukitschema.factory');
 
@@ -135,7 +133,6 @@ class MultimediaObjectController extends SortableAdminController implements NewA
      */
     public function showAction(Request $request)
     {
-        $config = $this->getConfiguration();
         $data = $this->findOr404($request);
 
         $activeEditor = $this->checkHasEditor();
@@ -153,8 +150,6 @@ class MultimediaObjectController extends SortableAdminController implements NewA
      */
     public function editAction(Request $request)
     {
-        $config = $this->getConfiguration();
-
         $factoryService = $this->get('pumukitschema.factory');
         $personService = $this->get('pumukitschema.person');
 
@@ -195,9 +190,6 @@ class MultimediaObjectController extends SortableAdminController implements NewA
         $notMasterProfiles = $this->get('pumukitencoder.profile')->getProfiles(null, true, false);
 
         $template = $resource->isPrototype() ? '_template' : '';
-
-        $isPublished = null;
-        $playableResource = null;
 
         $activeEditor = $this->checkHasEditor();
         $notChangePubChannel = !$this->isGranted(Permission::CHANGE_MMOBJECT_PUBCHANNEL);
@@ -476,8 +468,6 @@ class MultimediaObjectController extends SortableAdminController implements NewA
      */
     public function addTagAction(Request $request)
     {
-        $config = $this->getConfiguration();
-
         $resource = $this->findOr404($request);
 
         $tagService = $this->get('pumukitschema.tag');
@@ -508,8 +498,6 @@ class MultimediaObjectController extends SortableAdminController implements NewA
      */
     public function deleteTagAction(Request $request)
     {
-        $config = $this->getConfiguration();
-
         $resource = $this->findOr404($request);
 
         $tagService = $this->get('pumukitschema.tag');
@@ -760,7 +748,6 @@ class MultimediaObjectController extends SortableAdminController implements NewA
     public function cloneAction(Request $request)
     {
         $resource = $this->findOr404($request);
-        $resourceId = $resource->getId();
         $seriesId = $resource->getSeries()->getId();
 
         $this->get('pumukitschema.factory')->cloneMultimediaObject($resource);
@@ -803,7 +790,6 @@ class MultimediaObjectController extends SortableAdminController implements NewA
     {
         $config = $this->getConfiguration();
         $criteria = $this->getCriteria($config);
-        $resources = $this->getResources($request, $config, $criteria);
         $factoryService = $this->get('pumukitschema.factory');
         $seriesId = $request->get('seriesId', null);
         $sessionId = $this->get('session')->get('admin/series/id', null);
@@ -1098,9 +1084,6 @@ class MultimediaObjectController extends SortableAdminController implements NewA
      */
     public function updateBroadcastAction(MultimediaObject $multimediaObject, Request $request)
     {
-        $translator = $this->get('translator');
-        $locale = $request->getLocale();
-        $dm = $this->get('doctrine_mongodb.odm.document_manager');
         $embeddedBroadcastService = $this->get('pumukitschema.embeddedbroadcast');
         $specialTranslationService = $this->get('pumukitschema.special_translation');
         if ($multimediaObject->isLive()) {
@@ -1259,8 +1242,6 @@ class MultimediaObjectController extends SortableAdminController implements NewA
      */
     private function modifyMultimediaObjectGroups(MultimediaObject $multimediaObject, $addGroups = array(), $deleteGroups = array())
     {
-        $mmId = $multimediaObject->getId();
-        $owners = $multimediaObject->getProperty('owners');
         $dm = $this->get('doctrine_mongodb.odm.document_manager');
         $groupRepo = $dm->getRepository('PumukitSchemaBundle:Group');
         $multimediaObjectService = $this->get('pumukitschema.multimedia_object');
@@ -1370,7 +1351,7 @@ class MultimediaObjectController extends SortableAdminController implements NewA
             $person = $personRepo->find($owner);
             if ($person) {
                 if ($loggedInUser === $person->getUser()) {
-                    $userInOnwers = true;
+                    $userInOwners = true;
                     break;
                 }
             }
