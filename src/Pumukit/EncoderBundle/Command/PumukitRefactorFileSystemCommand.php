@@ -14,7 +14,6 @@ use Symfony\Component\Process\ProcessBuilder;
 class PumukitRefactorFileSystemCommand extends ContainerAwareCommand
 {
     private $dm;
-    private $input;
     private $fileSystem;
     private $pics;
     private $materials;
@@ -47,14 +46,14 @@ EOT
      * @param InputInterface  $input
      * @param OutputInterface $output
      */
-    protected function initialize(InputInterface $input)
+    //The variable $output is not used, but we can't declare initialize without it.
+    protected function initialize(InputInterface $input, OutputInterface $output)
     {
         $this->dm = $this->getContainer()->get('doctrine_mongodb')->getManager();
         $this->logger = $this->getContainer()->get('logger');
-        $this->input = $input;
 
-        $this->pics = $this->input->getOption('pics');
-        $this->materials = $this->input->getOption('materials');
+        $this->pics = $input->getOption('pics');
+        $this->materials = $input->getOption('materials');
         $this->fileSystem = new Filesystem();
     }
 
