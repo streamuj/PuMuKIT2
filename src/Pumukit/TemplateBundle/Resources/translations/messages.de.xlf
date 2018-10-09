@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
   <file source-language="en" target-language="de" datatype="plaintext" original="file.ext">
+    <header>
+      <tool tool-id="symfony" tool-name="Symfony"/>
+    </header>
     <body>
       <trans-unit id="7df96b18c230f90ada0a9e2307226338" resname="Templates">
         <source>Templates</source>
@@ -34,9 +37,17 @@
         <source>Access Templates section</source>
         <target xml:lang="de" state="needs-translation">Access Templates section</target>
       </trans-unit>
-      <trans-unit id="1" resname="Edit Templates">
+      <trans-unit id="39c121c9cde45339d3f5bac7459577e7" resname="Edit Templates">
         <source>Edit Templates</source>
         <target xml:lang="de" state="needs-translation">Edit Templates</target>
+      </trans-unit>
+      <trans-unit id="4059b0251f66a18cb56f544728796875" resname="Info">
+        <source>Info</source>
+        <target xml:lang="de" state="needs-translation">Info</target>
+      </trans-unit>
+      <trans-unit id="ddccfdf5b81228560061b1553b17bdf0" resname="Warning: This link will give a 404 error while this template is hide.">
+        <source>Warning: This link will give a 404 error while this template is hide.</source>
+        <target xml:lang="de" state="needs-translation">Warning: This link will give a 404 error while this template is hide.</target>
       </trans-unit>
     </body>
   </file>
