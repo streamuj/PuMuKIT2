@@ -94,7 +94,7 @@
       </trans-unit>
       <trans-unit id="63ca19d0f7bd43783e79c5ff2e2a7b4a" resname="{0} users|{1} mediaPackages|]1,Inf] Media Packages">
         <source>{0} users|{1} mediaPackages|]1,Inf] Media Packages</source>
-        <target xml:lang="gl" state="needs-translation">{0} users|{1} mediaPackages|]1,Inf] Media Packages</target>
+        <target xml:lang="gl" state="translated">{0} usuarios|{1} paquete multimedia|]1,Inf] paquetes multimedia</target>
       </trans-unit>
       <trans-unit id="919180ed16fc428cad01c39777bb0485" resname="Cancel current search">
         <source>Cancel current search</source>

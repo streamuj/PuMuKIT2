@@ -7,15 +7,15 @@
     <body>
       <trans-unit id="81a4445d30afa85c43f155b461918401" resname="Audio/Video uploaded successfully">
         <source>Audio/Video uploaded successfully</source>
-        <target xml:lang="fr" state="needs-translation">Audio/Video uploaded successfully</target>
+        <target xml:lang="fr" state="translated">Audio/Vidéo chargés avec succès</target>
       </trans-unit>
       <trans-unit id="966ae94a46e9a6cf2fe524f7bd33f791" resname="The video must be encoded to be available at the website. An email will be sent to you when finishing encoding notifying the availability of your video at the website.">
         <source>The video must be encoded to be available at the website. An email will be sent to you when finishing encoding notifying the availability of your video at the website.</source>
-        <target xml:lang="fr" state="needs-translation">The video must be encoded to be available at the website. An email will be sent to you when finishing encoding notifying the availability of your video at the website.</target>
+        <target xml:lang="fr" state="translated">La vidéo doit être encodée pour être disponible sur le site web. Un email vous sera envoyé une fois le processus d'encodage terminé pour vous informer de la disponibilité de votre vidéo sur le site web.</target>
       </trans-unit>
       <trans-unit id="764ba341884a1bd017da8032c4fb350a" resname="SERIES">
         <source>SERIES</source>
-        <target xml:lang="fr" state="needs-translation">SERIES</target>
+        <target xml:lang="fr" state="translated">SÉRIES</target>
       </trans-unit>
       <trans-unit id="e60ae31f67ab883c746bb71c7a145c18" resname="VIDEO">
         <source>VIDEO</source>

@@ -2302,6 +2302,9 @@
       <trans-unit id="3832dee32fb5053c64441a629488b42a" resname="Admin users">
         <source>Admin users</source>
         <target xml:lang="es-ES" state="translated">Administración de usuarios</target>
+        <alt-trans>
+          <target xml:lang="es-ES">Usuarios administradores</target>
+        </alt-trans>
       </trans-unit>
       <trans-unit id="83a203553faed8d8ecc37700756273be" resname="Permission profiles">
         <source>Permission profiles</source>
@@ -2892,8 +2895,9 @@
         <source>Event successfully updated.</source>
         <target xml:lang="es-ES" state="translated">Evento creado correctamente.</target>
       </trans-unit>
-      <trans-unit id="a1fbf3a50d8a486eeccf91f0a3a9b85f" resname="Select an action...">
-        <source>Select an action...</source>
+      <trans-unit id="a1fbf3a50d8a486eeccf91f0a3a9b85f" resname="Select an&#10; action...">
+        <source>Select an
+ action...</source>
         <target xml:lang="es-ES" state="translated">Seleccione una acción...</target>
       </trans-unit>
       <trans-unit id="c6b3ca853b0c9ae86ab0f3525f24a6ba" resname="Create new series of live events">
@@ -3675,38 +3679,6 @@
       <trans-unit id="fc0594103800e7799e8b031352378846" resname="Place successfully created.">
         <source>Place successfully created.</source>
         <target xml:lang="es-ES" state="translated">Lugar creado correctamente.</target>
-      </trans-unit>
-      <trans-unit id="347c446c89d011e89a94a6cf71072f73" resname="Autocomplete series">
-        <source>Autocomplete series</source>
-        <target>Autocompletar serie</target>
-      </trans-unit>
-      <trans-unit id="347c482289d011e89a94a6cf71072f73" resname="Series successfully updated.">
-        <source>Series successfully updated.</source>
-        <target>Serie actualizada correctamente.</target>
-      </trans-unit>
-      <trans-unit id="536b16c2b10411e88981529269fb1459" resname="Error: Series have another owners on others events">
-        <source>Error: Series have another owners on others events</source>
-        <target>Error: La serie contiene otros eventos de los que no eres propiertario.</target>
-      </trans-unit>
-      <trans-unit id="536b1a8cb10411e88981529269fb1459" resname="Error: Series have some events">
-        <source>Error: Series have some events</source>
-        <target>Error: No se puede borrar la serie por que contiene otros eventos.</target>
-      </trans-unit>
-      <trans-unit id="949d38a8b1a611e896f8529269fb1459" resname="Cloned event successfully">
-        <source>Cloned event successfully</source>
-        <target>Evento clonado correctamente</target>
-      </trans-unit>
-      <trans-unit id="949d3b82b1a611e896f8529269fb1459" resname="Deleted event successfully">
-        <source>Deleted event successfully</source>
-        <target>Evento borrado correctamente</target>
-      </trans-unit>
-      <trans-unit id="949d3f6ab1a611e896f8529269fb1459" resname="Delete event and series successfully">
-        <source>Delete event and series successfully</source>
-        <target>Evento y serie borrados correctamente</target>
-      </trans-unit>
-      <trans-unit id="949d40e6b1a611e896f8529269fb1459" resname="Option not allowed">
-        <source>Option not allowed</source>
-        <target>Opción no permitida</target>
       </trans-unit>
     </body>
   </file>
