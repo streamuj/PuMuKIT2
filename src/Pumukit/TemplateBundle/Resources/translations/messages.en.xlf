@@ -43,11 +43,11 @@
       </trans-unit>
       <trans-unit id="4059b0251f66a18cb56f544728796875" resname="Info">
         <source>Info</source>
-        <target>__Info</target>
+        <target>Info</target>
       </trans-unit>
       <trans-unit id="ddccfdf5b81228560061b1553b17bdf0" resname="Warning: This link will give a 404 error while this template is hide.">
         <source>Warning: This link will give a 404 error while this template is hide.</source>
-        <target>__Warning: This link will give a 404 error while this template is hide.</target>
+        <target>Warning: This link will give a 404 error while this template is hide.</target>
       </trans-unit>
     </body>
   </file>

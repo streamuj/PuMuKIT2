@@ -571,7 +571,7 @@
       </trans-unit>
       <trans-unit id="004b3a52924c1c8012893ca4ed30ddc7" resname="There are no multimedia objects">
         <source>There are no multimedia objects</source>
-        <target>__There are no multimedia objects</target>
+        <target>There are no multimedia objects</target>
       </trans-unit>
     </body>
   </file>

@@ -3603,23 +3603,23 @@
       </trans-unit>
       <trans-unit id="498f79c4c5bbde77f1bceb6c86fd0f6d" resname="Show">
         <source>Show</source>
-        <target>__Show</target>
+        <target>Show</target>
       </trans-unit>
       <trans-unit id="552c318bd1f356494f3ccebb8c15bcf1" resname="Show presenter">
         <source>Show presenter</source>
-        <target>__Show presenter</target>
+        <target>Show presenter</target>
       </trans-unit>
       <trans-unit id="6b58966e9b36ce3b56ed3928f7f8e150" resname="presenter">
         <source>presenter</source>
-        <target>__presenter</target>
+        <target>presenter</target>
       </trans-unit>
       <trans-unit id="da4cf00d5acbe8a772e049d1d78422bb" resname="Show presentation">
         <source>Show presentation</source>
-        <target>__Show presentation</target>
+        <target>Show presentation</target>
       </trans-unit>
       <trans-unit id="2486923a98e77fd0740381d01acd1782" resname="presentation">
         <source>presentation</source>
-        <target>__presentation</target>
+        <target>presentation</target>
       </trans-unit>
     </body>
   </file>
