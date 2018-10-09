@@ -153,6 +153,10 @@
         <source>{0} Media Packages |{1} Media Package|]1,Inf] Media Packages</source>
         <target>{0} Media Packages |{1} Media Package|]1,Inf] Media Packages</target>
       </trans-unit>
+      <trans-unit id="61e5b3c8bc5458843025de98edf999aa" resname="i18n.one.Series">
+        <source>i18n.one.Series</source>
+        <target>__i18n.one.Series</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

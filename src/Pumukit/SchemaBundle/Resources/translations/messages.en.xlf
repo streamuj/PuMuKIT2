@@ -5,7 +5,7 @@
       <tool tool-id="symfony" tool-name="Symfony"/>
     </header>
     <body>
-      <trans-unit id="7ecbae54059c11e793ae92361f002671" resname="Can not delete Multimedia Object with id %videoId%. It has %jobsCount% jobs executing.">
+      <trans-unit id="aaa991dbee18dffd0fc1db0ef574cc93" resname="Can not delete Multimedia Object with id %videoId%. It has %jobsCount% jobs executing.">
         <source>Can not delete Multimedia Object with id %videoId%. It has %jobsCount% jobs executing.</source>
         <target>Can not delete Multimedia Object with id %videoId%. It has %jobsCount% jobs executing.</target>
       </trans-unit>
