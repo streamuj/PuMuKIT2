@@ -94,6 +94,7 @@ EOT
         $mmObjRepo = $this->dm->getRepository('PumukitSchemaBundle:MultimediaObject');
 
         $pendingJobsId = $jobRepo->createQueryBuilder()
+                       ->hydrate(false)
                        ->select('_id')
                        ->field('status')->in($statuses)
                        ->getQuery()

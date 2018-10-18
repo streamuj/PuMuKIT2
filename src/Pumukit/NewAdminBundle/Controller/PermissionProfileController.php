@@ -32,11 +32,11 @@ class PermissionProfileController extends AdminController implements NewAdminCon
         $scopes = PermissionProfile::$scopeDescription;
 
         return array(
-                     'permissionprofiles' => $permissionProfiles,
-                     'permissions' => $permissions,
-                     'scopes' => $scopes,
-                     'dependencies' => $dependencies,
-                     );
+            'permissionprofiles' => $permissionProfiles,
+            'permissions' => $permissions,
+            'scopes' => $scopes,
+            'dependencies' => $dependencies,
+        );
     }
 
     /**
@@ -67,11 +67,11 @@ class PermissionProfileController extends AdminController implements NewAdminCon
         $scopes = PermissionProfile::$scopeDescription;
 
         return array(
-                     'permissionprofiles' => $permissionProfiles,
-                     'permissions' => $permissions,
-                     'scopes' => $scopes,
-                     'dependencies' => $dependencies,
-                     );
+            'permissionprofiles' => $permissionProfiles,
+            'permissions' => $permissions,
+            'scopes' => $scopes,
+            'dependencies' => $dependencies,
+        );
     }
 
     /**
@@ -105,9 +105,9 @@ class PermissionProfileController extends AdminController implements NewAdminCon
         }
 
         return array(
-                     'permissionprofile' => $permissionProfile,
-                     'form' => $form->createView(),
-                     );
+            'permissionprofile' => $permissionProfile,
+            'form' => $form->createView(),
+        );
     }
 
     /**
@@ -139,9 +139,9 @@ class PermissionProfileController extends AdminController implements NewAdminCon
         }
 
         return array(
-                     'permissionprofile' => $permissionProfile,
-                     'form' => $form->createView(),
-                     );
+            'permissionprofile' => $permissionProfile,
+            'form' => $form->createView(),
+        );
     }
 
     /**
@@ -326,8 +326,8 @@ class PermissionProfileController extends AdminController implements NewAdminCon
 
         if ($config->isPaginated()) {
             $resources = $this
-                ->resourceResolver
-                ->getResource($repository, 'createPaginator', array($criteria, $sorting));
+                       ->resourceResolver
+                       ->getResource($repository, 'createPaginator', array($criteria, $sorting));
 
             if ($request->get('page', null)) {
                 $session->set($session_namespace.'/page', $request->get('page', 1));
@@ -343,8 +343,8 @@ class PermissionProfileController extends AdminController implements NewAdminCon
                 ->setCurrentPage($session->get($session_namespace.'/page', 1));
         } else {
             $resources = $this
-                ->resourceResolver
-                ->getResource($repository, 'findBy', array($criteria, $sorting, $config->getLimit()));
+                       ->resourceResolver
+                       ->getResource($repository, 'findBy', array($criteria, $sorting, $config->getLimit()));
         }
 
         return $resources;
