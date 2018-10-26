@@ -23,12 +23,10 @@ class PermissionProfileController extends AdminController implements NewAdminCon
      */
     public function indexAction(Request $request)
     {
-        $config = $this->getConfiguration();
         $session = $this->get('session');
         $sorting = $request->get('sorting');
 
-        $criteria = $this->getCriteria($config);
-        $permissionProfiles = $this->getResources($request, $config, $criteria);
+        $permissionProfiles = $this->getResources($request);
 
         list($permissions, $dependencies) = $this->getPermissions();
         $scopes = PermissionProfile::$scopeDescription;
@@ -53,12 +51,10 @@ class PermissionProfileController extends AdminController implements NewAdminCon
      */
     public function listAction(Request $request)
     {
-        $config = $this->getConfiguration();
         $session = $this->get('session');
         $sorting = $request->get('sorting');
 
-        $criteria = $this->getCriteria($config);
-        $permissionProfiles = $this->getResources($request, $config, $criteria);
+        $permissionProfiles = $this->getResources($request);
 
         $page = $session->get('admin/permissionprofile/page', 1);
         $maxPerPage = $session->get('admin/permissionprofile/paginate', 9);
@@ -94,7 +90,6 @@ class PermissionProfileController extends AdminController implements NewAdminCon
     {
         $dm = $this->get('doctrine_mongodb')->getManager();
         $permissionProfileService = $this->get('pumukitschema.permissionprofile');
-        $config = $this->getConfiguration();
 
         $permissionProfile = new PermissionProfile();
         $form = $this->getForm($permissionProfile);
@@ -133,7 +128,6 @@ class PermissionProfileController extends AdminController implements NewAdminCon
     {
         $dm = $this->get('doctrine_mongodb')->getManager();
         $permissionProfileService = $this->get('pumukitschema.permissionprofile');
-        $config = $this->getConfiguration();
 
         $permissionProfile = $this->findOr404($request);
         $form = $this->getForm($permissionProfile);
@@ -179,7 +173,6 @@ class PermissionProfileController extends AdminController implements NewAdminCon
      */
     public function deleteAction(Request $request)
     {
-        $config = $this->getConfiguration();
         $permissionProfile = $this->findOr404($request);
         $permissionProfileId = $permissionProfile->getId();
         $changeDefault = $permissionProfile->isDefault();
@@ -327,9 +320,10 @@ class PermissionProfileController extends AdminController implements NewAdminCon
      *
      * Override to get 9 resources per page
      */
-    public function getResources(Request $request, $config, $criteria)
+    public function getResources(Request $request)
     {
-        $sorting = $config->getSorting();
+        $criteria = $this->getCriteria();
+        $sorting = $this->getSorting();
         if (!isset($sorting['rank'])) {
             $sorting['rank'] = 1;
         }
@@ -337,7 +331,7 @@ class PermissionProfileController extends AdminController implements NewAdminCon
         $session = $this->get('session');
         $session_namespace = 'admin/permissionprofile';
 
-        if ($config->isPaginated()) {
+        if ($this->isPaginated()) {
             $resources = $this
                        ->resourceResolver
                        ->getResource($repository, 'createPaginator', array($criteria, $sorting));
@@ -357,7 +351,7 @@ class PermissionProfileController extends AdminController implements NewAdminCon
         } else {
             $resources = $this
                        ->resourceResolver
-                       ->getResource($repository, 'findBy', array($criteria, $sorting, $config->getLimit()));
+                       ->getResource($repository, 'findBy', array($criteria, $sorting, $this->getLimit()));
         }
 
         return $resources;

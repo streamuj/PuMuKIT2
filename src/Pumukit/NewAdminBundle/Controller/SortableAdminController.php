@@ -8,7 +8,6 @@ class SortableAdminController extends AdminController implements NewAdminControl
 {
     public function upAction(Request $request)
     {
-        $config = $this->getConfiguration();
         $resource = $this->findOr404($request);
 
         $new_rank = $resource->getRank() + 1;
@@ -16,14 +15,13 @@ class SortableAdminController extends AdminController implements NewAdminControl
         $this->domainManager->update($resource);
 
         return $this->redirectToRoute(
-            $config->getRedirectRoute('index'),
-            $config->getRedirectParameters()
+            $this->getRedirectRoute('index'),
+            $this->getRedirectParameters()
         );
     }
 
     public function downAction(Request $request)
     {
-        $config = $this->getConfiguration();
         $resource = $this->findOr404($request);
 
         $new_rank = $resource->getRank() - 1;
@@ -31,14 +29,13 @@ class SortableAdminController extends AdminController implements NewAdminControl
         $this->domainManager->update($resource);
 
         return $this->redirectToRoute(
-            $config->getRedirectRoute('index'),
-            $config->getRedirectParameters()
+            $this->getRedirectRoute('index'),
+            $this->getRedirectParameters()
         );
     }
 
     public function topAction(Request $request)
     {
-        $config = $this->getConfiguration();
         $resource = $this->findOr404($request);
 
         $new_rank = -1;
@@ -46,14 +43,13 @@ class SortableAdminController extends AdminController implements NewAdminControl
         $this->domainManager->update($resource);
 
         return $this->redirectToRoute(
-            $config->getRedirectRoute('index'),
-            $config->getRedirectParameters()
+            $this->getRedirectRoute('index'),
+            $this->getRedirectParameters()
         );
     }
 
     public function bottomAction(Request $request)
     {
-        $config = $this->getConfiguration();
         $resource = $this->findOr404($request);
 
         $new_rank = 0;
@@ -61,8 +57,8 @@ class SortableAdminController extends AdminController implements NewAdminControl
         $this->domainManager->update($resource);
 
         return $this->redirectToRoute(
-            $config->getRedirectRoute('index'),
-            $config->getRedirectParameters()
+            $this->getRedirectRoute('index'),
+            $this->getRedirectParameters()
         );
     }
 }

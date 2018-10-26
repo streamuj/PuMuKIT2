@@ -9,21 +9,68 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 class AdminController extends ResourceController implements NewAdminController
 {
+    public function getPaginationMaxPerPage()
+    {
+        return $this->getConfiguration()->getPaginationMaxPerPage();
+    }
+
+    public function getRedirectParameters()
+    {
+        return $this->getConfiguration()->getRedirectParameters();
+    }
+
+    public function getRedirectRoute($routeName)
+    {
+        return $this->getConfiguration()->getRedirectRoute($routeName);
+    }
+
+    public function getLimit()
+    {
+        return $this->getConfiguration()->getLimit();
+    }
+
+    public function isPaginated()
+    {
+        return $this->getConfiguration()->isPaginated();
+    }
+
+    public function getSorting()
+    {
+        return $this->getConfiguration()->getSorting();
+    }
+
+    public function isApiRequest()
+    {
+        return $this->getConfiguration()->isApiRequest();
+    }
+
+    public function getTemplate($templateFile)
+    {
+        return $this->getConfiguration()->getTemplate($templateFile);
+    }
+
+    public function getResourceName()
+    {
+        return $this->getConfiguration()->getResourceName();
+    }
+
+    public function getPluralResourceName()
+    {
+        return $this->getConfiguration()->getPluralResourceName();
+    }
+
     /**
      * Overwrite to update the criteria with MongoRegex, and save it in the session.
      */
     public function indexAction(Request $request)
     {
-        $config = $this->getConfiguration();
+        $resources = $this->getResources($request);
 
-        $criteria = $this->getCriteria($config);
-        $resources = $this->getResources($request, $config, $criteria);
-
-        $pluralName = $config->getPluralResourceName();
+        $pluralName = $this->getPluralResourceName();
 
         $view = $this
             ->view()
-            ->setTemplate($config->getTemplate('index.html'))
+            ->setTemplate($this->getTemplate('index.html'))
             ->setTemplateVar($pluralName)
             ->setData($resources)
         ;
@@ -43,8 +90,7 @@ class AdminController extends ResourceController implements NewAdminController
     public function createAction(Request $request)
     {
         $dm = $this->get('doctrine_mongodb')->getManager();
-        $config = $this->getConfiguration();
-        $resourceName = $config->getResourceName();
+        $resourceName = $this->getResourceName();
 
         $resource = $this->createNew();
         $form = $this->getForm($resource);
@@ -57,7 +103,7 @@ class AdminController extends ResourceController implements NewAdminController
                 return new JsonResponse(array('status' => $e->getMessage()), 409);
             }
 
-            if ($this->config->isApiRequest()) {
+            if ($this->isApiRequest()) {
                 return $this->handleView($this->view($resource, 201));
             }
 
@@ -68,7 +114,7 @@ class AdminController extends ResourceController implements NewAdminController
             return $this->redirect($this->generateUrl('pumukitnewadmin_'.$resourceName.'_list'));
         }
 
-        if ($this->config->isApiRequest()) {
+        if ($this->isApiRequest()) {
             return $this->handleView($this->view($form));
         }
 
@@ -92,8 +138,7 @@ class AdminController extends ResourceController implements NewAdminController
     {
         $dm = $this->get('doctrine_mongodb')->getManager();
 
-        $config = $this->getConfiguration();
-        $resourceName = $config->getResourceName();
+        $resourceName = $this->getResourceName();
 
         $resource = $this->findOr404($request);
         $form = $this->getForm($resource);
@@ -106,14 +151,14 @@ class AdminController extends ResourceController implements NewAdminController
                 return new JsonResponse(array('status' => $e->getMessage()), 409);
             }
 
-            if ($this->config->isApiRequest()) {
+            if ($this->isApiRequest()) {
                 return $this->handleView($this->view($resource, 204));
             }
 
             return $this->redirect($this->generateUrl('pumukitnewadmin_'.$resourceName.'_list'));
         }
 
-        if ($this->config->isApiRequest()) {
+        if ($this->isApiRequest()) {
             return $this->handleView($this->view($form));
         }
 
@@ -137,11 +182,9 @@ class AdminController extends ResourceController implements NewAdminController
 
         $this->addFlash('success', 'copy');
 
-        $config = $this->getConfiguration();
-
         return $this->redirectToRoute(
-            $config->getRedirectRoute('index'),
-            $config->getRedirectParameters()
+            $this->getRedirectRoute('index'),
+            $this->getRedirectParameters()
         );
     }
 
@@ -150,13 +193,12 @@ class AdminController extends ResourceController implements NewAdminController
      */
     public function showAction(Request $request)
     {
-        $config = $this->getConfiguration();
         $data = $this->findOr404($request);
 
         $view = $this
             ->view()
-            ->setTemplate($config->getTemplate('show.html'))
-            ->setTemplateVar($config->getResourceName())
+            ->setTemplate($this->getTemplate('show.html'))
+            ->setTemplateVar($this->getResourceName())
             ->setData($data)
         ;
 
@@ -168,10 +210,9 @@ class AdminController extends ResourceController implements NewAdminController
      */
     public function deleteAction(Request $request)
     {
-        $config = $this->getConfiguration();
         $resource = $this->findOr404($request);
         $resourceId = $resource->getId();
-        $resourceName = $config->getResourceName();
+        $resourceName = $this->getResourceName();
 
         $this->get('pumukitschema.factory')->deleteResource($resource);
         if ($resourceId === $this->get('session')->get('admin/'.$resourceName.'/id')) {
@@ -186,15 +227,13 @@ class AdminController extends ResourceController implements NewAdminController
      */
     public function listAction(Request $request)
     {
-        $config = $this->getConfiguration();
-        $pluralName = $config->getPluralResourceName();
-        $resourceName = $config->getResourceName();
+        $pluralName = $this->getPluralResourceName();
+        $resourceName = $this->getResourceName();
         $session = $this->get('session');
 
         $sorting = $request->get('sorting');
 
-        $criteria = $this->getCriteria($config);
-        $resources = $this->getResources($request, $config, $criteria);
+        $resources = $this->getResources($request);
 
         return $this->render('PumukitNewAdminBundle:'.ucfirst($resourceName).':list.html.twig',
             array($pluralName => $resources)
@@ -206,10 +245,9 @@ class AdminController extends ResourceController implements NewAdminController
      */
     public function delete($resource)
     {
-        $config = $this->getConfiguration();
         $event = $this->dispatchEvent('pre_delete', $resource);
         if (!$event->isStopped()) {
-            $this->get('session')->remove('admin/'.$config->getResourceName().'/id');
+            $this->get('session')->remove('admin/'.$this->getResourceName().'/id');
             $this->removeAndFlush($resource);
         }
 
@@ -224,8 +262,7 @@ class AdminController extends ResourceController implements NewAdminController
             $ids = json_decode($ids, true);
         }
 
-        $config = $this->getConfiguration();
-        $resourceName = $config->getResourceName();
+        $resourceName = $this->getResourceName();
 
         $factory = $this->get('pumukitschema.factory');
         foreach ($ids as $id) {
@@ -245,7 +282,6 @@ class AdminController extends ResourceController implements NewAdminController
 
     public function find($id)
     {
-        $config = $this->getConfiguration();
         $repository = $this->getRepository();
 
         $criteria = array('id' => $id);
@@ -256,16 +292,16 @@ class AdminController extends ResourceController implements NewAdminController
     /**
      * Gets the criteria values.
      */
-    public function getCriteria($config)
+    public function getCriteria()
     {
-        $criteria = $config->getCriteria();
+        $criteria = $this->getConfiguration()->getCriteria();
 
         if (array_key_exists('reset', $criteria)) {
-            $this->get('session')->remove('admin/'.$config->getResourceName().'/criteria');
+            $this->get('session')->remove('admin/'.$this->getResourceName().'/criteria');
         } elseif ($criteria) {
-            $this->get('session')->set('admin/'.$config->getResourceName().'/criteria', $criteria);
+            $this->get('session')->set('admin/'.$this->getResourceName().'/criteria', $criteria);
         }
-        $criteria = $this->get('session')->get('admin/'.$config->getResourceName().'/criteria', array());
+        $criteria = $this->get('session')->get('admin/'.$this->getResourceName().'/criteria', array());
 
         $new_criteria = array();
         foreach ($criteria as $property => $value) {
@@ -281,14 +317,15 @@ class AdminController extends ResourceController implements NewAdminController
     /**
      * Gets the list of resources according to a criteria.
      */
-    public function getResources(Request $request, $config, $criteria)
+    public function getResources(Request $request)
     {
-        $sorting = $config->getSorting();
+        $criteria = $this->getCriteria();
+        $sorting = $this->getSorting();
         $repository = $this->getRepository();
         $session = $this->get('session');
-        $session_namespace = 'admin/'.$config->getResourceName();
+        $session_namespace = 'admin/'.$this->getResourceName();
 
-        if ($config->isPaginated()) {
+        if ($this->isPaginated()) {
             $resources = $this
                 ->resourceResolver
                 ->getResource($repository, 'createPaginator', array($criteria, $sorting));
@@ -308,7 +345,7 @@ class AdminController extends ResourceController implements NewAdminController
         } else {
             $resources = $this
                 ->resourceResolver
-                ->getResource($repository, 'findBy', array($criteria, $sorting, $config->getLimit()));
+                ->getResource($repository, 'findBy', array($criteria, $sorting, $this->getLimit()));
         }
 
         return $resources;

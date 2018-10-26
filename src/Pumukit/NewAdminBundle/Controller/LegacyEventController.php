@@ -25,10 +25,7 @@ class LegacyEventController extends AdminController implements NewAdminControlle
      */
     public function indexAction(Request $request)
     {
-        $config = $this->getConfiguration();
-
-        $criteria = $this->getCriteria($config);
-        list($events, $month, $year, $calendar) = $this->getResources($request, $config, $criteria);
+        list($events, $month, $year, $calendar) = $this->getResources($request);
 
         $update_session = true;
         foreach ($events as $event) {
@@ -67,15 +64,13 @@ class LegacyEventController extends AdminController implements NewAdminControlle
      */
     public function createAction(Request $request)
     {
-        $config = $this->getConfiguration();
-
         $resource = $this->createNew();
         $form = $this->getForm($resource);
 
         if ($form->handleRequest($request)->isValid()) {
             $resource = $this->domainManager->create($resource);
 
-            if ($this->config->isApiRequest()) {
+            if ($this->isApiRequest()) {
                 return $this->handleView($this->view($resource, 201));
             }
 
@@ -87,7 +82,7 @@ class LegacyEventController extends AdminController implements NewAdminControlle
             return new JsonResponse(array('eventId' => $resource->getId()));
         }
 
-        if ($this->config->isApiRequest()) {
+        if ($this->isApiRequest()) {
             return $this->handleView($this->view($form));
         }
 
@@ -105,10 +100,7 @@ class LegacyEventController extends AdminController implements NewAdminControlle
      */
     public function listAction(Request $request)
     {
-        $config = $this->getConfiguration();
-
-        $criteria = $this->getCriteria($config);
-        list($events, $month, $year, $calendar) = $this->getResources($request, $config, $criteria);
+        list($events, $month, $year, $calendar) = $this->getResources($request);
 
         $repo = $this
              ->get('doctrine_mongodb.odm.document_manager')
@@ -156,8 +148,7 @@ class LegacyEventController extends AdminController implements NewAdminControlle
     {
         $dm = $this->get('doctrine_mongodb')->getManager();
 
-        $config = $this->getConfiguration();
-        $resourceName = $config->getResourceName();
+        $resourceName = $this->getResourceName();
 
         $resource = $this->findOr404($request);
         $form = $this->getForm($resource);
@@ -170,14 +161,14 @@ class LegacyEventController extends AdminController implements NewAdminControlle
                 return new JsonResponse(array('status' => $e->getMessage()), 409);
             }
 
-            if ($this->config->isApiRequest()) {
+            if ($this->isApiRequest()) {
                 return $this->handleView($this->view($resource, 204));
             }
 
             return $this->redirect($this->generateUrl('pumukitnewadmin_'.$resourceName.'_list'));
         }
 
-        if ($this->config->isApiRequest()) {
+        if ($this->isApiRequest()) {
             return $this->handleView($this->view($form));
         }
 
@@ -191,7 +182,7 @@ class LegacyEventController extends AdminController implements NewAdminControlle
     /**
      * Get calendar.
      */
-    private function getCalendar($config, $request)
+    private function getCalendar($request)
     {
         /*if (!$this->getUser()->hasAttribute('page', 'tv_admin/event'))
           $this->getUser()->setAttribute('page', 1, 'tv_admin/event');*/
@@ -272,9 +263,9 @@ class LegacyEventController extends AdminController implements NewAdminControlle
     /**
      * Gets the criteria values.
      */
-    public function getCriteria($config)
+    public function getCriteria()
     {
-        $criteria = $config->getCriteria();
+        $criteria = $this->getConfiguration()->getCriteria();
 
         if (array_key_exists('reset', $criteria)) {
             $this->get('session')->remove('admin/event/criteria');
@@ -312,8 +303,9 @@ class LegacyEventController extends AdminController implements NewAdminControlle
     /**
      * Gets the list of resources according to a criteria.
      */
-    public function getResources(Request $request, $config, $criteria)
+    public function getResources(Request $request)
     {
+        $criteria = $this->getCriteria();
         $sorting = array('date' => -1);
         $repository = $this->getRepository();
         $session = $this->get('session');
@@ -326,7 +318,7 @@ class LegacyEventController extends AdminController implements NewAdminControlle
         $y = '';
         $calendar = array();
 
-        if ($config->isPaginated()) {
+        if ($this->isPaginated()) {
             $resources = $this
                 ->resourceResolver
                 ->getResource($repository, 'createPaginator', array($criteria, $sorting));
@@ -342,17 +334,17 @@ class LegacyEventController extends AdminController implements NewAdminControlle
             }
 
             $resources
-                ->setMaxPerPage($config->getPaginationMaxPerPage())
+                ->setMaxPerPage($this->getPaginationMaxPerPage())
                 ->setNormalizeOutOfRangePages(true);
 
             $resources->setCurrentPage($page);
         } else {
             $resources = $this
                 ->resourceResolver
-                ->getResource($repository, 'findBy', array($criteria, $sorting, $config->getLimit()));
+                ->getResource($repository, 'findBy', array($criteria, $sorting, $this->getLimit()));
         }
 
-        list($m, $y, $calendar) = $this->getCalendar($config, $request);
+        list($m, $y, $calendar) = $this->getCalendar($request);
 
         return array($resources, $m, $y, $calendar);
     }

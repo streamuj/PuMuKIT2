@@ -33,9 +33,7 @@ class SeriesController extends AdminController implements NewAdminController
      */
     public function indexAction(Request $request)
     {
-        $config = $this->getConfiguration();
-        $criteria = $this->getCriteria($config);
-        $resources = $this->getResources($request, $config, $criteria);
+        $resources = $this->getResources($request);
 
         $update_session = true;
         foreach ($resources as $series) {
@@ -65,10 +63,8 @@ class SeriesController extends AdminController implements NewAdminController
      */
     public function listAction(Request $request)
     {
-        $config = $this->getConfiguration();
-        $criteria = $this->getCriteria($config);
         $selectedSeriesId = $request->get('selectedSeriesId', null);
-        $resources = $this->getResources($request, $config, $criteria, $selectedSeriesId);
+        $resources = $this->getResources($request, $selectedSeriesId);
 
         return array('series' => $resources);
     }
@@ -142,8 +138,6 @@ class SeriesController extends AdminController implements NewAdminController
      */
     public function updateAction(Request $request)
     {
-        $config = $this->getConfiguration();
-
         $resource = $this->findOr404($request);
         $this->get('session')->set('admin/series/id', $request->get('id'));
 
@@ -158,12 +152,11 @@ class SeriesController extends AdminController implements NewAdminController
             $this->domainManager->update($resource);
             $this->get('pumukitschema.series_dispatcher')->dispatchUpdate($resource);
 
-            if ($config->isApiRequest()) {
+            if ($this->isApiRequest()) {
                 return $this->handleView($this->view($form));
             }
 
-            $criteria = $this->getCriteria($config);
-            $resources = $this->getResources($request, $config, $criteria, $resource->getId());
+            $resources = $this->getResources($request, $resource->getId());
 
             return $this->render(
                 'PumukitNewAdminBundle:Series:list.html.twig',
@@ -171,7 +164,7 @@ class SeriesController extends AdminController implements NewAdminController
                                  );
         }
 
-        if ($config->isApiRequest()) {
+        if ($this->isApiRequest()) {
             return $this->handleView($this->view($form));
         }
 
@@ -239,7 +232,6 @@ class SeriesController extends AdminController implements NewAdminController
      */
     public function deleteAction(Request $request)
     {
-        $config = $this->getConfiguration();
         $factoryService = $this->get('pumukitschema.factory');
 
         $series = $this->findOr404($request);
@@ -268,7 +260,7 @@ class SeriesController extends AdminController implements NewAdminController
             return new Response($e->getMessage(), Response::HTTP_BAD_REQUEST);
         }
 
-        if ($config->isApiRequest()) {
+        if ($this->isApiRequest()) {
             return $this->handleView($this->view());
         }
 
@@ -433,11 +425,9 @@ class SeriesController extends AdminController implements NewAdminController
     /**
      * Gets the criteria values.
      *
-     * @param $config
-     *
      * @return array
      */
-    public function getCriteria($config)
+    public function getCriteria()
     {
         $request = $this->container->get('request_stack')->getCurrentRequest();
         $criteria = $request->get('criteria', array());
@@ -482,7 +472,7 @@ class SeriesController extends AdminController implements NewAdminController
      *
      * @return array
      */
-    private function getSorting(Request $request)
+    private function getSortingFromRequest(Request $request)
     {
         $session = $this->get('session');
 
@@ -505,22 +495,21 @@ class SeriesController extends AdminController implements NewAdminController
      * Gets the list of resources according to a criteria.
      *
      * @param Request $request
-     * @param         $config
-     * @param         $criteria
      * @param null    $selectedSeriesId
      *
      * @return array|mixed|Pagerfanta
      */
-    public function getResources(Request $request, $config, $criteria, $selectedSeriesId = null)
+    public function getResources(Request $request, $selectedSeriesId = null)
     {
-        $sorting = $this->getSorting($request);
+        $criteria = $this->getCriteria();
+        $sorting = $this->getSortingFromRequest($request);
         $repository = $this->getRepository();
         $session = $this->get('session');
         $session_namespace = 'admin/series';
         //Added TYPE_SERIES to criteria (and type null, for backwards compatibility)
         $criteria = array_merge($criteria, array('type' => array('$in' => array(Series::TYPE_SERIES, null))));
 
-        if ($config->isPaginated()) {
+        if ($this->isPaginated()) {
             if (array_key_exists('multimedia_objects', $sorting)) {
                 $resources = $this
                     ->resourceResolver
@@ -575,7 +564,7 @@ class SeriesController extends AdminController implements NewAdminController
         } else {
             $resources = $this
                 ->resourceResolver
-                ->getResource($repository, 'findBy', array($criteria, $sorting, $config->getLimit()));
+                ->getResource($repository, 'findBy', array($criteria, $sorting, $this->getLimit()));
         }
 
         return $resources;

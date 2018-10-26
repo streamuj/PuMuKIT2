@@ -23,15 +23,13 @@ class LiveController extends AdminController implements NewAdminController
      */
     public function createAction(Request $request)
     {
-        $config = $this->getConfiguration();
-
         $resource = $this->createNew();
         $form = $this->getForm($resource);
 
         if ($form->handleRequest($request)->isValid()) {
             $resource = $this->domainManager->create($resource);
 
-            if ($this->config->isApiRequest()) {
+            if ($this->isApiRequest()) {
                 return $this->handleView($this->view($resource, 201));
             }
 
@@ -43,7 +41,7 @@ class LiveController extends AdminController implements NewAdminController
             return new JsonResponse(array('liveId' => $resource->getId()));
         }
 
-        if ($this->config->isApiRequest()) {
+        if ($this->isApiRequest()) {
             return $this->handleView($this->view($form));
         }
 
@@ -57,16 +55,17 @@ class LiveController extends AdminController implements NewAdminController
     /**
      * Gets the list of resources according to a criteria.
      */
-    public function getResources(Request $request, $config, $criteria)
+    public function getResources(Request $request)
     {
-        $sorting = $config->getSorting();
+        $criteria = $this->getCriteria();
+        $sorting = $this->getSorting();
         $repository = $this->getRepository();
         $session = $this->get('session');
         $session_namespace = 'admin/live';
 
         $newLiveId = $request->get('newLiveId');
 
-        if ($config->isPaginated()) {
+        if ($this->isPaginated()) {
             $resources = $this
                 ->resourceResolver
                 ->getResource($repository, 'createPaginator', array($criteria, $sorting));
@@ -92,7 +91,7 @@ class LiveController extends AdminController implements NewAdminController
         } else {
             $resources = $this
                 ->resourceResolver
-                ->getResource($repository, 'findBy', array($criteria, $sorting, $config->getLimit()));
+                ->getResource($repository, 'findBy', array($criteria, $sorting, $this->getLimit()));
         }
 
         return $resources;
@@ -103,10 +102,9 @@ class LiveController extends AdminController implements NewAdminController
      */
     public function deleteAction(Request $request)
     {
-        $config = $this->getConfiguration();
         $resource = $this->findOr404($request);
         $resourceId = $resource->getId();
-        $resourceName = $config->getResourceName();
+        $resourceName = $this->getResourceName();
 
         $dm = $this->container->get('doctrine_mongodb')->getManager();
 
@@ -135,8 +133,7 @@ class LiveController extends AdminController implements NewAdminController
             $ids = json_decode($ids, true);
         }
 
-        $config = $this->getConfiguration();
-        $resourceName = $config->getResourceName();
+        $resourceName = $this->getResourceName();
 
         $aResult = $this->checkEmptyChannels($ids);
         if (!$aResult['emptyChannels']) {

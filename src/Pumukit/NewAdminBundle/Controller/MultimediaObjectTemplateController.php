@@ -18,8 +18,6 @@ class MultimediaObjectTemplateController extends MultimediaObjectController impl
      */
     public function updatemetaAction(Request $request)
     {
-        $config = $this->getConfiguration();
-
         $factoryService = $this->get('pumukitschema.factory');
         $personService = $this->get('pumukitschema.person');
         $groupService = $this->get('pumukitschema.group');
@@ -54,14 +52,14 @@ class MultimediaObjectTemplateController extends MultimediaObjectController impl
             $formMeta->submit($request, !$request->isMethod('PATCH'))->isValid()) {
             $this->domainManager->update($mmtemplate);
 
-            if ($config->isApiRequest()) {
+            if ($this->isApiRequest()) {
                 return $this->handleView($this->view($formMeta));
             }
 
             return new JsonResponse(array('mmtemplate' => 'updatemeta'));
         }
 
-        if ($config->isApiRequest()) {
+        if ($this->isApiRequest()) {
             return $this->handleView($this->view($formMeta));
         }
 

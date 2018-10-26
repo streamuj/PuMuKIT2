@@ -23,11 +23,8 @@ class PersonController extends AdminController implements NewAdminController
      */
     public function indexAction(Request $request)
     {
-        $config = $this->getConfiguration();
-
-        $criteria = $this->getCriteria($config, $request->getLocale());
         $selectedPersonId = $request->get('selectedPersonId', null);
-        $resources = $this->getResources($request, $config, $criteria, $selectedPersonId);
+        $resources = $this->getResources($request, $selectedPersonId);
 
         $personService = $this->get('pumukitschema.person');
         $countMmPeople = array();
@@ -150,11 +147,8 @@ class PersonController extends AdminController implements NewAdminController
      */
     public function listAction(Request $request)
     {
-        $config = $this->getConfiguration();
-        $criteria = $this->getCriteria($config, $request->getLocale());
-
         $selectedPersonId = $request->get('selectedPersonId', null);
-        $resources = $this->getResources($request, $config, $criteria, $selectedPersonId);
+        $resources = $this->getResources($request, $selectedPersonId);
 
         $personService = $this->get('pumukitschema.person');
         $countMmPeople = array();
@@ -181,12 +175,10 @@ class PersonController extends AdminController implements NewAdminController
             $this->denyAccessUnlessGranted('ROLE_ADD_OWNER');
         }
 
-        $config = $this->getConfiguration();
-        $pluralName = $config->getPluralResourceName();
+        $pluralName = $this->getPluralResourceName();
 
-        $criteria = $this->getCriteria($config, $request->getLocale());
         $selectedPersonId = $request->get('selectedPersonId', null);
-        $resources = $this->getResources($request, $config, $criteria, $selectedPersonId);
+        $resources = $this->getResources($request, $selectedPersonId);
 
         $template = $multimediaObject->isPrototype() ? '_template' : '';
         $ldapEnabled = $this->container->has('pumukit_ldap.ldap');
@@ -616,9 +608,9 @@ class PersonController extends AdminController implements NewAdminController
     /**
      * Gets the criteria values.
      */
-    public function getCriteria($config, $locale = 'en')
+    public function getCriteriaWithLocale($locale = 'en')
     {
-        $criteria = $config->getCriteria();
+        $criteria = $this->getCriteria();
 
         if (array_key_exists('reset', $criteria)) {
             $this->get('session')->remove('admin/person/criteria');
@@ -660,7 +652,7 @@ class PersonController extends AdminController implements NewAdminController
     /**
      * Get sorting for person.
      */
-    private function getSorting(Request $request)
+    private function getSortingFromRequest(Request $request)
     {
         $session = $this->get('session');
 
@@ -678,14 +670,16 @@ class PersonController extends AdminController implements NewAdminController
     /**
      * Gets the list of resources according to a criteria.
      */
-    public function getResources(Request $request, $config, $criteria, $selectedPersonId = null)
+    public function getResources(Request $request, $selectedPersonId = null)
     {
-        $sorting = $this->getSorting($request);
+        $criteria = $this->getCriteriaWithLocale($request->getLocale());
+
+        $sorting = $this->getSortingFromRequest($request);
 
         $repository = $this->getRepository();
         $session = $this->get('session');
 
-        if ($config->isPaginated()) {
+        if ($this->isPaginated()) {
             $resources = $this
               ->resourceResolver
               ->getResource($repository, 'createPaginator', array($criteria, $sorting))
@@ -713,13 +707,13 @@ class PersonController extends AdminController implements NewAdminController
             }
 
             $resources
-              ->setMaxPerPage($config->getPaginationMaxPerPage())
+              ->setMaxPerPage($this->getPaginationMaxPerPage())
               ->setNormalizeOutOfRangePages(true)
               ->setCurrentPage($session->get('admin/person/page', 1));
         } else {
             $resources = $this
               ->resourceResolver
-              ->getResource($repository, 'findBy', array($criteria, $sorting, $config->getLimit()))
+              ->getResource($repository, 'findBy', array($criteria, $sorting, $this->getLimit()))
               ;
         }
 

@@ -48,10 +48,7 @@ class BroadcastController extends AdminController implements NewAdminController
     {
         $this->checkCreateBroadcastDisabled();
 
-        $config = $this->getConfiguration();
-
-        $criteria = $this->getCriteria($config);
-        $broadcasts = $this->getResources($request, $config, $criteria);
+        $broadcasts = $this->getResources($request);
 
         return array('broadcasts' => $broadcasts);
     }
@@ -71,7 +68,6 @@ class BroadcastController extends AdminController implements NewAdminController
         $this->checkCreateBroadcastDisabled();
 
         $dm = $this->get('doctrine_mongodb')->getManager();
-        $config = $this->getConfiguration();
 
         $broadcast = $this->createNew();
         $form = $this->getForm($broadcast);
@@ -84,7 +80,7 @@ class BroadcastController extends AdminController implements NewAdminController
                 return new JsonResponse(array('status' => $e->getMessage()), 409);
             }
 
-            if ($this->config->isApiRequest()) {
+            if ($this->isApiRequest()) {
                 return $this->handleView($this->view($broadcast, 201));
             }
 
@@ -95,7 +91,7 @@ class BroadcastController extends AdminController implements NewAdminController
             return $this->redirect($this->generateUrl('pumukitnewadmin_broadcast_list'));
         }
 
-        if ($this->config->isApiRequest()) {
+        if ($this->isApiRequest()) {
             return $this->handleView($this->view($form));
         }
 
@@ -121,8 +117,6 @@ class BroadcastController extends AdminController implements NewAdminController
 
         $dm = $this->get('doctrine_mongodb')->getManager();
 
-        $config = $this->getConfiguration();
-
         $broadcast = $this->findOr404($request);
         $form = $this->getForm($broadcast);
 
@@ -134,14 +128,14 @@ class BroadcastController extends AdminController implements NewAdminController
                 return new JsonResponse(array('status' => $e->getMessage()), 409);
             }
 
-            if ($this->config->isApiRequest()) {
+            if ($this->isApiRequest()) {
                 return $this->handleView($this->view($broadcast, 204));
             }
 
             return $this->redirect($this->generateUrl('pumukitnewadmin_broadcast_list'));
         }
 
-        if ($this->config->isApiRequest()) {
+        if ($this->isApiRequest()) {
             return $this->handleView($this->view($form));
         }
 
@@ -184,13 +178,9 @@ class BroadcastController extends AdminController implements NewAdminController
     {
         $this->checkCreateBroadcastDisabled();
 
-        $config = $this->getConfiguration();
         $session = $this->get('session');
-
         $sorting = $request->get('sorting');
-
-        $criteria = $this->getCriteria($config);
-        $broadcasts = $this->getResources($request, $config, $criteria);
+        $broadcasts = $this->getResources($request);
 
         return array('broadcasts' => $broadcasts);
     }

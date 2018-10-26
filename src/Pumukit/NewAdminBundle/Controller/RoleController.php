@@ -57,15 +57,17 @@ class RoleController extends SortableAdminController implements NewAdminControll
     /**
      * Gets the list of resources according to a criteria.
      */
-    public function getResources(Request $request, $config, $criteria)
+    public function getResources(Request $request)
     {
-        $sorting = $config->getSorting();
+        $criteria = $this->getCriteria();
+
+        $sorting = $this->getSorting();
         $sorting['rank'] = 'asc';
         $repository = $this->getRepository();
         $session = $this->get('session');
-        $session_namespace = 'admin/'.$config->getResourceName();
+        $session_namespace = 'admin/'.$this->getResourceName();
 
-        if ($config->isPaginated()) {
+        if ($this->isPaginated()) {
             $resources = $this
                 ->resourceResolver
                 ->getResource($repository, 'createPaginator', array($criteria, $sorting));
@@ -85,7 +87,7 @@ class RoleController extends SortableAdminController implements NewAdminControll
         } else {
             $resources = $this
                 ->resourceResolver
-                ->getResource($repository, 'findBy', array($criteria, $sorting, $config->getLimit()));
+                ->getResource($repository, 'findBy', array($criteria, $sorting, $this->getLimit()));
         }
 
         return $resources;
@@ -96,10 +98,9 @@ class RoleController extends SortableAdminController implements NewAdminControll
      */
     public function deleteAction(Request $request)
     {
-        $config = $this->getConfiguration();
         $resource = $this->findOr404($request);
         $resourceId = $resource->getId();
-        $resourceName = $config->getResourceName();
+        $resourceName = $this->getResourceName();
 
         if (0 !== $resource->getNumberPeopleInMultimediaObject()) {
             return new Response("Can not delete role '".$resource->getName()."', There are Multimedia objects with this role. ", 409);
@@ -121,8 +122,7 @@ class RoleController extends SortableAdminController implements NewAdminControll
             $ids = json_decode($ids, true);
         }
 
-        $config = $this->getConfiguration();
-        $resourceName = $config->getResourceName();
+        $resourceName = $this->getResourceName();
 
         $factory = $this->get('pumukitschema.factory');
         foreach ($ids as $id) {

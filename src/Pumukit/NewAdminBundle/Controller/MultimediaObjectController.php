@@ -37,10 +37,7 @@ class MultimediaObjectController extends SortableAdminController implements NewA
      */
     public function indexAction(Request $request)
     {
-        $config = $this->getConfiguration();
-
-        $criteria = $this->getCriteria($config);
-        $resources = $this->getResources($request, $config, $criteria);
+        $resources = $this->getResources($request);
 
         $factoryService = $this->get('pumukitschema.factory');
 
@@ -92,8 +89,7 @@ class MultimediaObjectController extends SortableAdminController implements NewA
     {
         $dm = $this->get('doctrine_mongodb')->getManager();
         $session = $this->get('session');
-        $config = $this->getConfiguration();
-        $pluralName = $config->getPluralResourceName();
+        $pluralName = $this->getPluralResourceName();
 
         $factoryService = $this->get('pumukitschema.factory');
 
@@ -135,7 +131,6 @@ class MultimediaObjectController extends SortableAdminController implements NewA
      */
     public function showAction(Request $request)
     {
-        $config = $this->getConfiguration();
         $data = $this->findOr404($request);
 
         $activeEditor = $this->checkHasEditor();
@@ -153,8 +148,6 @@ class MultimediaObjectController extends SortableAdminController implements NewA
      */
     public function editAction(Request $request)
     {
-        $config = $this->getConfiguration();
-
         $factoryService = $this->get('pumukitschema.factory');
         $personService = $this->get('pumukitschema.person');
 
@@ -285,8 +278,6 @@ class MultimediaObjectController extends SortableAdminController implements NewA
      */
     public function updatemetaAction(Request $request)
     {
-        $config = $this->getConfiguration();
-
         $factoryService = $this->get('pumukitschema.factory');
         $personService = $this->get('pumukitschema.person');
 
@@ -327,7 +318,7 @@ class MultimediaObjectController extends SortableAdminController implements NewA
             $this->dispatchUpdate($resource);
             $this->get('pumukitschema.sorted_multimedia_object')->reorder($resource->getSeries());
 
-            if ($config->isApiRequest()) {
+            if ($this->isApiRequest()) {
                 return $this->handleView($this->view($formMeta));
             }
             $referer = $request->headers->get('referer');
@@ -335,7 +326,7 @@ class MultimediaObjectController extends SortableAdminController implements NewA
             return $this->renderList($resource, $referer);
         }
 
-        if ($config->isApiRequest()) {
+        if ($this->isApiRequest()) {
             return $this->handleView($this->view($formMeta));
         }
 
@@ -361,8 +352,6 @@ class MultimediaObjectController extends SortableAdminController implements NewA
      */
     public function updatepubAction(Request $request)
     {
-        $config = $this->getConfiguration();
-
         $factoryService = $this->get('pumukitschema.factory');
         $personService = $this->get('pumukitschema.person');
 
@@ -407,7 +396,7 @@ class MultimediaObjectController extends SortableAdminController implements NewA
             $this->dispatchUpdate($resource);
             $this->get('pumukitschema.sorted_multimedia_object')->reorder($series);
 
-            if ($config->isApiRequest()) {
+            if ($this->isApiRequest()) {
                 return $this->handleView($this->view($formPub));
             }
 
@@ -425,7 +414,7 @@ class MultimediaObjectController extends SortableAdminController implements NewA
             }
         }
 
-        if ($config->isApiRequest()) {
+        if ($this->isApiRequest()) {
             return $this->handleView($this->view($formPub));
         }
 
@@ -464,11 +453,9 @@ class MultimediaObjectController extends SortableAdminController implements NewA
 
     public function getChildrenTagAction(Tag $tag, Request $request)
     {
-        $config = $this->getConfiguration();
-
         $view = $this
           ->view()
-          ->setTemplate($config->getTemplate('listtagsajax.html'))
+          ->setTemplate($this->getTemplate('listtagsajax.html'))
           ->setData(array(
                           'nodes' => $tag->getChildren(),
                           'parent' => $tag->getId(),
@@ -484,8 +471,6 @@ class MultimediaObjectController extends SortableAdminController implements NewA
      */
     public function addTagAction(Request $request)
     {
-        $config = $this->getConfiguration();
-
         $resource = $this->findOr404($request);
 
         $tagService = $this->get('pumukitschema.tag');
@@ -516,8 +501,6 @@ class MultimediaObjectController extends SortableAdminController implements NewA
      */
     public function deleteTagAction(Request $request)
     {
-        $config = $this->getConfiguration();
-
         $resource = $this->findOr404($request);
 
         $tagService = $this->get('pumukitschema.tag');
@@ -678,7 +661,6 @@ class MultimediaObjectController extends SortableAdminController implements NewA
      */
     public function bottomAction(Request $request)
     {
-        $config = $this->getConfiguration();
         $resource = $this->findOr404($request);
 
         //rank zero is the template
@@ -690,8 +672,8 @@ class MultimediaObjectController extends SortableAdminController implements NewA
         $this->get('pumukitschema.sorted_multimedia_object')->reorder($resource->getSeries());
 
         return $this->redirectToRoute(
-            $config->getRedirectRoute('index'),
-            $config->getRedirectParameters()
+            $this->getRedirectRoute('index'),
+            $this->getRedirectParameters()
         );
     }
 
@@ -809,9 +791,7 @@ class MultimediaObjectController extends SortableAdminController implements NewA
      */
     public function listAction(Request $request)
     {
-        $config = $this->getConfiguration();
-        $criteria = $this->getCriteria($config);
-        $resources = $this->getResources($request, $config, $criteria);
+        $resources = $this->getResources($request);
         $factoryService = $this->get('pumukitschema.factory');
         $seriesId = $request->get('seriesId', null);
         $sessionId = $this->get('session')->get('admin/series/id', null);
@@ -875,7 +855,7 @@ class MultimediaObjectController extends SortableAdminController implements NewA
                 $this->get('session')->remove('admin/mms/id');
             }
             $multimediaObject->setSeries($series);
-            if (Series::SORT_MANUAL === $series->getSorting()) {
+            if (Series::SORT_MANUAL === $series->getSortingFromRequestAndSession()) {
                 $multimediaObject->setRank(-1);
             }
 
@@ -1411,9 +1391,7 @@ class MultimediaObjectController extends SortableAdminController implements NewA
     {
         $dm = $this->get('doctrine_mongodb')->getManager();
 
-        $config = $this->getConfiguration();
-        $criteria = $this->getCriteria($config);
-        $resources = $this->getResources($request, $config, $criteria);
+        $resources = $this->getResources($request);
 
         $update_session = true;
         foreach ($resources as $mm) {
@@ -1453,9 +1431,7 @@ class MultimediaObjectController extends SortableAdminController implements NewA
      */
     public function listAllAction(Request $request)
     {
-        $config = $this->getConfiguration();
-        $criteria = $this->getCriteria($config);
-        $resources = $this->getResources($request, $config, $criteria);
+        $resources = $this->getResources($request);
 
         return $this->render('PumukitNewAdminBundle:MultimediaObject:listAll.html.twig',
             array(
@@ -1485,17 +1461,17 @@ class MultimediaObjectController extends SortableAdminController implements NewA
     /**
      * Gets the criteria values.
      */
-    public function getCriteria($config)
+    public function getCriteria()
     {
         $request = $this->container->get('request_stack')->getCurrentRequest();
         $criteria = $request->get('criteria', array());
 
         if (array_key_exists('reset', $criteria)) {
-            $this->get('session')->remove('admin/'.$this->getResourceName($request).'/criteria');
+            $this->get('session')->remove('admin/'.$this->getResourceNameFromRequest($request).'/criteria');
         } elseif ($criteria) {
-            $this->get('session')->set('admin/'.$this->getResourceName($request).'/criteria', $criteria);
+            $this->get('session')->set('admin/'.$this->getResourceNameFromRequest($request).'/criteria', $criteria);
         }
-        $criteria = $this->get('session')->get('admin/'.$this->getResourceName($request).'/criteria', array());
+        $criteria = $this->get('session')->get('admin/'.$this->getResourceNameFromRequest($request).'/criteria', array());
 
         $new_criteria = $this->get('pumukitnewadmin.multimedia_object_search')->processMMOCriteria($criteria, $request->getLocale());
 
@@ -1505,14 +1481,15 @@ class MultimediaObjectController extends SortableAdminController implements NewA
     /**
      * Gets the list of resources according to a criteria.
      */
-    public function getResources(Request $request, $config, $criteria)
+    public function getResources(Request $request)
     {
-        $sorting = $this->getSorting($request, $this->getResourceName($request));
+        $criteria = $this->getCriteria();
+        $sorting = $this->getSortingFromRequestAndSession($request, $this->getResourceNameFromRequest($request));
         $repository = $this->getRepository();
         $session = $this->get('session');
-        $session_namespace = 'admin/'.$this->getResourceName($request);
+        $session_namespace = 'admin/'.$this->getResourceNameFromRequest($request);
 
-        if ($config->isPaginated()) {
+        if ($this->isPaginated()) {
             $resources = $this
                 ->resourceResolver
                 ->getResource($repository, 'createPaginator', array($criteria, $sorting));
@@ -1537,13 +1514,13 @@ class MultimediaObjectController extends SortableAdminController implements NewA
         } else {
             $resources = $this
                 ->resourceResolver
-                ->getResource($repository, 'findBy', array($criteria, $sorting, $config->getLimit()));
+                ->getResource($repository, 'findBy', array($criteria, $sorting, $this->getLimit()));
         }
 
         return $resources;
     }
 
-    private function getSorting(Request $request, $session_namespace)
+    private function getSortingFromRequestAndSession(Request $request, $session_namespace)
     {
         $session = $this->get('session');
 
@@ -1562,7 +1539,7 @@ class MultimediaObjectController extends SortableAdminController implements NewA
         return  array($key => $value);
     }
 
-    private function getResourceName(Request $request)
+    private function getResourceNameFromRequest(Request $request)
     {
         $sRoute = $request->get('_route');
 

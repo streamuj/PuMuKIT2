@@ -24,9 +24,7 @@ class GroupController extends AdminController implements NewAdminController
      */
     public function indexAction(Request $request)
     {
-        $config = $this->getConfiguration();
-        $criteria = $this->getCriteria($config);
-        $groups = $this->getResources($request, $config, $criteria);
+        $groups = $this->getResources($request);
 
         $dm = $this->get('doctrine_mongodb')->getManager();
         $origins = $dm
@@ -45,9 +43,7 @@ class GroupController extends AdminController implements NewAdminController
      */
     public function listAction(Request $request)
     {
-        $config = $this->getConfiguration();
-        $criteria = $this->getCriteria($config);
-        $groups = $this->getResources($request, $config, $criteria);
+        $groups = $this->getResources($request);
 
         return array('groups' => $groups);
     }
@@ -64,7 +60,6 @@ class GroupController extends AdminController implements NewAdminController
     public function createAction(Request $request)
     {
         $dm = $this->get('doctrine_mongodb')->getManager();
-        $config = $this->getConfiguration();
 
         $group = $this->createNew();
         $form = $this->getForm($group);
@@ -78,7 +73,7 @@ class GroupController extends AdminController implements NewAdminController
                     return new JsonResponse(array($e->getMessage()), Response::HTTP_BAD_REQUEST);
                 }
 
-                if ($this->config->isApiRequest()) {
+                if ($this->isApiRequest()) {
                     return $this->handleView($this->view($group, 201));
                 }
 
@@ -92,7 +87,7 @@ class GroupController extends AdminController implements NewAdminController
             }
         }
 
-        if ($this->config->isApiRequest()) {
+        if ($this->isApiRequest()) {
             return $this->handleView($this->view($form));
         }
 
@@ -116,7 +111,6 @@ class GroupController extends AdminController implements NewAdminController
     public function updateAction(Request $request)
     {
         $dm = $this->get('doctrine_mongodb')->getManager();
-        $config = $this->getConfiguration();
         $group = $this->findOr404($request);
         if (!$group->isLocal()) {
             return new Response('Not allowed to update not local Group', Response::HTTP_METHOD_NOT_ALLOWED);
@@ -131,14 +125,14 @@ class GroupController extends AdminController implements NewAdminController
                 return new JsonResponse(array('status' => $e->getMessage()), Response::HTTP_BAD_REQUEST);
             }
 
-            if ($this->config->isApiRequest()) {
+            if ($this->isApiRequest()) {
                 return $this->handleView($this->view($group, 204));
             }
 
             return $this->redirect($this->generateUrl('pumukitnewadmin_group_list'));
         }
 
-        if ($this->config->isApiRequest()) {
+        if ($this->isApiRequest()) {
             return $this->handleView($this->view($form));
         }
 
@@ -221,14 +215,15 @@ class GroupController extends AdminController implements NewAdminController
     /**
      * Gets the list of resources according to a criteria.
      */
-    public function getResources(Request $request, $config, $criteria)
+    public function getResources(Request $request)
     {
-        $sorting = $this->getSorting($request);
+        $criteria = $this->getCriteria();
+        $sorting = $this->getSortingFromRequest($request);
         $repository = $this->getRepository();
         $session = $this->get('session');
         $sessionNamespace = 'admin/group';
 
-        if ($config->isPaginated()) {
+        if ($this->isPaginated()) {
             $resources = $this
                 ->resourceResolver
                 ->getResource($repository, 'createPaginator', array($criteria, $sorting));
@@ -248,7 +243,7 @@ class GroupController extends AdminController implements NewAdminController
         } else {
             $resources = $this
                 ->resourceResolver
-                ->getResource($repository, 'findBy', array($criteria, $sorting, $config->getLimit()));
+                ->getResource($repository, 'findBy', array($criteria, $sorting, $this->getLimit()));
         }
 
         return $resources;
@@ -261,7 +256,7 @@ class GroupController extends AdminController implements NewAdminController
      *
      * @return array
      */
-    private function getSorting(Request $request)
+    private function getSortingFromRequest(Request $request)
     {
         $session = $this->get('session');
         if ($sorting = $request->get('sorting')) {
@@ -484,9 +479,9 @@ class GroupController extends AdminController implements NewAdminController
         return $this->redirect($this->generateUrl('pumukitnewadmin_group_data_resources', array('id' => $group->getId(), 'resourceName' => 'embeddedbroadcast')));
     }
 
-    public function getCriteria($config)
+    public function getCriteria()
     {
-        $new_criteria = parent::getCriteria($config);
+        $new_criteria = parent::getCriteria();
         if (isset($new_criteria['origin']) &&
             '/all/i' == (string) $new_criteria['origin']) {
             unset($new_criteria['origin']);

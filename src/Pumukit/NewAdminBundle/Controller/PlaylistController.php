@@ -190,7 +190,7 @@ class PlaylistController extends CollectionController
     protected function getResources(Request $request)
     {
         $sorting = $this->getSorting($request);
-        $criteria = $this->getCriteria($request);
+        $criteria = $this->getCriteriaFromRequest($request);
         $criteria = array_merge($criteria, array('type' => Series::TYPE_PLAYLIST));
         $queryBuilder = $this->get('doctrine_mongodb.odm.document_manager')->getRepository('PumukitSchemaBundle:Series')->createQueryBuilder();
         $queryBuilder->setQueryArray($criteria);
@@ -204,7 +204,7 @@ class PlaylistController extends CollectionController
     /**
      * Gets the criteria values.
      */
-    public function getCriteria(Request $request)
+    public function getCriteriaFromRequest(Request $request)
     {
         $criteria = $request->get('criteria', array());
 

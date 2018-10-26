@@ -26,10 +26,7 @@ class UserController extends AdminController implements NewAdminController
     public function indexAction(Request $request)
     {
         $dm = $this->get('doctrine_mongodb')->getManager();
-        $config = $this->getConfiguration();
-
-        $criteria = $this->getCriteria($config);
-        $users = $this->getResources($request, $config, $criteria);
+        $users = $this->getResources($request);
         $repo = $dm->getRepository('PumukitSchemaBundle:PermissionProfile');
         $profiles = $repo->findAll();
 
@@ -63,14 +60,14 @@ class UserController extends AdminController implements NewAdminController
             } catch (\Exception $e) {
                 throw $e;
             }
-            if ($this->config->isApiRequest()) {
+            if ($this->isApiRequest()) {
                 return $this->handleView($this->view($user, 201));
             }
 
             return $this->redirect($this->generateUrl('pumukitnewadmin_user_list'));
         }
 
-        if ($this->config->isApiRequest()) {
+        if ($this->isApiRequest()) {
             return $this->handleView($this->view($form));
         }
 
@@ -120,14 +117,14 @@ class UserController extends AdminController implements NewAdminController
             } catch (\Exception $e) {
                 throw $e;
             }
-            if ($this->config->isApiRequest()) {
+            if ($this->isApiRequest()) {
                 return $this->handleView($this->view($user, 204));
             }
 
             return $this->redirect($this->generateUrl('pumukitnewadmin_user_list'));
         }
 
-        if ($this->config->isApiRequest()) {
+        if ($this->isApiRequest()) {
             return $this->handleView($this->view($form));
         }
 
@@ -400,13 +397,11 @@ class UserController extends AdminController implements NewAdminController
     /**
      * Gets the criteria values.
      *
-     * @param $config
-     *
      * @return array
      */
-    public function getCriteria($config)
+    public function getCriteria()
     {
-        $criteria = $config->getCriteria();
+        $criteria = $this->getConfiguration()->getCriteria();
 
         if (array_key_exists('reset', $criteria)) {
             $this->get('session')->remove('admin/user/criteria');
